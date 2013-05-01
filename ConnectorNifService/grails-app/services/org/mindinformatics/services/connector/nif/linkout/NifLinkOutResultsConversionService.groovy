@@ -1,0 +1,126 @@
+package org.mindinformatics.services.connector.nif.linkout
+
+import java.text.SimpleDateFormat;
+import java.util.List;
+
+import org.codehaus.groovy.grails.web.json.JSONArray
+import org.codehaus.groovy.grails.web.json.JSONObject
+import org.mindinformatics.grails.domeo.persistence.UUID
+import org.mindinformatics.grails.domeo.persistence.services.IOntology
+import org.mindinformatics.services.connector.nif.annotator.NifAnnotationItem;
+
+/**
+* @author Paolo Ciccarese <paolo.ciccarese@gmail.com>
+*/
+class NifLinkOutResultsConversionService {
+    static transactional = false;
+    
+    def grailsApplication
+
+	public JSONObject convert(String url, List<NifLinkOutItem> items) {
+		
+		JSONArray agents = new JSONArray();
+		
+		JSONObject annotationSet = new JSONObject();
+		annotationSet.put(IOntology.generalId, UUID.uuid());
+		annotationSet.put(IOntology.generalType, "ao:AnnotationSet");
+		annotationSet.put(IOntology.generalLabel, "Nif Link Out Results");
+		annotationSet.put(IOntology.generalDescription, generateSetDescription());
+		
+		JSONObject ncboAnnotator = new JSONObject();
+		ncboAnnotator.put(IOntology.generalId, "http://disco.neuinfo.org/webportal/webservice/webservice.jsp");
+		ncboAnnotator.put(IOntology.generalType, "foafx:Software");
+		ncboAnnotator.put(IOntology.generalLabel, "Nif Link Out Web Service");
+		ncboAnnotator.put("foafx:name", "Nif Link Out Web Service");
+		ncboAnnotator.put("foafx:version", "1.0");
+		ncboAnnotator.put("foafx:build", "001");
+		agents.add(0, ncboAnnotator);
+
+		JSONObject bioportalConnector = new JSONObject();
+		def connectorUrn = "urn:domeo:software:id:NifConnector-0.1-001";
+		bioportalConnector.put(IOntology.generalId, connectorUrn);
+		bioportalConnector.put(IOntology.generalType, "foafx:Software");
+		bioportalConnector.put(IOntology.generalLabel, "NifConnector");
+		bioportalConnector.put("foafx:name", "NifConnector");
+		bioportalConnector.put("foafx:version", "0.1");
+		bioportalConnector.put("foafx:build", "001");
+		agents.add(1, bioportalConnector);
+		
+		JSONObject domeo = new JSONObject();
+		def domeoUrn = "urn:domeo:software:id:"+grailsApplication.metadata.'app.name'+"-"+grailsApplication.metadata.'app.version'+"-"+grailsApplication.metadata.'app.build';
+		domeo.put(IOntology.generalId, domeoUrn);
+		domeo.put(IOntology.generalType, "foafx:Software");
+		domeo.put(IOntology.generalLabel, grailsApplication.metadata.'app.fullname');
+		domeo.put("foafx:name", grailsApplication.metadata.'app.name');
+		domeo.put("foafx:version", grailsApplication.metadata.'app.version');
+		domeo.put("foafx:build", grailsApplication.metadata.'app.build');
+		agents.add(2, domeo);
+		
+		// annotationSet.put("pav:lineageUri", "");
+		// annotationSet.put("pav:createdBy", "");
+		// annotationSet.put("pav:lastSavedOn", dateFormat.format(new Date()));
+		
+		annotationSet.put("pav:importedFrom", "http://disco.neuinfo.org/webportal/webservice/webservice.jsp");
+		annotationSet.put("pav:importedBy", connectorUrn);
+		annotationSet.put("pav:importedOn", dateFormat.format(new Date()));
+		//annotationSet.put("pav:createdWith", domeoUrn);
+		//annotationSet.put("pav:createdOn", dateFormat.format(new Date()));
+		
+		JSONObject permissions = new JSONObject();
+		permissions.put("permissions:isLocked", "false");
+		permissions.put("permissions:accessType", "urn:domeo:access:public");
+		annotationSet.put("permissions:permissions", permissions);
+		
+		JSONArray annotations = new JSONArray();
+		items.each {NifLinkOutItem linkOutItem ->
+			JSONObject annotation = new JSONObject();
+			annotation.put(IOntology.generalId, UUID.uuid());
+			annotation.put(IOntology.generalType, IOntology.annotationLink);
+			annotation.put(IOntology.generalLabel, "Link");
+			annotation.put("pav:createdBy", "http://disco.neuinfo.org/webportal/webservice/webservice.jsp");
+			annotation.put("pav:createdOn", dateFormat.format(new Date()));
+			annotation.put("pav:createdWith", domeoUrn);
+			annotation.put("pav:importedFrom", "http://disco.neuinfo.org/webportal/webservice/webservice.jsp");
+			annotation.put("pav:importedBy", connectorUrn);
+			annotation.put("pav:lastSavedOn", dateFormat.format(new Date()));
+			annotation.put("pav:previousVersion", "");
+			annotation.put("pav:versionNumber", "");
+			
+			JSONObject targetSelector = new JSONObject();
+			targetSelector.put(IOntology.generalType, IOntology.selectorTarget);
+			targetSelector.put(IOntology.generalId, url);
+			
+			JSONArray targets = new JSONArray();
+			targets.add(0, targetSelector)
+			annotation.put(IOntology.hasTarget, targets);
+			
+			JSONObject term = createAnnotationTerm(linkOutItem);
+			JSONArray topics = new JSONArray();
+			topics.add(0,term);
+			annotation.put(IOntology.topic, topics);
+			annotations.put(annotation);
+		}
+		annotationSet.put(IOntology.annotations, annotations);
+		annotationSet.put(IOntology.agents, agents);
+		return annotationSet;
+	}
+	
+	private String generateSetDescription(){
+		return 'Generated by NIF LinkOut service'
+	}
+	
+	private def createAnnotationTerm(NifLinkOutItem item) {
+		String fullId =  item.uri
+
+		JSONObject term = new JSONObject();
+		term.put(IOntology.generalId, fullId);
+		term.put(IOntology.generalLabel, item.label);
+		term.put(IOntology.generalDescription, "");
+		term.put('domeo:category', item.category);
+		JSONObject source = new JSONObject();
+		source.put(IOntology.generalId, item.sourceId);
+		source.put(IOntology.generalLabel, item.sourceLabel);
+		term.put(IOntology.generalSource, source);
+		term
+	}
+}

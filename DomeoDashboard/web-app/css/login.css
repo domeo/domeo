@@ -1,0 +1,80 @@
+#login {
+	-moz-border-radius-bottomleft:5px;
+	-moz-border-radius-bottomright:5px;
+	-moz-border-radius-topleft:5px;
+	-moz-border-radius-topright:5px;
+	background-color: #000;
+	background-image: url("../images/Fullerene-C60.png");
+	background-position: -180px -8px;
+	background-repeat: no-repeat;
+	border: 3px solid #196698;
+	width: 260px;
+	padding: 15px;
+	text-align: left;
+	padding-left:340px;
+	color: #fff;
+}
+
+.af-content {
+	padding-top: 70px;	
+}
+
+.af-copyright {
+	padding-bottom: 10px;	
+}
+
+.logos {
+		padding-top: 0px;	
+		padding-right: 0px;	
+}
+
+/*
+	margin:15px 0px; padding:0px;
+	text-align:center;
+*/
+	
+#login .inner {
+	width:230px;
+	margin:0px auto;
+	text-align:left;
+	padding:10px;
+}
+#login .inner .fheader {
+	padding:4px;margin:3px 0px 3px 0;color:#E8A02C;font-size:14px;font-weight:bold;
+}
+#login .inner .cssform p {
+	clear: left;
+	margin: 0;
+	padding: 5px 0 8px 0;
+	/*padding-left: 105px;*/
+	/*border-top: 1px dashed gray;*/
+	margin-bottom: 10px;
+	height: 1%;
+}
+#login .inner .cssform input[type='text'] {
+	width: 120px;
+}
+#login .inner .cssform label {
+	font-weight: bold;
+	float: left;
+	margin-left: 0px;
+	width: 100px;
+}
+
+.loginButton {
+	padding-left: 156px;	
+}
+
+
+.appName {
+	font: 18px Tahoma, Helvetica, Arial, Sans-Serif;
+	text-transform:uppercase;
+	text-shadow: 0px 2px 3px #999;
+	padding-bottom: 4px;
+	letter-spacing:2px;
+	color: #777;
+}
+
+#login .inner .login_message {color:red;}
+#login .inner .text_ {width:120px;}
+#login .inner .chk {height:12px;}

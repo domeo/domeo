@@ -1,0 +1,3 @@
+Circles are unofficial groups. They can be created by any user, they can 
+collect multiple users and each user has one role and a status in the
+circle. Circles can have a status as well.

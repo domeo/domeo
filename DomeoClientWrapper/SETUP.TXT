@@ -1,0 +1,62 @@
+The following commands are needed to set up the missing directories.
+With a terminal position yourself in the root of the DomeoClientWrapper project.
+Then:
+
+cd grails-app
+mkdir domain
+mkdir services
+mkdir taglib
+mkdir utils
+cd ..
+mkdir src
+cd src
+mkdir java
+mkdir groovy
+cd ..
+mkdir test
+cd test
+mkdir integration
+mkdir unit
+cd ..
+ln -s ../../DomeoClient/src/ ./src/gwt
+mkdir lib
+cd lib
+mkdir gwt
+cd gwt
+ln -s ../../../DomeoClient/war/WEB-INF/lib/gson-2.2.1.jar ./gson-2.2.1.jar
+ln -s ../../../DomeoClient/war/WEB-INF/lib/gwt-visualization.jar ./gwt-visualization.jar
+cd ..
+cd ..
+mkdir war
+cd war
+mkdir gwt
+cd ..
+cd web-app
+ln -s ../../DomeoClient/war/Domeo.html ./Domeo.html
+ln -s ../../DomeoClient/war/Domeo.css ./Domeo.css
+mkdir js
+ln -s ../../../DomeoClient/war/js/annotation.js ./js/annotation.js
+ln -s ../../../DomeoClient/war/js/scroll.js ./js/scroll.js
+ln -s ../../../DomeoClient/war/js/utils.js ./js/utils.js
+ln -s ../../../DomeoClient/war/js/modernizr.min.js ./js/modernizr.min.js 
+mkdir gwt
+cd gwt
+mkdir WEB-INF
+ln -s ../../../../DomeoClient/war/WEB-INF/web.xml ./WEB-INF/web.xml
+cd ..
+cd ..
+ln -s ../../DomeoClient/war/Domeo.html ./war/Domeo.html
+ln -s ../../DomeoClient/war/Domeo.css ./war/Domeo.css
+cd war
+mkdir js
+ln -s ../../../DomeoClient/war/js/annotation.js ./js/annotation.js
+ln -s ../../../DomeoClient/war/js/scroll.js ./js/scroll.js
+ln -s ../../../DomeoClient/war/js/utils.js ./js/utils.js
+ln -s ../../../DomeoClient/war/js/modernizr.min.js ./js/modernizr.min.js 
+ln -s ../../DomeoClient/war/tests/ ./tests
+mkdir WEB-INF
+cd WEB-INF
+ln -s ../../../DomeoClient/war/WEB-INF/lib/ ./lib
+ln -s ../../../DomeoClient/war/WEB-INF/web.xml ./web.xml
+
+ 

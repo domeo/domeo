@@ -1,0 +1,22 @@
+The following commands are needed to set up the missing directories.
+With a terminal position yourself in the root of the DomeoClientWrapper project.
+Then:
+
+cd grails-app
+mkdir domain
+mkdir controllers
+mkdir services
+mkdir taglib
+mkdir utils
+cd ..
+mkdir src
+cd src
+mkdir java
+mkdir groovy
+ln -s ../../DomeoClientWrapper/src/gwt ./gwt
+cd ..
+mkdir test
+cd test
+mkdir integration
+mkdir unit
+

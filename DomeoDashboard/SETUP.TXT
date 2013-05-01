@@ -1,0 +1,27 @@
+For testinf
+1) Create Workspace
+2) Set Up Grails
+3) Import the project from the Git fetch
+4) run the script in the terminal
+5) Refresh dependencies
+
+The following commands are needed to set up the missing directories.
+With a terminal position yourself in the root of the DomeoClientWrapper project.
+Then:
+
+cd grails-app
+mkdir domain
+mkdir controllers
+mkdir services
+mkdir taglib
+mkdir utils
+cd ..
+mkdir src
+cd src
+mkdir java
+mkdir groovy
+cd ..
+mkdir test
+cd test
+mkdir integration
+mkdir unit

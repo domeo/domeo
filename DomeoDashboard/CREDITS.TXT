@@ -1,0 +1,25 @@
+lock.png - http://www.iconlet.com/info/88367_lock_16x16
+unlock.png - http://www.iconlet.com/info/89957_lock-unlock_16x16
+password.png - http://www.iconlet.com/info/7158_password_16x16
+disable.gif - http://www.iconlet.com/info/20664_remove_disable_16x16
+delete.png - http://www.iconlet.com/info/12772_14_layer_deletelayer_16x16
+edit.gif - http://www.iconlet.com/info/36467_black_edit_16x16
+enable.png - http://www.iconlet.com/info/34496_kdeprint_enabledprinter_16x16
+remove_user.png - http://www.iconlet.com/info/12951_delete_user_16x16
+edit_group.png - http://www.iconlet.com/info/12616_edit_group_16x16
+add_group.png - http://www.iconlet.com/info/12962_add_group_16x16
+add_user.png - http://www.iconlet.com/info/87496_user--plus_16x16
+face-smile.png - http://www.iconlet.com/info/3779_face-smile_32x32
+magnifier-zoom-in.png - http://iconlet.com/info/89855_magnifier-zoom-in_16x16
+black_edit.gif - http://iconlet.com/info/36467_black_edit_16x16
+block-share.png - http://iconlet.com/info/89450_block-share_16x16
+16-star-cold.png - http://iconlet.com/info/27618_16-star-cold_16x16
+16-star-hot.png - http://iconlet.com/info/27607_16-star-hot_16x16
+clipboard-list.png - http://iconlet.com/info/89047_clipboard-list_16x16
+external.png - http://iconlet.com/info/88655_external_16x16
+exit.png - http://iconlet.com/info/72197_exit_22x22
+history.png - http://iconlet.com/info/34392_history_16x16
+black_info.gif - http://iconlet.com/info/36476_black_info_16x16
+comments16x16.png - 
+email.png - http://findicons.com/icon/68587/email?id=349106
+show.gif - http://iconlet.com/info/21104_show-hide-level_16x16

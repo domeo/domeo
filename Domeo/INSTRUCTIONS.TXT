@@ -1,0 +1,4 @@
+Git Source Code Export
+----------------------
+From the root of the project:
+git archive --format zip --output ~/Temp/Test/Domeo.zip master
