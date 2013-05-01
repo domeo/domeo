@@ -1,5 +1,5 @@
 
-Domeo Web Annotation Tool](http://www.annotationframework.org/)
+[Domeo Web Annotation Tool](http://www.annotationframework.org/)
 ================================================================
 
 More about [Domeo Web Annotation Tool](http://www.annotationframework.org/about.html)
