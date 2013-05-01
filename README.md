@@ -1,17 +1,35 @@
-[Domeo Web Annotation Tool](http://www.annotationframework.org/)
+
+Domeo Web Annotation Tool](http://www.annotationframework.org/)
 ================================================================
 
-Copyright 2013 Massachusetts General Hospital
+More about [Domeo Web Annotation Tool](http://www.annotationframework.org/about.html)
+
+Copyright 2013 Massachusetts General Hospital<br/>
 Apache License Version 2.0, January 2004
 
-  CREDITS
-  -------
+<br/>
 
-  This software originally written by:
+### SOFTWARE CREDITS
 
-   - Paolo Ciccarese  <paolo.ciccarese at gmail.com> (Architect)
+This software originally written by:
 
-  With help by the following collaborators:
+   - [Paolo Ciccarese](http://www.paolociccarse.info), paolo.ciccarese at gmail.com (Architect)
+
+With help by the following collaborators:
 
    - Marco Ocana
-   - Keith Gutfreund 
+   - Keith Gutfreund
+
+
+
+
+
+
+
+
+
+
+
+
+
+
