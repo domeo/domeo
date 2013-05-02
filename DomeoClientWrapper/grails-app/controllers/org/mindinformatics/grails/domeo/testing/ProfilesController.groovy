@@ -27,8 +27,11 @@ class ProfilesController {
 			render("\",");
 			render("    \"createdby\": [");
 			render("      {");
-			render("        \"domeo:uuid\": \"");
+			render("        \"@id\": \"");
 			render("maurizio.mosca");
+			render("\",");
+			render("    \"@type\": \"");
+			render("foafx:Person");
 			render("\",");
 			render("        \"foafx:name\": \"");
 			render("Dr. Maurizio Mosca");
@@ -36,6 +39,25 @@ class ProfilesController {
 			render("      }");
 			render("    ],");
 			render("    \"statusplugins\": [");
+			
+			render("       {");
+			render("         \"uuid\": \"");
+			render("org.mindinformatics.gwt.domeo.plugins.annotation.qualifier");
+			render("\",");
+			render("         \"status\": \"");
+			render("enabled");
+			render("\"");
+			render("       },");
+			
+			render("       {");
+			render("         \"uuid\": \"");
+			render("org.mindinformatics.gwt.domeo.plugins.annotation.nif.antibodies");
+			render("\",");
+			render("         \"status\": \"");
+			render("enabled");
+			render("\"");
+			render("       },");
+			
 			render("       {");
 			render("         \"uuid\": \"");
 			render("org.mindinformatics.gwt.domeo.plugins.resource.pubmed");
@@ -102,8 +124,11 @@ class ProfilesController {
 			render("\",");
 			render("    \"createdby\": [");
 			render("      {");
-			render("        \"domeo:uuid\": \"");
+			render("        \"@id\": \"");
 			render("maurizio.mosca");
+			render("\",");
+			render("    \"@type\": \"");
+			render("foafx:Person");
 			render("\",");
 			render("        \"foafx:name\": \"");
 			render("Dr. Maurizio Mosca");
@@ -167,8 +192,11 @@ class ProfilesController {
 			render("\",");
 			render("    \"createdby\": [");
 			render("      {");
-			render("        \"domeo:uuid\": \"");
+			render("        \"@id\": \"");
 			render("paolo.ciccarese");
+			render("\",");
+			render("    \"@type\": \"");
+			render("foafx:Person");
 			render("\",");
 			render("        \"foafx:name\": \"");
 			render("Dr. Paolo Ciccarese");
