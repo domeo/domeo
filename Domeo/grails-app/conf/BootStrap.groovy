@@ -1,4 +1,8 @@
 import org.codehaus.groovy.grails.commons.ApplicationAttributes
+import org.mindinformatics.grails.domeo.client.profiles.model.DomeoClientProfile
+import org.mindinformatics.grails.domeo.client.profiles.model.DomeoClientProfileEntry
+import org.mindinformatics.grails.domeo.client.profiles.model.UserCurrentDomeoClientProfile
+import org.mindinformatics.grails.domeo.client.profiles.model.UserAvailableDomeoClientProfile
 import org.mindinformatics.grails.domeo.dashboard.circles.Circle
 import org.mindinformatics.grails.domeo.dashboard.circles.UserCircle
 import org.mindinformatics.grails.domeo.dashboard.groups.DefaultGroupPrivacy
@@ -15,6 +19,7 @@ import org.mindinformatics.grails.domeo.dashboard.security.DefaultRoles
 import org.mindinformatics.grails.domeo.dashboard.security.Role
 import org.mindinformatics.grails.domeo.dashboard.security.User
 import org.mindinformatics.grails.domeo.dashboard.security.UserRole
+
  
 class BootStrap {
 	
@@ -301,6 +306,165 @@ class BootStrap {
 		).save(failOnError: true, flash: true)
 		testUserCircle1.addToUsers managerUser;
 			
+		separator();
+		log.info   '** Initializing profiles'
+		separator();
+		log.info   'Initializing complete biomedical profile'
+		def completeProfile = DomeoClientProfile.findByName("Complete Biomedical Profile")?: new DomeoClientProfile(
+			name: 'Complete Biomedical Profile',
+			description: 'All the tools that Domeo has to offer for biomedicine',
+			createdBy: adminUser
+		).save(failOnError: true, flash: true)
+		
+		DomeoClientProfileEntry.findByProfileAndPlugin(completeProfile, "org.mindinformatics.gwt.domeo.plugins.annotation.qualifier")?: new DomeoClientProfileEntry(
+			profile: completeProfile,
+			plugin: "org.mindinformatics.gwt.domeo.plugins.annotation.qualifier",
+			status: "enabled"
+		).save(failOnError: true, flash: true)
+		
+		DomeoClientProfileEntry.findByProfileAndPlugin(completeProfile, "org.mindinformatics.gwt.domeo.plugins.annotation.nif.antibodies")?: new DomeoClientProfileEntry(
+			profile: completeProfile,
+			plugin: "org.mindinformatics.gwt.domeo.plugins.annotation.nif.antibodies",
+			status: "enabled"
+		).save(failOnError: true, flash: true)
+		
+		DomeoClientProfileEntry.findByProfileAndPlugin(completeProfile, "org.mindinformatics.gwt.domeo.plugins.resource.pubmed")?: new DomeoClientProfileEntry(
+			profile: completeProfile,
+			plugin: "org.mindinformatics.gwt.domeo.plugins.resource.pubmed",
+			status: "enabled"
+		).save(failOnError: true, flash: true)
+		
+		DomeoClientProfileEntry.findByProfileAndPlugin(completeProfile, "org.mindinformatics.gwt.domeo.plugins.resource.pubmedcentral")?: new DomeoClientProfileEntry(
+			profile: completeProfile,
+			plugin: "org.mindinformatics.gwt.domeo.plugins.resource.pubmedcentral",
+			status: "enabled"
+		).save(failOnError: true, flash: true)
+		
+		DomeoClientProfileEntry.findByProfileAndPlugin(completeProfile, "org.mindinformatics.gwt.domeo.plugins.resource.omim")?: new DomeoClientProfileEntry(
+			profile: completeProfile,
+			plugin: "org.mindinformatics.gwt.domeo.plugins.resource.omim",
+			status: "enabled"
+		).save(failOnError: true, flash: true)
+		
+		DomeoClientProfileEntry.findByProfileAndPlugin(completeProfile, "org.mindinformatics.gwt.domeo.plugins.resource.bioportal")?: new DomeoClientProfileEntry(
+			profile: completeProfile,
+			plugin: "org.mindinformatics.gwt.domeo.plugins.resource.bioportal",
+			status: "enabled"
+		).save(failOnError: true, flash: true)
+		
+		DomeoClientProfileEntry.findByProfileAndPlugin(completeProfile, "org.mindinformatics.gwt.domeo.client.component.clipboard")?: new DomeoClientProfileEntry(
+			profile: completeProfile,
+			plugin: "org.mindinformatics.gwt.domeo.client.component.clipboard",
+			status: "enabled"
+		).save(failOnError: true, flash: true)
+		
+		separator();
+		log.info   'Initializing basic profiles'
+		def simpleProfile = DomeoClientProfile.findByName("Simple profile")?: new DomeoClientProfile(
+			name: 'Simple profile',
+			description: 'Simple profile: notes and commenting',
+			createdBy: adminUser
+		).save(failOnError: true, flash: true)
+		
+		DomeoClientProfileEntry.findByProfileAndPlugin(completeProfile, "org.mindinformatics.gwt.domeo.plugins.resource.pubmed")?: new DomeoClientProfileEntry(
+			profile: simpleProfile,
+			plugin: "org.mindinformatics.gwt.domeo.plugins.resource.pubmed",
+			status: "enabled"
+		).save(failOnError: true, flash: true)
+		
+		DomeoClientProfileEntry.findByProfileAndPlugin(completeProfile, "org.mindinformatics.gwt.domeo.plugins.resource.pubmedcentral")?: new DomeoClientProfileEntry(
+			profile: simpleProfile,
+			plugin: "org.mindinformatics.gwt.domeo.plugins.resource.pubmedcentral",
+			status: "enabled"
+		).save(failOnError: true, flash: true)
+		
+		DomeoClientProfileEntry.findByProfileAndPlugin(completeProfile, "org.mindinformatics.gwt.domeo.plugins.resource.omim")?: new DomeoClientProfileEntry(
+			profile: simpleProfile,
+			plugin: "org.mindinformatics.gwt.domeo.plugins.resource.omim",
+			status: "enabled"
+		).save(failOnError: true, flash: true)
+		
+		DomeoClientProfileEntry.findByProfileAndPlugin(completeProfile, "org.mindinformatics.gwt.domeo.plugins.resource.bioportal")?: new DomeoClientProfileEntry(
+			profile: simpleProfile,
+			plugin: "org.mindinformatics.gwt.domeo.plugins.resource.bioportal",
+			status: "enabled"
+		).save(failOnError: true, flash: true)
+		
+		DomeoClientProfileEntry.findByProfileAndPlugin(completeProfile, "org.mindinformatics.gwt.domeo.client.component.clipboard")?: new DomeoClientProfileEntry(
+			profile: simpleProfile,
+			plugin: "org.mindinformatics.gwt.domeo.client.component.clipboard",
+			status: "enabled"
+		).save(failOnError: true, flash: true)
+		
+		separator();
+		log.info   'Initializing available profiles'
+		log.info   'Administrator profiles'
+		UserAvailableDomeoClientProfile.findByUserAndProfile(adminUser, completeProfile)?: new UserAvailableDomeoClientProfile(
+			user: adminUser,
+			profile: completeProfile
+		).save(failOnError: true, flash: true)
+		UserAvailableDomeoClientProfile.findByUserAndProfile(adminUser, simpleProfile)?: new UserAvailableDomeoClientProfile(
+			user: adminUser,
+			profile: simpleProfile
+		).save(failOnError: true, flash: true)
+		
+		log.info   'Manager 1 profiles'
+		UserAvailableDomeoClientProfile.findByUserAndProfile(managerUser, completeProfile)?: new UserAvailableDomeoClientProfile(
+			user: managerUser,
+			profile: completeProfile
+		).save(failOnError: true, flash: true)
+		UserAvailableDomeoClientProfile.findByUserAndProfile(managerUser, simpleProfile)?: new UserAvailableDomeoClientProfile(
+			user: managerUser,
+			profile: simpleProfile
+		).save(failOnError: true, flash: true)
+		
+		log.info   'Manager 2 profiles'
+		UserAvailableDomeoClientProfile.findByUserAndProfile(managerUser2, completeProfile)?: new UserAvailableDomeoClientProfile(
+			user: managerUser2,
+			profile: completeProfile
+		).save(failOnError: true, flash: true)
+		UserAvailableDomeoClientProfile.findByUserAndProfile(managerUser2, simpleProfile)?: new UserAvailableDomeoClientProfile(
+			user: managerUser2,
+			profile: simpleProfile
+		).save(failOnError: true, flash: true)
+		
+		log.info   'User profiles'
+		UserAvailableDomeoClientProfile.findByUserAndProfile(accountUser1, completeProfile)?: new UserAvailableDomeoClientProfile(
+			user: accountUser1,
+			profile: completeProfile
+		).save(failOnError: true, flash: true)
+		UserAvailableDomeoClientProfile.findByUserAndProfile(accountUser1, simpleProfile)?: new UserAvailableDomeoClientProfile(
+			user: accountUser1,
+			profile: simpleProfile
+		).save(failOnError: true, flash: true)
+		
+		separator();
+		log.info   '** Initializing current profiles'
+		log.info   'Administrator profiles'
+		log.info   'Administrator current profile'
+		UserCurrentDomeoClientProfile.findByUser(adminUser)?: new UserCurrentDomeoClientProfile(
+			user: adminUser,
+			currentProfile: completeProfile
+		).save(failOnError: true, flash: true)
+		
+		log.info   'Manager 1 current profile'
+		UserCurrentDomeoClientProfile.findByUser(managerUser)?: new UserCurrentDomeoClientProfile(
+			user: managerUser,
+			currentProfile: completeProfile
+		).save(failOnError: true, flash: true)
+		
+		log.info   'Manager 2 current profile'
+		UserCurrentDomeoClientProfile.findByUser(managerUser2)?: new UserCurrentDomeoClientProfile(
+			user: managerUser2,
+			currentProfile: simpleProfile
+		).save(failOnError: true, flash: true)
+		
+		log.info   'User current profile'
+		UserCurrentDomeoClientProfile.findByUser(accountUser1)?: new UserCurrentDomeoClientProfile(
+			user: accountUser1,
+			currentProfile: simpleProfile
+		).save(failOnError: true, flash: true)
+		
 		separator();
 		log.info  'Bootstrapping complete!'
 		log.info  '========================================================================';

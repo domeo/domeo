@@ -6,7 +6,9 @@ class UrlMappings {
 		"/users/$id/groups" (controller:"/users", action: "groups")
 		"/agents/$id/info" (controller:"/agents", action: "info")
 		"/agents/$id/$version" (controller:"/agents", action: "software")
+		
 		"/profile/$id/info" (controller:"/profiles", action: "info")
+		"/profile/$id/save" (controller:"/profiles", action: "save")
 		"/profile/$id/all" (controller:"/profiles", action: "all")
 		
 		"/group/$id" (controller:"/dashboard", action: "showGroup")
