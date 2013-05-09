@@ -36,11 +36,6 @@
 	   var standalone = "false";
 	   var jsonformat = "true";
 	   var testFiles = "true";
-	   var annotationId = "";
-
-	   var documentUrl = "${documentUrl}";
-	   var annotationId = "${annotationId}";
-	   var lineageId = "${lineageId}";
 	</script> 
     
     <!--                                           -->

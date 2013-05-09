@@ -47,8 +47,8 @@
 </style>
 <script type="text/javascript">
 
-	function edit(annotationId) {
-		document.location = '${appBaseUrl}/web/domeo?annotationId=' + annotationId;
+	function edit(annotationId, url) {
+		document.location = '${appBaseUrl}/web/domeo?url=' + url + '&setId=' + annotationId;
 	}
 
 	function display(userId) {
@@ -57,6 +57,10 @@
 
 	function displaySet(annotationUri) {
 		document.location = '${appBaseUrl}/secure/set/' + annotationUri;
+	}
+
+	function displayHistory(annotationSetUri) {
+		document.location = '${appBaseUrl}/secure/setHistory/' + annotationSetUri;
 	}
 
 	function displayShare(annotationId) {
@@ -98,7 +102,7 @@
 	}
 
 	function getModifyLink(item) {
-		return "<a onclick=\"javascript:edit('" + item.lastAnnotationSetIndex.lastVersion.individualUri + "')\" style=\"text-decoration: none; cursor: pointer;\"><img id=\"groupsSpinner\" src=\"${resource(dir:'images/secure',file:'black_edit.gif',plugin:'users-module')}\" /> Document</a><br/>";
+		return "<a onclick=\"javascript:edit('" + item.lastAnnotationSetIndex.lastVersion.individualUri + "', '" + item.lastAnnotationSetIndex.lastVersion.annotatesUrl + "')\" style=\"text-decoration: none; cursor: pointer;\"><img id=\"groupsSpinner\" src=\"${resource(dir:'images/secure',file:'black_edit.gif',plugin:'users-module')}\" /> Document</a><br/>";
 	}
 
 	function getExploreLink(item) {
