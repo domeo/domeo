@@ -21,16 +21,16 @@
 
 	<table style="width:99%; height: 200px; border: 1px #aaa solid;">
 		<tr>
-			<td width="33%" align="center" style="vertical-align: middle; background: green; color: white; cursor:pointer;" onclick="window.open('../web/domeo', '_self')">
+			<td width="33%" align="center" style="vertical-align: middle; background: white; color: black; cursor:pointer;" onclick="window.open('../web/domeo', '_self')">
 				<h3>Annotator</h3><br/>
 				Create new annotation
 				</div>
 			</td>
-			<td width="33%" align="center" style="vertical-align: middle; background: #FFF; cursor:pointer;" onclick="window.open('browser', '_self')"><!--  #FFCC00 -->
+			<td width="33%" align="center" style="vertical-align: middle; background: white; cursor:pointer;" onclick="window.open('browser', '_self')"><!--  #FFCC00 -->
 				<h3>Viewer</h3><br/>
 				Browse existing annotation
 			</td>
-			<td width="33%" align="center" style="vertical-align: middle; background: #CC3300; color: white; cursor:pointer;" onclick="window.open('../dashboard/dashboard', '_self')">
+			<td width="33%" align="center" style="vertical-align: middle; background:white; color: black; cursor:pointer;" onclick="window.open('../dashboard/dashboard', '_self')">
 				<h3>Dashboard</h3><br/>
 				Access the management dashboard
 			</td>
