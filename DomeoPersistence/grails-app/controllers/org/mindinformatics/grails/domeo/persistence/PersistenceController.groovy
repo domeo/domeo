@@ -357,6 +357,7 @@ class PersistenceController {
 					// Response summary creation
 					JSONObject responseToSet = new JSONObject();
 					responseToSet.put("@id", SET_URN);
+					responseToSet.put("domeo_new_id", SET_URN);
 					responseToSet.put("pav:lineageUri", lineageUri);
 					responseToSet.put("domeo_temp_localId", JSON_SET['domeo_temp_localId']);
 					responseToSet.put("pav:lastSavedOn", dateFormat.format(lastSavedOnDate));

@@ -48,7 +48,7 @@
 <script type="text/javascript">
 
 	function edit(annotationId, url) {
-		document.location = '${appBaseUrl}/web/domeo?url=' + url + '&setId=' + annotationId;
+		document.location = '${appBaseUrl}/web/domeo?url=' + encodeURIComponent(url) + '&setId=' + encodeURIComponent(annotationId);
 	}
 
 	function display(userId) {
@@ -56,19 +56,19 @@
 	}
 
 	function displaySet(annotationUri) {
-		document.location = '${appBaseUrl}/secure/set/' + annotationUri;
+		document.location = '${appBaseUrl}/secure/set/' + encodeURIComponent(annotationUri);
 	}
 
 	function displayHistory(annotationSetUri) {
-		document.location = '${appBaseUrl}/secure/setHistory/' + annotationSetUri;
+		document.location = '${appBaseUrl}/secure/setHistory/' + encodeURIComponent(annotationSetUri);
 	}
 
 	function displayShare(annotationId) {
-		open_in_new_tab('${appBaseUrl}/share/set/' + annotationId);
+		open_in_new_tab('${appBaseUrl}/share/set/' + encodeURIComponent(annotationId));
 	}
 
 	function displayByUrlShare(url) {
-		open_in_new_tab('${appBaseUrl}/share/sets/?url=' + url);
+		open_in_new_tab('${appBaseUrl}/share/sets/?url=' + encodeURIComponent(url));
 	}
 	
 	function open_in_new_tab(url)
