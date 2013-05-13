@@ -181,8 +181,8 @@ Uncomment for local testing
 		return "<a onclick=\"javascript:displayHistory('" + item.set.id+ "')\" style=\"text-decoration: none; cursor: pointer;\"><img id=\"groupsSpinner\" src=\"${resource(dir:'images/secure',file:'history.png',plugin:'users-module')}\" /> History</a>";
 	}
 
-	function displayHistory(item) {
-		alert('WIP: not yet implemented ' + item);
+	function displayHistory(annotationSetUri) {
+		document.location = '${appBaseUrl}/secure/setHistory/' + encodeURIComponent(annotationSetUri);
 	}
 
 	function getTitle(item) {
@@ -249,7 +249,7 @@ Uncomment for local testing
 					//	
 				  	//);
 				  	
-				  	$("#resultsSummary").html("Saved by " + "<a onclick=\"javascript:display('" + data.set.createdBy["@id"] + "')\" style=\"cursor: pointer;\">" + 
+				  	$("#resultsSummary").html("Saved by " + "<a onclick=\"javascript:display('" + data.set.createdById + "')\" style=\"cursor: pointer;\">" + 
 				  			data.set.createdBy['foafx:name'] + "</a> on " + data.set.createdOn + "<br/>" + getVersion(data.set)
 				  	     + displayAccessType(data.set.permissions['permissions:accessType']) + displayLock(data.set.permissions['permissions:isLocked']));
 				  	$("#resultsStats").append('<table width="160px;"><tr><td align="left">'+getModifyLink(data) + '</td><td align="left"> ' + getHistoryLink(data) + '</td></tr><tr><td align="left">' + getShareLink(data) + '</td><td></td></tr></table>');

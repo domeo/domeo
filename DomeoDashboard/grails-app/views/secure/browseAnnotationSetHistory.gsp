@@ -51,6 +51,10 @@
 		document.location = '${appBaseUrl}/web/domeo?annotationId=' + annotationId;
 	}
 
+	function displayUser(userId) {
+		document.location = '${appBaseUrl}/secure/user/' + userId;
+	}
+
 	function branch(annotationId) {
 		alert("Branching not yet implemented");
 	}
@@ -145,7 +149,7 @@
 	}
 
 	function getProvenance(item) {
-		return 'By ' + item.annotationSetIndex.createdBy.displayName + ' (et al) on ' + item.annotationSetIndex.createdOn + ' with v. ' + item.annotationSetIndex.versionNumber;
+		return 'By  <a onclick=\"javascript:displayUser(\'' + item.annotationSetIndex.createdBy.id + '\')\" style=\"cursor: pointer;\">'  + item.annotationSetIndex.createdBy.displayName + '</a> (et al) on ' + item.annotationSetIndex.createdOn + ' with v. ' + item.annotationSetIndex.versionNumber;
 	}
 
 	function getStats(item) {

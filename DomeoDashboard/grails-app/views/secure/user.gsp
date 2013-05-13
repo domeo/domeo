@@ -26,7 +26,7 @@
   <div class="content">
   
     <div class="content_resize">
-    <h3 style="background: #cc3300; color: #fff; padding: 3px ;padding-left:5px;">Secured Area</h3>
+    <h3 style="background: #cc3300; color: #fff; padding: 3px ;padding-left:5px;">User profile</h3>
     <div style="padding-left: 10px">
     <br/>
     
