@@ -56,6 +56,13 @@ class SecureController {
 			menuitem: 'browser', navitem: 'annotationSet']);
 	}
 	
+	def setHistory = {
+		def loggedUser = injectUserProfile();
+		render(view:'browseAnnotationSetHistory', model:[loggedUser: loggedUser, appBaseUrl: request.getContextPath(),
+			userGroups: usersManagementService.getUserGroups(loggedUser), setUri: params.id,
+			menuitem: 'browser', navitem: 'annotationSetHistory']);
+	}
+	
     def search = {
         def loggedUser = injectUserProfile();
         
@@ -73,6 +80,8 @@ class SecureController {
 	}
     
 	def user = {
-		redirect(action:'home', model:[menuitem: 'browser']);
+		def userId = params.id;
+		def user = User.findById(userId);
+		render(view:'user', model:[user: user]);
 	}
 }

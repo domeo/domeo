@@ -23,3 +23,5 @@ black_info.gif - http://iconlet.com/info/36476_black_info_16x16
 comments16x16.png - 
 email.png - http://findicons.com/icon/68587/email?id=349106
 show.gif - http://iconlet.com/info/21104_show-hide-level_16x16
+history48x48.png - http://www.iconlet.com/info/30411_history_48x48
+downarrow16x16.png - http://www.iconlet.com/info/34436_1downarrow_16x16

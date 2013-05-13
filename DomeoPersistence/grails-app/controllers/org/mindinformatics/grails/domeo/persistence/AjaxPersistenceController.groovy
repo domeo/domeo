@@ -2,17 +2,16 @@ package org.mindinformatics.grails.domeo.persistence
 
 import grails.converters.JSON
 
-
 import org.codehaus.groovy.grails.web.json.JSONArray
 import org.codehaus.groovy.grails.web.json.JSONObject
-//import org.mindinformatics.domeo.persistence.SleepyMongooseWrapper
 import org.mindinformatics.domeo.persistence.ElasticSearchWrapper
 import org.mindinformatics.domeo.persistence.SleepyMongooseWrapper
 import org.mindinformatics.grails.domeo.dashboard.security.User
 import org.mindinformatics.grails.domeo.persistence.services.IOntology
 import org.mindinformatics.grails.domeo.persistence.services.IPermissionTypes
 import org.mindinformatics.grails.domeo.persistence.services.responses.AnnotationListItemWrapper
-import org.mindinformatics.grails.domeo.persistence.services.responses.AnnotationListResponse;
+import org.mindinformatics.grails.domeo.persistence.services.responses.AnnotationListResponse
+import org.mindinformatics.grails.domeo.persistence.services.responses.AnnotationSetItemWrapper
 
 class AjaxPersistenceController {
 
@@ -125,6 +124,40 @@ class AjaxPersistenceController {
 		} catch(Exception e) {
 			trackException(user.id, "", "FAILURE: Retrieval of the list of existing annotation sets failed " + e.getMessage());
 		}
+	}
+	
+	def annotationSetHistory = {
+		def user = userProfile();
+
+		ArrayList<AnnotationSetIndex> annotationListItemWrappers = new ArrayList<AnnotationSetIndex>();
+		
+		def setIndex = AnnotationSetIndex.findByIndividualUri(params.setUri);
+		if(setIndex!=null) {
+			def setIndexes = AnnotationSetIndex.findAllByLineageUri(setIndex.lineageUri, [sort: "lastSavedOn", order: "desc"]);
+			if(setIndexes!=null) {
+				for(AnnotationSetIndex annotationSetIndex: setIndexes) {
+					if(annotationPermissionService.isPermissionGranted(user, annotationSetIndex)) {
+						AnnotationSetItemWrapper annotationListItemWrapper = new AnnotationSetItemWrapper(annotationSetIndex: annotationSetIndex);
+						annotationListItemWrappers.add(annotationListItemWrapper);
+					 
+						List<String> permissions = annotationPermissionService.getAnnotationSetPermissions(user.id, annotationSetIndex);
+						if (permissions.get(0)==IPermissionTypes.publicAccess) {
+							annotationListItemWrapper.permissionType = IPermissionTypes.publicAccess;
+						} else if (permissions.get(0)==IPermissionTypes.groupsAccess) {
+							annotationListItemWrapper.permissionType = IPermissionTypes.groupsAccess;
+						} else {
+							annotationListItemWrapper.permissionType = IPermissionTypes.privateAccess;
+						}
+						annotationListItemWrapper.isLocked = annotationPermissionService.isLocked(annotationSetIndex);
+					}
+				}
+			}
+		}
+		
+		AnnotationListResponse theResponse = new AnnotationListResponse(
+			annotationListItemWrappers: annotationListItemWrappers, totalResponses: annotationListItemWrappers.size());
+		JSON.use("deep")
+		render (theResponse as JSON);
 	}
 	
 	def annotationSet = {

@@ -47,32 +47,28 @@
 </style>
 <script type="text/javascript">
 
-	function edit(annotationId, url) {
-		document.location = '${appBaseUrl}/web/domeo?url=' + encodeURIComponent(url) + '&setId=' + encodeURIComponent(annotationId);
+	function edit(annotationId) {
+		document.location = '${appBaseUrl}/web/domeo?annotationId=' + annotationId;
+	}
+
+	function branch(annotationId) {
+		alert("Branching not yet implemented");
 	}
 
 	function display(userId) {
 		document.location = '${appBaseUrl}/secure/user/' + userId;
 	}
 
-	function displayUser(userId) {
-		document.location = '${appBaseUrl}/secure/user/' + userId;
-	}
-
 	function displaySet(annotationUri) {
-		document.location = '${appBaseUrl}/secure/set/' + encodeURIComponent(annotationUri);
-	}
-
-	function displayHistory(annotationSetUri) {
-		document.location = '${appBaseUrl}/secure/setHistory/' + encodeURIComponent(annotationSetUri);
+		document.location = '${appBaseUrl}/secure/set/' + annotationUri;
 	}
 
 	function displayShare(annotationId) {
-		open_in_new_tab('${appBaseUrl}/share/set/' + encodeURIComponent(annotationId));
+		open_in_new_tab('${appBaseUrl}/share/set/' + annotationId);
 	}
 
 	function displayByUrlShare(url) {
-		open_in_new_tab('${appBaseUrl}/share/sets/?url=' + encodeURIComponent(url));
+		open_in_new_tab('${appBaseUrl}/share/sets/?url=' + url);
 	}
 	
 	function open_in_new_tab(url)
@@ -105,16 +101,19 @@
 		return lock=='true';
 	}
 
-	function getModifyLink(item) {
-		return "<a onclick=\"javascript:edit('" + item.lastAnnotationSetIndex.lastVersion.individualUri + "', '" + item.lastAnnotationSetIndex.lastVersion.annotatesUrl + "')\" style=\"text-decoration: none; cursor: pointer;\"><img id=\"groupsSpinner\" src=\"${resource(dir:'images/secure',file:'black_edit.gif',plugin:'users-module')}\" /> Document</a><br/>";
+	function getModifyLink(i, item) {
+		if(i==0) return "<a onclick=\"javascript:edit('" + item.annotationSetIndex.individualUri + "')\" style=\"text-decoration: none; cursor: pointer;\"><img id=\"groupsSpinner\" src=\"${resource(dir:'images/secure',file:'black_edit.gif',plugin:'users-module')}\" /> Document</a><br/>";
+		else return "<a onclick=\"javascript:branch('" + item.annotationSetIndex.individualUri + "')\" style=\"text-decoration: none; cursor: pointer;\"><img id=\"groupsSpinner\" src=\"${resource(dir:'images/secure',file:'arrow_split16x16.png',plugin:'users-module')}\" /> Branch</a><br/>";
+		//else return "";
 	}
 
 	function getExploreLink(item) {
-		return "<a onclick=\"javascript:displaySet('" + item.lastAnnotationSetIndex.lastVersion.individualUri + "')\" style=\"text-decoration: none; cursor: pointer;\"><img id=\"groupsSpinner\" src=\"${resource(dir:'images/secure',file:'clipboard-list.png',plugin:'users-module')}\" /> Browse</a><br/>";
+		return "<a onclick=\"javascript:displaySet('" + item.annotationSetIndex.individualUri + "')\" style=\"text-decoration: none; cursor: pointer;\"><img id=\"groupsSpinner\" src=\"${resource(dir:'images/secure',file:'clipboard-list.png',plugin:'users-module')}\" /> Browse</a><br/>";
 	}
 
-	function getShareLink(item) {
-		return "<a onclick=\"javascript:displayShare('" + item.lastAnnotationSetIndex.lastVersion.individualUri + "')\" style=\"text-decoration: none; cursor: pointer;\"><img id=\"groupsSpinner\" src=\"${resource(dir:'images/secure',file:'block-share.png',plugin:'users-module')}\" /> Share</a><br/>";
+	function getShareLink(i, item) {
+		if(i==0)  return "<a onclick=\"javascript:displayShare('" + item.annotationSetIndex.individualUri + "')\" style=\"text-decoration: none; cursor: pointer;\"><img id=\"groupsSpinner\" src=\"${resource(dir:'images/secure',file:'block-share.png',plugin:'users-module')}\" /> Share</a><br/>";
+		else return "";
 	}
 
 	function getShareByUrlLink(url) {
@@ -122,18 +121,18 @@
 	}
 
 	function getHistoryLink(item) {
-		if(item.lastAnnotationSetIndex.lastVersion.versionNumber>1) 
-		return "<a onclick=\"javascript:displayHistory('" + item.lastAnnotationSetIndex.lastVersion.individualUri + "')\" style=\"text-decoration: none; cursor: pointer;\"><img id=\"groupsSpinner\" src=\"${resource(dir:'images/secure',file:'history.png',plugin:'users-module')}\" /> History</a><br/>";
+		if(item.versionNumber>1) 
+		return "<a onclick=\"javascript:displayHistory('" + item.annotationSetIndex.individualUri + "')\" style=\"text-decoration: none; cursor: pointer;\"><img id=\"groupsSpinner\" src=\"${resource(dir:'images/secure',file:'history.png',plugin:'users-module')}\" /> History</a><br/>";
 		else return "";
 	}
 
 	function getTarget(item) {
-		var u = item.lastAnnotationSetIndex.lastVersion.annotatesUrl;
+		var u = item.annotationSetIndex.annotatesUrl;
 		var temp = String(u);
 		if(temp.length>60) {
 			u = temp.substring(0, 30) + '...' + temp.substring(temp.length-25);
 		}
-		return "On  <a href='#' onclick='javascript:loadData(\""+item.lastAnnotationSetIndex.lastVersion.annotatesUrl+"\")'>"+ u + " <img id=\"groupsSpinner\" src=\"${resource(dir:'images/secure',file:'show.gif',plugin:'users-module')}\" /></a> ";
+		return "On  <a href='#' onclick='javascript:loadData(\""+item.annotationSetIndex.annotatesUrl+"\")'>"+ u + " <img id=\"groupsSpinner\" src=\"${resource(dir:'images/secure',file:'show.gif',plugin:'users-module')}\" /></a> ";
 	}
 
 	function getTargetOut(item) {
@@ -146,22 +145,32 @@
 	}
 
 	function getProvenance(item) {
-		return 'By <a onclick=\"javascript:displayUser(\'' + item.lastAnnotationSetIndex.lastVersion.createdBy.id + '\')\" style=\"cursor: pointer;\">' + item.lastAnnotationSetIndex.lastVersion.createdBy.displayName + '</a> (et al) on ' + item.lastAnnotationSetIndex.lastVersion.createdOn + ' with v. ' + item.lastAnnotationSetIndex.lastVersion.versionNumber;
+		return 'By ' + item.annotationSetIndex.createdBy.displayName + ' (et al) on ' + item.annotationSetIndex.createdOn + ' with v. ' + item.annotationSetIndex.versionNumber;
 	}
 
 	function getStats(item) {
-		return '# annotation items: '+item.lastAnnotationSetIndex.lastVersion.size + displayAccessType(item.permissionType) + displayLock(item.isLocked);
+		return '# annotation items: '+item.annotationSetIndex.size + displayAccessType(item.permissionType) + displayLock(item.isLocked);
+	}
+
+	function getDescription(item) {
+		if(item.annotationSetIndex.description && item.annotationSetIndex.description.length>0)
+			return ': ' + item.annotationSetIndex.description;
+		else return "";
+	}
+
+	function getConnector(i, length) {
+		if(i<length-1) return "<div align=\"center\" style=\"padding: 10px;\"><img id=\"groupsSpinner\" src=\"${resource(dir:'images/secure',file:'downarrow16x16.png',plugin:'users-module')}\" />Has Previous version</div>";
 	}
 
 	function retrieveCitation(item) {
-		var dataToSend = { url: item.lastAnnotationSetIndex.lastVersion.annotatesUrl, annotationId: item.lastAnnotationSetIndex.lastVersion.id };
+		var dataToSend = { url: item.annotationSetIndex.annotatesUrl, annotationId: item.annotationSetIndex.id };
 		$.ajax({
 			url: "${appBaseUrl}/ajaxBibliographic/url",
 	  	  	context: $("#resultsList"),
 	  	  	data: dataToSend,
 	  	  	success: function(data){
 		  	  	if(data.message) {	
-		  	  		$("#citation-"+item.lastAnnotationSetIndex.lastVersion.id).html(
+		  	  		$("#citation-"+item.annotationSetIndex.id).html(
 				  	  		"<img id=\"groupsSpinner\" src=\"${resource(dir:'images/secure',file:'black_info.gif',plugin:'users-module')}\" /> " +
 				  	  		data.message  
 		  	  			);
@@ -172,9 +181,9 @@
 
 	function loadData(url) {
 		$("#resultsList").empty();
-		var dataToSend = { id: '${loggedUser.id}', documentUrl: url };
+		var dataToSend = { id: '${loggedUser.id}', setUri:'${setUri}' };
 		$.ajax({
-	  	  	url: "${appBaseUrl}/ajaxPersistence/annotationSets",
+	  	  	url: "${appBaseUrl}/ajaxPersistence/annotationSetHistory",
 	  	  	context: $("#resultsList"),
 	  	  	data: dataToSend,
 	  	  	success: function(data){
@@ -184,12 +193,12 @@
 	  				$("#resultsSummary").html("");
 					$("#resultsList").html("No results to display");
 		  		} else {
-		  			var label = data.annotationListItemWrappers.length == 1 ? data.annotationListItemWrappers.length + ' Set' : data.annotationListItemWrappers.length + ' Sets';
-		  			$("#resultsSummary").html("Displaying <span style='font-weight: bold;''>"+label+"</span> out of " + data.totalResponses);
+		  			var label = data.annotationListItemWrappers.length == 1 ? data.annotationListItemWrappers.length + ' Version' : data.annotationListItemWrappers.length + ' Versions';
+		  			$("#resultsSummary").html("Displaying <span style='font-weight: bold;''>"+label+"</span>");
 		  			if(data.latestContributor) {
 			  			$("#resultsStats").html("Last by " + "<a onclick=\"javascript:display('" + data.latestContributor.id + "')\" style=\"cursor: pointer;\">" + 
 			  		  			data.latestContributor.displayName + "</a><br/> on " + data.latestContribution);
-			  		}
+			  		} 
 			  		if(url) {
 				  		$('#resultsList').append(getTargetOut(url)); 
 				  		$('#resultsList').append("<br/>");
@@ -201,39 +210,43 @@
 			  		var users = new Array();
 		  			$.each(data.annotationListItemWrappers, function(i,item){
 		  				$('#resultsList').append('<div style="border: 1px solid #eee; padding: 3px;"><table width="100%"><tr><td>' +
-		  					'<span style="font-weight: bold;">'+item.lastAnnotationSetIndex.lastVersion.label + '</span>: ' + item.lastAnnotationSetIndex.lastVersion.description +
+		  					'<span style="font-weight: bold;">'+item.annotationSetIndex.label + '</span>' + getDescription(item) +
 		  					'<br/>' +
 		  					getProvenance(item) +
 		  					'<br/>' +
 		  					getStats(item) + 
 		  					'<br/>' +
 		  					getTarget(item)  +
-		  					'<div id="citation-'+item.lastAnnotationSetIndex.lastVersion.id+'"><img id=\"groupsSpinner\" src=\"${resource(dir:'images',file:'spinner.gif',plugin:'users-module')}\" /> Retrieving Citation</div>' +
+		  					//'<div id="citation-'+item..id+'"><img id=\"groupsSpinner\" src=\"${resource(dir:'images',file:'spinner.gif',plugin:'users-module')}\" /> Retrieving Citation</div>' +
 		  					'</div>' +
 		  					'</td>' +
 		  					'<td width="90px">' +
-		  					getModifyLink(item) +
+		  					getModifyLink(i, item) +
 		  					getExploreLink(item) +
-		  					getShareLink(item) +
+		  					getShareLink(i, item) +
 		  					getHistoryLink(item) + 
 				  			'</td>' + 
-		  					'</tr></table>' 
+		  					'</tr></table>'
 		  					
 		  					//getTarget(item)  +
-		  					//'<div id="citation-'+item.lastAnnotationSetIndex.lastVersion.id+'"><img id=\"groupsSpinner\" src=\"${resource(dir:'images',file:'spinner.gif',plugin:'users-module')}\" /> Retrieving Citation</div>' +
+		  					//'<div id="citation-'+item.id+'"><img id=\"groupsSpinner\" src=\"${resource(dir:'images',file:'spinner.gif',plugin:'users-module')}\" /> Retrieving Citation</div>' +
 		  					//'</div>' +
 		  					
 		  					//'<br/>'
 							
 		  					);
 		  				retrieveCitation(item);
-						users[i] = item.lastAnnotationSetIndex.lastVersion.createdBy;
+
+		  				$('#resultsList').append(getConnector(i, data.annotationListItemWrappers.length));
+		  				
+						users[i] = item.annotationSetIndex.createdBy;
 		  				//alert(item.lastAnnotationSetIndex.lastVersion.createdBy.displayName);
 		  				//$('#resultsList').append('<input type="checkbox" name="vehicle" value="Bike">' 
 		  		  		//		+ item.group.name + '<br/>'); 
 		  		  				 
 				  				//item.dateCreated + '</td><td>'+ roles +
 				  				//'</td><td> '+ item.status.label + '</td></tr>');
+		  				 
 		  		    });	
 		  		}  			
 		  	}
@@ -296,13 +309,16 @@
 	    </div>
 	    
 	    <div id="progressIcon" align="center" style="padding: 5px; padding-left: 10px; display: none;"><img id="groupsSpinner" src="${resource(dir:'images',file:'progress-bar-2.gif',plugin:'users-module')}" /></div>
+	   
 	    <table width="730px;">
 	    	<tr><td>
-	    		<div id="resultsSummary" style="padding: 5px; padding-left: 10px;"></div>
+	    		<img id="groupsSpinner" src="${resource(dir:'images/secure',file:'history48x48.png',plugin:'users-module')}" />  Annotation Set History 		
 	    	</td><td style="text-align:right">
-	    		<div id="resultsStats" style="padding: 5px; "></div>
+	    		<div id="resultsSummary" style="padding: 5px; padding-left: 10px;"></div>
 	    	</td></tr>
 	    </table>
+	    
+	    
 	    <div id="resultsList" style="padding: 5px; padding-left: 10px; width: 715px;"></div>
 	    <div class="resultsPagination"></div>
       	<div class="clr"></div>
