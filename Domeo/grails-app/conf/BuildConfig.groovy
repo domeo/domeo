@@ -6,6 +6,7 @@ grails.project.target.level = 1.6
 grails.project.source.level = 1.6
 //grails.project.war.file = "target/${appName}-${appVersion}.war"
 
+grails.plugin.location.'domeo-shared' = '../DomeoShared'
 grails.plugin.location.'domeo-dashboard' = '../DomeoDashboard'
 grails.plugin.location.'domeo-persistence' = '../DomeoPersistence'
 grails.plugin.location.'domeo-client-wrapper' = '../DomeoClientWrapper'

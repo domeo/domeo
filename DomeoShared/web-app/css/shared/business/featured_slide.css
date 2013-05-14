@@ -1,0 +1,124 @@
+/*
+Template Name: BusyBusiness
+File: Featured Slider CSS
+Author: OS Templates
+Author URI: http://www.os-templates.com/
+Licence: <a href="http://www.os-templates.com/template-terms">Website Template Licence</a>
+*/
+
+#featured_slide{
+	padding:30px 0;
+	font-family:Georgia, "Times New Roman", Times, serif;
+	background-color: #ddd;
+	}
+
+#featured_slide h2, #featured_slide ul, #featured_slide p, #featured_slide a{
+	margin:0;
+    padding:0;
+	border:none;
+	outline:none;
+	list-style:none;
+	line-height:normal;
+	text-decoration:none;
+	}
+
+.preview_holder{
+	display:block;
+	position:relative;
+	float:left;
+	width:660px;
+	height:270px;
+	overflow:hidden;
+	color:#FFFFFF;
+	background-color:#000000;
+	}
+
+.preview_holder img{
+	display:block;
+	width:660px;
+	height:270px;
+	}
+
+.preview_holder .text_holder{
+	display:none;
+	position:absolute;
+	bottom:0;
+	left:0;
+	width:100%;
+	}
+
+.preview_holder .introtext{
+	display:block;
+	width:640px;
+	margin:0;
+	padding:10px;
+	color:#FFFFFF;
+	background:#333333;
+	}
+
+.selector{
+	display:block;
+	float:right;
+	width:300px;
+	}
+
+.selector, .selector a{
+	color:#666666;
+	background:#F0F0F0;
+	}
+
+.selector li, .selector li.middle{
+	display:block;
+	width:250px;
+	height:75px;
+	margin:0;
+	padding:15px 20px 0 30px;
+	cursor:pointer;
+	overflow:hidden;
+	}
+
+.selector li.middle{
+	display:block;
+	height:73px;
+	border-top:1px solid #BFBFBF;
+	border-bottom:1px solid #BFBFBF;
+	}
+
+.selector li.active, .selector li:hover{
+	color:#666666;
+	background:url("../images/active.gif") top left no-repeat #DDDDDD;
+	}
+
+.selector li.active a, .selector li:hover a{
+	color:#333333;
+	background:#DDDDDD;
+	}
+
+.selector li img{
+	float:left;
+	width:50px;
+	height:50px;
+	margin:0 15px 0 0;
+	padding:4px;
+	color:#333333;
+	background:#FFFFFF;
+	border:1px solid #000000;
+	}
+	
+.selector p{visibility:hidden;}
+
+p.title{
+	font-size:20px;
+	font-weight:bold;
+	visibility:visible;
+	}
+
+#featured_slide .selector .introtext p.title{
+	margin-top:6px;
+	}
+
+.preview_holder p.title a{
+	font-size:16px;
+	color:#C6CFD5;
+	background:#333333;
+	}

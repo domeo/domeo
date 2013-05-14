@@ -7,14 +7,17 @@
 <head>
 <g:render template="/public/shared/meta" />
 <g:render template="/public/shared/title-and-icon" />
-<g:render template="/secure/shared/stylesheets" />
+
+<link rel="stylesheet" href="${resource(dir: 'css/shared', file: 'reset.css', plugin: 'domeo-shared')}" type="text/css">
+<link rel="stylesheet" href="${resource(dir: 'css/secure', file: 'secure.css')}" type="text/css"></link>
+<link rel="stylesheet" href="${resource(dir: 'css/secure', file: 'logo.css')}" type="text/css"></link>
+
 <g:render template="/public/shared/scripts" />
 <title>Sign Up for Domeo - The Annotation Toolkit</title>
 
 <g:javascript library="jquery"/>
 <g:layoutHead/>
 <r:layoutResources />
-
 <g:render template="/public/shared/analytics" />	
 
 <style type='text/css' media='screen'>
