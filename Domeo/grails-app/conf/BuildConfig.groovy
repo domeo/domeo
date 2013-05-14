@@ -10,10 +10,10 @@ grails.plugin.location.'domeo-shared' = '../DomeoShared'
 grails.plugin.location.'domeo-dashboard' = '../DomeoDashboard'
 grails.plugin.location.'domeo-persistence' = '../DomeoPersistence'
 grails.plugin.location.'domeo-client-wrapper' = '../DomeoClientWrapper'
+grails.plugin.location.'domeo-grails-plugins-utils' = '../DomeoGrailsPluginsUtils'
 grails.plugin.location.'connector-nif-service' = '../ConnectorNifService'
 grails.plugin.location.'connector-pubmed-service' = '../ConnectorPubmedService'
 grails.plugin.location.'connector-service-bioportal' = '../ConnectorServiceBioPortal'
-grails.plugin.location.'domeo-grails-plugins-utils' = '../DomeoGrailsPluginsUtils'
 
 grails.project.dependency.resolution = {
     // inherit Grails' default dependencies
