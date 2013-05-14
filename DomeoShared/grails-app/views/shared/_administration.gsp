@@ -1,5 +1,5 @@
 <div class="wrapper col0">
  <div id="adminBar">
-  	Admin bar
+  	Administration Dashboard
   </div>
 </div>

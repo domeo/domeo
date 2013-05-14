@@ -27,7 +27,8 @@ import java.text.SimpleDateFormat
 import org.codehaus.groovy.grails.web.json.JSONArray
 import org.codehaus.groovy.grails.web.json.JSONObject
 import org.mindinformatics.grails.domeo.dashboard.security.User
-import org.mindinformatics.grails.domeo.utils.DomeoControllerUtils;
+import org.mindinformatics.grails.domeo.utils.DomeoControllerUtils
+
 
 
 /**

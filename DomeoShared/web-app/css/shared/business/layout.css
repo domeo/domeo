@@ -75,21 +75,20 @@ div.wrapper h1, div.wrapper h2, div.wrapper h3, div.wrapper h4, div.wrapper h5, 
 
 /* ----------------------------------------------Generalise-------------------------------------*/
 
-#adminBar, #header, #topbar, #featured_slide, #homecontent, #breadcrumb, #container, #footer, #copyright{
+#header, #topbar, #featured_slide, #homecontent, #breadcrumb, #container, #footer, #copyright{
 	position:relative;
 	margin:0 auto 0;
 	display:block;
 	width:980px;
 	}
 	
-#homecontent{
-	padding-left: 10px;
-	padding-right: 10px;
-	}
-		
 /* --------------------------------------------Admin Bar------------------------------------*/
 #adminBar{
-	padding:5px;
+	position:relative;
+	margin:0 auto 0;
+	display:block;
+	width:970px;
+	padding: 5px;
 	background-color: black;
 	}
 
