@@ -21,6 +21,7 @@ class AjaxPersistenceController {
 	def usersManagementService;
 	def AnnotationPermissionService
 	def usersGroupsManagementService
+	def annotationSearchService;
 	
 	private def userProfileId() {
 		def user;
@@ -188,7 +189,7 @@ class AjaxPersistenceController {
                     println 'Elastico: ' + annotationSetIndex.mongoUuid
                     
                     ElasticSearchWrapper esWrapper = new ElasticSearchWrapper(grailsApplication.config.elastico.database, grailsApplication.config.elastico.collection, grailsApplication.config.elastico.ip, grailsApplication.config.elastico.port);
-                    String document = esWrapper.getDocument(annotationSetIndex.mongoUuid);
+                    String document = esWrapper.getDocument(annotationSetIndex.mongoUuid, null);
                     println document;
                    
                     if(document!=null) {
@@ -237,7 +238,7 @@ class AjaxPersistenceController {
                     }
                 } else {
                     ElasticSearchWrapper esWrapper = new ElasticSearchWrapper(grailsApplication.config.elastico.database, grailsApplication.config.elastico.collection, grailsApplication.config.elastico.ip, grailsApplication.config.elastico.port);
-                    String document = esWrapper.getDocument(annotationSetIndex.mongoUuid);
+                    String document = esWrapper.getDocument(annotationSetIndex.mongoUuid, null);
                     if(document!=null) {
                         def ret = JSON.parse(document);
                         if(ret.hits.total==1) {
@@ -470,6 +471,51 @@ class AjaxPersistenceController {
 		JSON.use("deep")
 		render (stats as JSON);
 		return;
+	}
+	
+	def search = {		
+		def user = userProfile();
+		
+		List<AnnotationSetIndex> annotationListItemWrappers = new ArrayList<AnnotationSetIndex>();
+		if(request.JSON) {
+			def res;
+			println "Public " + request.JSON.permissionsPublic
+			println "Private " + request.JSON.permissionsPrivate
+			if(request.JSON.query) {
+				res = annotationSearchService.search("ao_!DOMEO_NS!_item.ao_!DOMEO_NS!_context.ao_!DOMEO_NS!_hasSource" , "http://en.wikipedia.org/wiki/Amyloid_precursor_protein",
+					(request.JSON.permissionsPublic=="checked")?true:false, (request.JSON.permissionsPrivate=="checked")?"urn:person:uuid:"+userProfileId():null);
+
+				
+				JSONObject r = JSON.parse(res);
+				def hits = r.hits.hits;
+				hits.each { hit ->
+					def annotationSetIndex = AnnotationSetIndex.findByMongoUuid(hit._id);
+					if(annotationSetIndex!=null) {
+						if(annotationPermissionService.isPermissionGranted(user, annotationSetIndex)) {
+							AnnotationSetItemWrapper annotationListItemWrapper = new AnnotationSetItemWrapper(annotationSetIndex: annotationSetIndex);
+							annotationListItemWrappers.add(annotationListItemWrapper);
+						 
+							List<String> permissions = annotationPermissionService.getAnnotationSetPermissions(user.id, annotationSetIndex);
+							if (permissions.get(0)==IPermissionTypes.publicAccess) {
+								annotationListItemWrapper.permissionType = IPermissionTypes.publicAccess;
+							} else if (permissions.get(0)==IPermissionTypes.groupsAccess) {
+								annotationListItemWrapper.permissionType = IPermissionTypes.groupsAccess;
+							} else {
+								annotationListItemWrapper.permissionType = IPermissionTypes.privateAccess;
+							}
+							annotationListItemWrapper.isLocked = annotationPermissionService.isLocked(annotationSetIndex);
+						}
+					}
+				}
+			
+			}
+		}
+		
+		AnnotationListResponse theResponse = new AnnotationListResponse(
+			annotationListItemWrappers: annotationListItemWrappers, totalResponses: annotationListItemWrappers.size());
+		
+		JSON.use("deep")
+		render (theResponse as JSON);
 	}
 	
 	

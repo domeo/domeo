@@ -65,17 +65,18 @@ class SecureController {
 	
     def search = {
         def loggedUser = injectUserProfile();
-        
-        println "Query" + params.query;
+
+        println "Query " + params.query;
+		println "Params " + params;
         
         def results;
         if(params.query) {
-            results = annotationSearchService.search("domeo_!DOMEO_NS!_agents.@type" , "foafx:Person");
+            results = annotationSearchService.search("ao_!DOMEO_NS!_item.ao_!DOMEO_NS!_context.ao_!DOMEO_NS!_hasSource" , "http://en.wikipedia.org/wiki/Amyloid_precursor_protein");
             //results = annotationSearchService.search("ao_!DOMEO_NS!_item.ao_!DOMEO_NS!_context.ao_!DOMEO_NS!_hasSource", "http://www.ncbi.nlm.nih.gov/pmc/articles/PMC2700002/");
         }
         
         render(view:'search', model:[loggedUser: loggedUser, appBaseUrl: request.getContextPath(),
-            userGroups: usersManagementService.getUserGroups(loggedUser), results: results,
+            userGroups: usersManagementService.getUserGroups(loggedUser), results: results, params: params,
             menuitem: 'search', navitem: 'search']);
 	}
     
