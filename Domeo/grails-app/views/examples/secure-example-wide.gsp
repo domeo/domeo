@@ -5,15 +5,15 @@
 <!--[if IE 9 ]>    <html lang="en" class="no-js ie9"> <![endif]-->
 <!--[if (gt IE 9)|!(IE)]><!--> <html lang="en" class="no-js"><!--<![endif]-->
 <head>
-<meta name="layout" content="example-layout" />
+<meta name="layout" content="public-layout-wide" />
 <title>Example - The Domeo Annotation Toolkit</title>
 </head>
 <body>
-	<g:render template="/shared/administration" /> 
-	<g:render template="/shared/navigation" /> 
-	<g:render template="/shared/banner" /> 
-	<g:render template="/shared/content" /> 
-	<g:render template="/shared/footer" /> 
-	<g:render template="/shared/copyright" /> 
+	<g:render template="/shared/administration" plugin="domeo-shared" /> 
+	<g:render template="/secure/navigation" /> 
+	<g:render template="/shared/breadcrumbs" plugin="domeo-shared" /> 
+	<g:render template="/shared/wide" plugin="domeo-shared" /> 
+	<g:render template="/shared/footer" plugin="domeo-shared" /> 
+	<g:render template="/shared/copyright" plugin="domeo-shared" /> 
 </body>
 </html>

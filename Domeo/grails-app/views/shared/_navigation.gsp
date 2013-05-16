@@ -17,32 +17,19 @@
     <div id="topnav">
       <ul>
         <li><a class="active" href="index.html">Homepage</a>
-          <ul>
-            <li><a href="#">Lorem ipsum dolor</a></li>
-            <li><a href="#">Suspendisse in neque</a></li>
-            <li><a href="#">Praesent et eros</a></li>
-          </ul>
         </li>
-        <li><a href="style-demo.html">Style Demo</a>
-          <ul>
-            <li><a href="#">Lorem ipsum dolor</a></li>
-            <li><a href="#">Suspendisse in neque</a></li>
-            <li><a href="#">Praesent et eros</a></li>
-          </ul>
+        <li><a href="style-demo.html">Signup</a>
         </li>
-        <li><a href="full-width.html">Full Width</a>
-          <ul>
-            <li><a href="#">Lorem ipsum dolor</a></li>
-            <li><a href="#">Suspendisse in neque</a></li>
-            <li><a href="#">Praesent et eros</a></li>
-          </ul>
+        <li><a href="full-width.html">Node Info</a>
         </li>
-        <li class="last"><a href="#">Our Services</a>
+        <li class="last"><a href="#">Credits</a>
+       
           <ul>
             <li><a href="#">Lorem ipsum dolor</a></li>
             <li><a href="#">Suspendisse in neque</a></li>
             <li><a href="#">Praesent et eros</a></li>
           </ul>
+  
         </li>
       </ul>
     </div>
