@@ -9,11 +9,11 @@
 <title>Example - The Domeo Annotation Toolkit</title>
 </head>
 <body>
-	<g:render template="/shared/administration" plugin="domeo-shared" /> 
+	<g:render template="/shared/administration" plugin="af-shared" /> 
 	<g:render template="/secure/navigation" /> 
-	<g:render template="/shared/breadcrumbs" plugin="domeo-shared" /> 
-	<g:render template="/shared/wide" plugin="domeo-shared" /> 
-	<g:render template="/shared/footer" plugin="domeo-shared" /> 
-	<g:render template="/shared/copyright" plugin="domeo-shared" /> 
+	<g:render template="/shared/breadcrumbs" plugin="af-shared" /> 
+	<g:render template="/shared/wide" plugin="af-shared" /> 
+	<g:render template="/shared/footer" plugin="af-shared" /> 
+	<g:render template="/shared/copyright" plugin="af-shared" /> 
 </body>
 </html>

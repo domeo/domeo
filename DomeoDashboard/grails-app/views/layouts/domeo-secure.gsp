@@ -8,7 +8,7 @@
 <g:render template="/public/shared/meta" />
 <g:render template="/public/shared/title-and-icon" />
 
-<link rel="stylesheet" href="${resource(dir: 'css/shared', file: 'reset.css', plugin: 'domeo-shared')}" type="text/css">
+<link rel="stylesheet" href="${resource(dir: 'css/shared', file: 'reset.css', plugin: 'af-shared')}" type="text/css">
 <link rel="stylesheet" href="${resource(dir: 'css/secure', file: 'secure.css')}" type="text/css"></link>
 <link rel="stylesheet" href="${resource(dir: 'css/secure', file: 'logo.css')}" type="text/css"></link>
 
