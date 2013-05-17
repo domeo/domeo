@@ -479,10 +479,11 @@ class AjaxPersistenceController {
 		List<AnnotationSetIndex> annotationListItemWrappers = new ArrayList<AnnotationSetIndex>();
 		if(request.JSON) {
 			def res;
+			println "Query " + request.JSON.query
 			println "Public " + request.JSON.permissionsPublic
 			println "Private " + request.JSON.permissionsPrivate
 			if(request.JSON.query) {
-				res = annotationSearchService.search("ao_!DOMEO_NS!_item.ao_!DOMEO_NS!_context.ao_!DOMEO_NS!_hasSource" , "http://en.wikipedia.org/wiki/Amyloid_precursor_protein",
+				res = annotationSearchService.search("_all" , request.JSON.query,
 					(request.JSON.permissionsPublic=="checked")?true:false, (request.JSON.permissionsPrivate=="checked")?"urn:person:uuid:"+userProfileId():null);
 
 				

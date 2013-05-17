@@ -68,7 +68,7 @@ public class DomeoPermissions {
 		}
 		
 		// 3. public, private, group are must clauses in bool
-		StringBuffer sb = new StringBuffer(", \"filter\" : { \"bool\" : { \"must\" : [ ");  //array ok even if just one
+		StringBuffer sb = new StringBuffer(", \"filter\" : { \"bool\" : { \"should\" : [ ");  //array ok even if just one
 		boolean needComma = false;
 
 		if (publicValue != null) {
