@@ -264,11 +264,15 @@ class AjaxPersistenceController {
 					jsonSet.put("description", set[IOntology.generalDescription]);
 					jsonSet.put("target", set[IOntology.target]);
 					jsonSet.put("createdOn", set[IOntology.pavCreatedOn]);
+					
+					//jsonSet.put("createdBy", agentsCache.get(set[IOntology.pavCreatedBy]['@id']));
 					jsonSet.put("createdBy", agentsCache.get(set[IOntology.pavCreatedBy]));
 					
+					//def up1 = agentsCache.get(set[IOntology.pavCreatedBy]['@id'])['@id'].toString();
 					def up1 = agentsCache.get(set[IOntology.pavCreatedBy])['@id'].toString();
 					jsonSet.put("createdById", up1.replaceAll(~/urn:person:uuid:/, ""));
 					
+					//jsonSet.put("createdByName", agentsCache.get(set[IOntology.pavCreatedBy]['@id'])['foafx:name']);
 					jsonSet.put("createdByName", agentsCache.get(set[IOntology.pavCreatedBy])['foafx:name']);
 					jsonSet.put("version", set[IOntology.pavVersionNumber]);
 					jsonSet.put("permissions", set[IOntology.permissions]);
@@ -301,11 +305,15 @@ class AjaxPersistenceController {
 						
 						
 						annotation.put("createdOn", annotations[i][IOntology.pavCreatedOn]);
+						//annotation.put("createdBy", agentsCache.get(annotations[i][IOntology.pavCreatedBy]['@id']));
 						annotation.put("createdBy", agentsCache.get(annotations[i][IOntology.pavCreatedBy]));
+						//annotation.put("createdByName", agentsCache.get(annotations[i][IOntology.pavCreatedBy]['@id'])['foafx:name']);
 						annotation.put("createdByName", agentsCache.get(annotations[i][IOntology.pavCreatedBy])['foafx:name']);
 					
+						//def up = agentsCache.get(annotations[i][IOntology.pavCreatedBy]['@id'])['@id'].toString();
 						def up = agentsCache.get(annotations[i][IOntology.pavCreatedBy])['@id'].toString();
 						annotation.put("createdById", up.replaceAll(~/urn:person:uuid:/, ""));
+						//annotation.put("createdByUri", agentsCache.get(annotations[i][IOntology.pavCreatedBy]['@id'])['@id']);
 						annotation.put("createdByUri", agentsCache.get(annotations[i][IOntology.pavCreatedBy])['@id']);
 						annotation.put("lastSavedOn", annotations[i][IOntology.pavLastSavedOn]);
 						annotation.put("version", annotations[i][IOntology.pavVersionNumber]);
@@ -482,10 +490,27 @@ class AjaxPersistenceController {
 			println "Query " + request.JSON.query
 			println "Public " + request.JSON.permissionsPublic
 			println "Private " + request.JSON.permissionsPrivate
+			
+			println "Human " + request.JSON.agentHuman
+			println "Software " + request.JSON.agentSoftware
+			
+			def agent;
+			if(request.JSON.agentHuman=="checked" && request.JSON.agentSoftware !='checked') 
+				agent = 'foafx:Person'
+			else if(request.JSON.agentHuman!="checked" && request.JSON.agentSoftware =='checked') 
+				agent = 'foafx:Software'
+				
 			if(request.JSON.query) {
-				res = annotationSearchService.search("_all" , request.JSON.query,
-					(request.JSON.permissionsPublic=="checked")?true:false, (request.JSON.permissionsPrivate=="checked")?"urn:person:uuid:"+userProfileId():null);
-
+				if(agent!=null) {
+					String[] fields = ['_all', 'pav_!DOMEO_NS!_createdBy.@type']
+					String[] values = [request.JSON.query, agent]
+					
+					res = annotationSearchService.searchMultiple(fields , values,
+						 	(request.JSON.permissionsPublic=="checked")?true:false, (request.JSON.permissionsPrivate=="checked")?"urn:person:uuid:"+userProfileId():null);
+				} else {
+					res = annotationSearchService.search("_all" , request.JSON.query,
+							(request.JSON.permissionsPublic=="checked")?true:false, (request.JSON.permissionsPrivate=="checked")?"urn:person:uuid:"+userProfileId():null);
+				}
 				
 				JSONObject r = JSON.parse(res);
 				def hits = r.hits.hits;

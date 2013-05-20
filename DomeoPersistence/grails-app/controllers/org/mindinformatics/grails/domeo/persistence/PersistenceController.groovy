@@ -205,7 +205,7 @@ class PersistenceController {
 					def SET_CREATED_ON = JSON_SET.get("pav:createdOn");
 					
 					// Creator
-					def creator = findCreator(userId, JSON_SET.get("pav:createdBy")); 
+					def creator = findCreator(userId, JSON_SET.get("pav:createdBy")); //.get("@id")); 
 					if(creator==null) {
 						trackException(userId, textContent, "FAILURE: Annotation set creator is null");
 						return;

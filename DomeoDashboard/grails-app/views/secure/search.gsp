@@ -257,27 +257,42 @@
 		<div id="domeoSearch">
 		  	<g:form>
 			    <div class="sidebar" style="padding-top: 30px;padding-bottom: 30px; padding-right:2px;">
-			    	<div align="center" style="background: #cc3300; padding: 5px; color: #fff; font-weight: bold;">Filter (not implemented yet)</div>
+			    	<div align="center" style="background: #cc3300; padding: 5px; color: #fff; font-weight: bold;">Facets</div>
 			    	<div style="background: #fff; padding: 5px; padding-top: 10px; border: 2px solid #cc3300;">
 					    <div align="left" style="padding-left:4px; background: #FFCC00"><b>By Access</b><br/></div>
-					    <g:checkBox name="permissionsPublic"  /> Public<br/>
-					    <input type="checkbox" name="permissionsGroups" value="Groups">Groups<br>
+					    <g:checkBox name="permissionsPublic"  checked="${true}"/> Public<br/>
+					    <input type="checkbox" name="permissionsGroups" value="Groups" checked>Groups<br>
 					    
 					  	<div id="groupsList">
 					  		<g:each in="${userGroups}" status="i" var="usergroup">
-					  			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<input type="checkbox" name="${usergroup.group.name}" value="">${usergroup.group.name}<br/>
+					  			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<input type="checkbox" name="${usergroup.group.name}" value="" checked>${usergroup.group.name}<br/>
 					  		</g:each>
 					  	</div>
 					    
-						<input type="checkbox" name="permissionsPrivate" >Private<br/>
+						<input type="checkbox" name="permissionsPrivate" checked>Private<br/>
 						<br/>
 						
+						<div align="left" style="padding-left:4px; background: #FFCC00"><b>By Agent (not implemented)</b><br/></div>
+						<g:checkBox name="agentHuman"  checked="${true}"/> Human<br/>
+						<g:checkBox name="agentSoftware"  checked="${true}"/> Software<br/>
+						
+						<br/>
+						<div align="left" style="padding-left:4px; background: #FFCC00"><b>Incuding (not implemented)</b><br/></div>
+						<g:checkBox name="annQualifier"  checked="${true}"/> Qualifiers<br/>
+							&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<g:checkBox name="ontoPRO"  checked="${true}"/> Protein Ontology<br/>
+							&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<g:checkBox name="ontoGO"  checked="${true}"/> Gene Ontology<br/>
+							&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<g:checkBox name="ontoNIF"  checked="${true}"/> NIFSTD Ontology<br/>
+						<g:checkBox name="annHighlights"  checked="${true}"/> Highlights<br/>
+						<g:checkBox name="annNotes"  checked="${true}"/> Notes<br/>
 					</div>
 					<br/>
-					<div align="center" style="background: #cc3300; padding: 5px; color: #fff; font-weight: bold;">People</div>
-			    	<div style="background: #fff; padding: 5px; padding-top: 10px; border: 2px solid #cc3300;">
+					<%-- 
+					<div align="center" style="background: #cc3300; padding: 5px; color: #fff; font-weight: bold;">Annotators</div>
 			    	
+			    	<div style="background: #fff; padding: 5px; padding-top: 10px; border: 2px solid #cc3300;">
+			    		
 			    	</div>
+			    	--%>
 			  	</div>
 		 
 		 		<!-- Browsing Navigation -->

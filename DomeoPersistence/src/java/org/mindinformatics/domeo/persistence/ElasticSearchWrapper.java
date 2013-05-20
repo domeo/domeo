@@ -301,6 +301,21 @@ public class ElasticSearchWrapper {
 	 * @param permissions optional, used for filtering by permission
 	 * @return retrieved document preceded by results header
 	 */
+	String getDocument(String docID) {
+		String data =  "{ \"query\" : { \"term\" : { \"_id\" : \"" + docID + "\" } } }";
+		
+		@SuppressWarnings("unused")
+		int resCode = doHttpOperation(esSearchUrl, HTTP_POST, data);
+		return decodeNS(lastResponse);
+	}
+	
+	/**
+	 * Retrieve a single document using its _id field.  Doc should be decoded
+	 * so that any namespace characters that were removed at insertion are replaced.
+	 * @param docID
+	 * @param permissions optional, used for filtering by permission
+	 * @return retrieved document preceded by results header
+	 */
 	String getDocument(String docID, DomeoPermissions permissions3) {
 		String data = "";
 		if (permissions3 == null) {
@@ -596,6 +611,7 @@ public class ElasticSearchWrapper {
 	 */
 	String booleanQueryMultipleFields(String[] fields, String[] vals, String[] parsed, String operator, int from, int size, DomeoPermissions permissions3 ) {
 		String query = buildGenericBooleanQuery(fields, vals, parsed, operator, from, size, permissions3);
+		System.out.println(query);
 		@SuppressWarnings("unused")
 		int resCode = doHttpOperation(esSearchUrl, HTTP_POST, query);
 		return decodeNS(lastResponse);

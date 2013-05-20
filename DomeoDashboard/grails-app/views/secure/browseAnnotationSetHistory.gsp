@@ -47,15 +47,16 @@
 </style>
 <script type="text/javascript">
 
-	function edit(annotationId) {
-		document.location = '${appBaseUrl}/web/domeo?annotationId=' + annotationId;
+	function edit(annotationId, url) {
+		//document.location = '${appBaseUrl}/web/domeo?annotationId=' + annotationId;
+		document.location = '${appBaseUrl}/web/domeo?url=' + encodeURIComponent(url) + '&setId=' + encodeURIComponent(annotationId);
 	}
 
 	function displayUser(userId) {
 		document.location = '${appBaseUrl}/secure/user/' + userId;
 	}
 
-	function branch(annotationId) {
+	function branch(annotationId, url) {
 		alert("Branching not yet implemented");
 	}
 
@@ -105,9 +106,9 @@
 		return lock=='true';
 	}
 
-	function getModifyLink(i, item) {
-		if(i==0) return "<a onclick=\"javascript:edit('" + item.annotationSetIndex.individualUri + "')\" style=\"text-decoration: none; cursor: pointer;\"><img id=\"groupsSpinner\" src=\"${resource(dir:'images/secure',file:'black_edit.gif',plugin:'users-module')}\" /> Document</a><br/>";
-		else return "<a onclick=\"javascript:branch('" + item.annotationSetIndex.individualUri + "')\" style=\"text-decoration: none; cursor: pointer;\"><img id=\"groupsSpinner\" src=\"${resource(dir:'images/secure',file:'arrow_split16x16.png',plugin:'users-module')}\" /> Branch</a><br/>";
+	function getModifyLink(i, item, url) {
+		if(i==0) return "<a onclick=\"javascript:edit('" + item.annotationSetIndex.individualUri + "','" + url + "')\" style=\"text-decoration: none; cursor: pointer;\"><img id=\"groupsSpinner\" src=\"${resource(dir:'images/secure',file:'black_edit.gif',plugin:'users-module')}\" /> Document</a><br/>";
+		else return "<a onclick=\"javascript:branch('" + item.annotationSetIndex.individualUri + "','" + url + "')\" style=\"text-decoration: none; cursor: pointer;\"><img id=\"groupsSpinner\" src=\"${resource(dir:'images/secure',file:'arrow_split16x16.png',plugin:'users-module')}\" /> Branch</a><br/>";
 		//else return "";
 	}
 
@@ -225,7 +226,7 @@
 		  					'</div>' +
 		  					'</td>' +
 		  					'<td width="90px">' +
-		  					getModifyLink(i, item) +
+		  					getModifyLink(i, item, item.annotationSetIndex.annotatesUrl) +
 		  					getExploreLink(item) +
 		  					getShareLink(i, item) +
 		  					getHistoryLink(item) + 

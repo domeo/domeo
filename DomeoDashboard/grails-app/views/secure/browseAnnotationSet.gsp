@@ -125,8 +125,9 @@ Uncomment for local testing
 </style>
 <script type="text/javascript">
 
-	function edit(annotationId) {
-		document.location = '${appBaseUrl}/web/domeo?annotationId=' + annotationId;
+	function edit(annotationId, url) {
+		// document.location = '${appBaseUrl}/web/domeo?annotationId=' + annotationId;
+		document.location = '${appBaseUrl}/web/domeo?url=' + encodeURIComponent(url) + '&setId=' + encodeURIComponent(annotationId);
 	}
 
 	function display(userId) {
@@ -159,8 +160,9 @@ Uncomment for local testing
 
 	// ----------
 	
-	function getModifyLink(item) {
-		return "<a onclick=\"javascript:edit('" + item.set.id + "')\" style=\"text-decoration: none; cursor: pointer;\"><img id=\"groupsSpinner\" src=\"${resource(dir:'images/secure',file:'black_edit.gif',plugin:'users-module')}\" /> Document</a>";
+	function getModifyLink(item, url) {
+		alert(url);
+		return "<a onclick=\"javascript:edit('" + item.set.id + "','" + url + "')\" style=\"text-decoration: none; cursor: pointer;\"><img id=\"groupsSpinner\" src=\"${resource(dir:'images/secure',file:'black_edit.gif',plugin:'users-module')}\" /> Document</a>";
 	}
 
 	function getShareLink(item) {
@@ -252,7 +254,7 @@ Uncomment for local testing
 				  	$("#resultsSummary").html("Saved by " + "<a onclick=\"javascript:display('" + data.set.createdById + "')\" style=\"cursor: pointer;\">" + 
 				  			data.set.createdBy['foafx:name'] + "</a> on " + data.set.createdOn + "<br/>" + getVersion(data.set)
 				  	     + displayAccessType(data.set.permissions['permissions:accessType']) + displayLock(data.set.permissions['permissions:isLocked']));
-				  	$("#resultsStats").append('<table width="160px;"><tr><td align="left">'+getModifyLink(data) + '</td><td align="left"> ' + getHistoryLink(data) + '</td></tr><tr><td align="left">' + getShareLink(data) + '</td><td></td></tr></table>');
+				  	$("#resultsStats").append('<table width="160px;"><tr><td align="left">'+getModifyLink(data, data.set.target) + '</td><td align="left"> ' + getHistoryLink(data) + '</td></tr><tr><td align="left">' + getShareLink(data) + '</td><td></td></tr></table>');
 				  	$('#resultsIntro').append(
 				  		getTitle(data.set) + ' ' + getDescription(data.set) + '<br/>' + getTarget(data.set) +
 				  		'<div id="citation-' + data.set.id.substring(data.set.id.lastIndexOf(':')+1) + '"><img id=\"groupsSpinner\" src=\"${resource(dir:'images',file:'spinner.gif',plugin:'users-module')}\" /> Retrieving Citation</div>' 
