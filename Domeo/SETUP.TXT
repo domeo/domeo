@@ -1,5 +1,5 @@
 The following commands are needed to set up the missing directories.
-With a terminal position yourself in the root of the DomeoClientWrapper project.
+With a terminal position yourself in the root of the Domeo project.
 Then:
 
 cd grails-app

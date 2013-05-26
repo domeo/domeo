@@ -6,7 +6,7 @@ For testinf
 5) Refresh dependencies
 
 The following commands are needed to set up the missing directories.
-With a terminal position yourself in the root of the DomeoClientWrapper project.
+With a terminal position yourself in the root of the DomeoDashboard project.
 Then:
 
 cd grails-app
