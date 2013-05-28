@@ -86,7 +86,7 @@ class NifController {
 		String type = params.type;
 		
 		try {
-            if(resource.equals(NifDataSources.NIF_REGISTRY.identifier())) {
+            if(resource.equals(NifDataSources.NIF_REGISTRY.identifier()) || resource.equals(NifDataSources.NIF_INTEGRATED_ANIMAL.identifier())) {
                 JSONObject jsonResult = nifEntitiesJsonService.entities(resource, query);
                 render(contentType:'text/json', encoding:MiscUtils.DEFAULT_ENCODING,  text: jsonResult.toString());
             } else if(resource.equals(NifDataSources.NIF_ANTIBODIES.identifier())) {
