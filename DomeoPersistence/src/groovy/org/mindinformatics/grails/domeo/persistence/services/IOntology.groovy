@@ -44,4 +44,6 @@ class IOntology {
 	static final selectorTextQuotePrefix = "ao:prefix";
 	static final selectorTextQuoteMatch = "ao:exact";
 	static final selectorTextQuoteSuffix = "ao:suffix";
+	
+	static final displaySource = "domeo:displaySource" ;
 }

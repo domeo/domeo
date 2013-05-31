@@ -275,6 +275,7 @@ class PersistenceController {
 					
 					// Updating annotation set versioning info before saving the
 					// annotation document in MongoDB
+					JSON_SET.put("@id", SET_URN);
 					JSON_SET.put("pav:versionNumber", versionNumber);
 					JSON_SET.put("pav:previousVersion", previousVersion);
 					JSON_SET.put("pav:lastSavedOn", dateFormat.format(lastSavedOnDate));
@@ -376,7 +377,7 @@ class PersistenceController {
 						def annPreviousVersion = annotation.get("pav:previousVersion");
 						def annLastSavedOn = annotation.get("pav:lastSavedOn");
                         def contexts = annotation.get("ao:context");
-						
+						annotation.put('domeo:belongsToSet', SET_URN);
 						if(annLineageUri==null || annLineageUri.trim().length()==0) {
 							String annLineageUuid = UUID.uuid();
 							annLineageUri = "urn:domeoserver:annotation:" + annLineageUuid;

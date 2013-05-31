@@ -38,6 +38,9 @@
 	       		...
 	       	</div>
 	       	<div ex:if-exists=".imageInDocumentSelector" class="context-content">
+	       		<div ex:if-exists=".display">
+	       			<img ex:if-exists=".display" ex:src-content=".display">
+	       		</div>
 	       		<img ex:if-exists=".image" ex:src-content=".image">
 	       	</div>
        	</div>

@@ -21,6 +21,8 @@ class Group extends UsersCollectionType {
 	boolean enabled
 	boolean locked
 	
+	Date dateCreated, lastUpdated
+	
 	String getStatus() {
 		return GroupUtils.getStatusValue(this);
 	}
