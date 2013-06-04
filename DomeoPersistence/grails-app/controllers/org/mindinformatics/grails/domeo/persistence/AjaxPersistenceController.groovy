@@ -189,7 +189,7 @@ class AjaxPersistenceController {
                     println 'Elastico: ' + annotationSetIndex.mongoUuid
                     
                     ElasticSearchWrapper esWrapper = new ElasticSearchWrapper(grailsApplication.config.elastico.database, grailsApplication.config.elastico.collection, grailsApplication.config.elastico.ip, grailsApplication.config.elastico.port);
-                    String document = esWrapper.getDocument(annotationSetIndex.mongoUuid, null);
+                    String document = esWrapper.getDocument(annotationSetIndex.mongoUuid, false, null);
                     println document;
                    
                     if(document!=null) {
@@ -238,7 +238,7 @@ class AjaxPersistenceController {
                     }
                 } else {
                     ElasticSearchWrapper esWrapper = new ElasticSearchWrapper(grailsApplication.config.elastico.database, grailsApplication.config.elastico.collection, grailsApplication.config.elastico.ip, grailsApplication.config.elastico.port);
-                    String document = esWrapper.getDocument(annotationSetIndex.mongoUuid, null);
+                    String document = esWrapper.getDocument(annotationSetIndex.mongoUuid, false, null);
                     if(document!=null) {
                         def ret = JSON.parse(document);
                         if(ret.hits.total==1) {
@@ -480,6 +480,38 @@ class AjaxPersistenceController {
 		JSON.use("deep")
 		render (stats as JSON);
 		return;
+	}
+	
+	
+	def searchSet = {
+		def user = userProfile();
+
+		JSONArray results = new JSONArray();
+		if(request.JSON) {
+			def res;
+			
+			if(request.JSON.setId && request.JSON.query) {
+				String[] fields = ['_all', 'domeo_!DOMEO_NS!_belongsToSet']
+				String[] values = [request.JSON.query, request.JSON.setId]
+				
+				res = annotationSearchService.searchItems(fields , values, false, null)
+				ElasticSearchWrapper esWrapper = new ElasticSearchWrapper(grailsApplication.config.elastico.database, grailsApplication.config.elastico.collection, grailsApplication.config.elastico.ip, grailsApplication.config.elastico.port);
+
+				JSONObject r = JSON.parse(res);
+				def hits = r.hits.hits;
+				hits.each { hit ->
+					String sub = esWrapper.getDocument(hit._id, true, null);
+					JSONObject subJson = JSON.parse(sub);
+					subJson.hits.hits[0]._score = hit._score;
+					subJson.hits.hits[0].remove("_type")
+					subJson.hits.hits[0].remove("_index")
+					results.add(subJson.hits.hits[0]);
+				}
+			}
+		}
+		
+		JSON.use("deep")
+		render (results as JSON);
 	}
 	
 	def search = {		

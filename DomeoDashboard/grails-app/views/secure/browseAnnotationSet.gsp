@@ -161,7 +161,6 @@ Uncomment for local testing
 	// ----------
 	
 	function getModifyLink(item, url) {
-		alert(url);
 		return "<a onclick=\"javascript:edit('" + item.set.id + "','" + url + "')\" style=\"text-decoration: none; cursor: pointer;\"><img id=\"groupsSpinner\" src=\"${resource(dir:'images/secure',file:'black_edit.gif',plugin:'users-module')}\" /> Document</a>";
 	}
 

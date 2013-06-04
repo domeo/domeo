@@ -12,7 +12,7 @@ class AnnotationSearchService {
 		DomeoPermissions dp = new DomeoPermissions(isPublic?DomeoPermissions.PUBLIC_VALUE:null, isPrivate!=null?isPrivate:null, null);
 		
         ElasticSearchWrapper esWrapper = new ElasticSearchWrapper(grailsApplication.config.elastico.database, grailsApplication.config.elastico.collection, grailsApplication.config.elastico.ip, grailsApplication.config.elastico.port);
-        String results = esWrapper.phraseQuery(field, query, 0, 20, dp);
+        String results = esWrapper.phraseQuery(field, query, 0, 20, false, dp);
         results
     }
 	
@@ -22,7 +22,16 @@ class AnnotationSearchService {
 		
 		ElasticSearchWrapper esWrapper = new ElasticSearchWrapper(grailsApplication.config.elastico.database, grailsApplication.config.elastico.collection, grailsApplication.config.elastico.ip, grailsApplication.config.elastico.port);
 		String[] parsed = ["term", "term", "term", "match"];
-		String results = esWrapper.booleanQueryMultipleFields(fields, vals, parsed, "and", 0, 20, dp);
+		String results = esWrapper.booleanQueryMultipleFields(fields, vals, parsed, "and", 0, 20, false, dp);
+		results
+	}
+	
+	public String searchItems(String[] fields, String[] vals, boolean isPublic, String isPrivate) {
+		DomeoPermissions dp = new DomeoPermissions(isPublic?DomeoPermissions.PUBLIC_VALUE:null, isPrivate!=null?isPrivate:null, null);
+		
+		ElasticSearchWrapper esWrapper = new ElasticSearchWrapper(grailsApplication.config.elastico.database, grailsApplication.config.elastico.collection, grailsApplication.config.elastico.ip, grailsApplication.config.elastico.port);
+		String[] parsed = ["match", "term"];
+		String results = esWrapper.booleanQueryMultipleFields(fields, vals, parsed, "and", 0, 20, true, dp);
 		results
 	}
 }

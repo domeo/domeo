@@ -43,6 +43,21 @@
 	    margin-left:auto;
 	    margin-right:auto;
 	}
+	
+	.prefix {
+		color: #aaa;
+		font-style: italic;
+	}
+	
+	.match {
+		font-weight: bold;
+		font-size: 1.1em;
+	}
+	
+	.suffix {
+		color: #aaa;
+		font-style: italic;
+	}
 
 </style>
 <script type="text/JavaScript">
@@ -135,7 +150,43 @@
 	  	  	}
 		});
 	}
-	
+
+	function retrieveItems(setId, setIndividualUri, query) {
+		var dataToSend = { setId: setIndividualUri, query: query };
+		$.ajax({
+			type: "POST",
+			dataType: "json",
+			contentType : "text/plain",
+			url: "${appBaseUrl}/ajaxPersistence/searchSet",
+	  	  	context: $("#resultsList"),
+	  	  	data: JSON.stringify(dataToSend),
+	  	  	success: function(data){
+		  	  	$("#items-"+setId).html('');
+		  	  	$.each(data, function(i,item){
+		  	  		$("#items-"+setId).append("<br/>");
+			  	  	if(item._source["@type"]=='ao:Highlight') {
+			  	  		$("#items-"+setId).append(
+				  	  		"Highlight (score: " + item._score + ") <br/>" 
+		  	  			);
+			  	  		$("#items-"+setId).append(
+			  	  			'<span class="prefix">' + item._source["ao:context"][0]["ao:hasSelector"]["ao:prefix"] + "</span>" 
+					  	);
+			  	  		$("#items-"+setId).append(
+			  	  			'<span class="match">' + item._source["ao:context"][0]["ao:hasSelector"]["ao:exact"] + "</span>" 
+					  	);
+			  	  		$("#items-"+setId).append(
+			  	  			'<span class="suffix">' + item._source["ao:context"][0]["ao:hasSelector"]["ao:suffix"] + "</span>" 
+					  	);
+				  	} else {
+			  	  		$("#items-"+setId).append(
+				  	  		'Item: ' + item + "<br/>" 
+		  	  			);
+				  	}
+			  	  	$("#items-"+setId).append("<br/>");
+			  	});		
+	  	  	}
+		});
+	}
 
 	function getTargetOut(item) {
 		var u = item;
@@ -183,7 +234,8 @@
 			
 			var users = new Array();
 			$.each(data.annotationListItemWrappers, function(i,item){
-  				$('#resultsList').append('<div style="border: 1px solid #eee; padding: 3px;"><table width="100%"><tr><td>' +
+				var color = i%2==0?"#fff":"#efefef"
+  				$('#resultsList').append('<div style="border: 1px solid #eee; padding: 5px; background: '+color+'"><table width="100%"><tr><td>' +
   					'<span style="font-weight: bold;">'+item.annotationSetIndex.label + '</span>' + getDescription(item) +
   					'<br/>' +
   					getProvenance(item) +
@@ -200,16 +252,18 @@
   					getShareLink(i, item) +
   					getHistoryLink(item) + 
 		  			'</td>' + 
-  					'</tr></table>'
+  					'</tr></table>' +
   					
   					//getTarget(item)  +
-  					//'<div id="citation-'+item.annotationSetIndex.id+'"><img id=\"groupsSpinner\" src=\"${resource(dir:'images',file:'spinner.gif',plugin:'users-module')}\" /> Retrieving Citation</div>' +
-  					//'</div>' +
+  					'<div id="citation-'+item.annotationSetIndex.id+'"><img id=\"groupsSpinner\" src=\"${resource(dir:'images',file:'spinner.gif',plugin:'users-module')}\" /> Retrieving Citation</div>' +
+  					'<div id="items-'+item.annotationSetIndex.id+'" style="padding-left:12px; margin-left: 7px;border-left: 2px #999 solid;"><img id=\"groupsSpinner\" src=\"${resource(dir:'images',file:'spinner.gif',plugin:'users-module')}\" /> Retrieving Items</div>' 
+  					//'</div>' 	
   					
   					//'<br/>'
 					
   					);
   				retrieveCitation(item);
+  				retrieveItems(item.annotationSetIndex.id, item.annotationSetIndex.individualUri, $('#queryField').val());
   				$('#resultsList').append("<br/>");
   				//$('#resultsList').append(getConnector(i, data.annotationListItemWrappers.length));
   				
@@ -314,7 +368,7 @@
 			    </table>
 			    <div id="searchArea" align="center" style="padding: 5px; padding-top: 15px ;padding-left: 10px; width: 715px;">
 			    	
-			    		<g:textField name="query" size="70" />
+			    		<g:textField id="queryField" name="query" size="70" />
 			    		<g:submitButton name="search" value="Search" />   
 			    	
 			    </div>

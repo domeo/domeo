@@ -545,6 +545,9 @@ class PersistenceController {
 			}
 		}
 		
+		ElasticSearchWrapper esWrapper = new ElasticSearchWrapper(grailsApplication.config.elastico.database, grailsApplication.config.elastico.collection, grailsApplication.config.elastico.ip, grailsApplication.config.elastico.port);
+		String esResponse = esWrapper.refreshIndex();
+		
 		logInfo(userId, 'SUCCESS: Saving process completed!');
 	}
 	
