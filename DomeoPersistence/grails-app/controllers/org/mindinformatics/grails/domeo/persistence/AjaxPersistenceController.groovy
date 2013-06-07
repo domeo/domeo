@@ -377,7 +377,11 @@ class AjaxPersistenceController {
 						} else if(annotations[i][IOntology.hasTarget][0][IOntology.selector]!=null && annotations[i][IOntology.hasTarget][0][IOntology.selector][IOntology.generalType] == IOntology.selectorImage) {
 							annotation.put("imageInDocumentSelector", annotations[i][IOntology.hasTarget][0][IOntology.selector][IOntology.generalType]);
 							annotation.put("image", annotations[i][IOntology.hasTarget][0][IOntology.source]);
-							annotation.put("display", annotations[i][IOntology.hasTarget][0][IOntology.displaySource]);
+							//if(annotations[i][IOntology.hasTarget][0][IOntology.displaySource]!=null) {
+								annotation.put("display", annotations[i][IOntology.hasTarget][0][IOntology.displaySource]);
+							//} else {
+							//	annotation.put("display", annotations[i][IOntology.hasTarget][0][IOntology.source]);
+							//}
 							annotationsMap.put(annotations[i][IOntology.generalId], annotation);
 						}
 					}

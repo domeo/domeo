@@ -61,9 +61,16 @@
 
 </style>
 <script type="text/JavaScript">
+
+	function getName(item) {
+		if(item.annotationSetIndex.label && item.annotationSetIndex.label>0 && item.annotationSetIndex.label!='Default Set') 
+			return item.annotationSetIndex.label;
+		else return 'Annotation Set'
+	}
+
 	function getDescription(item) {
-		if(item.annotationSetIndex.description && item.annotationSetIndex.description.length>0)
-			return ': ' + item.annotationSetIndex.description;
+		if(item.annotationSetIndex.description && item.annotationSetIndex.description.length>0 && item.annotationSetIndex.description!='The default set is created automatically by Domeo when no other set is existing.')
+			return '. ' + item.annotationSetIndex.description;
 		else return "";
 	}
 
@@ -177,7 +184,78 @@
 			  	  		$("#items-"+setId).append(
 			  	  			'<span class="suffix">' + item._source["ao:context"][0]["ao:hasSelector"]["ao:suffix"] + "</span>" 
 					  	);
-				  	} else {
+			  	  	} else if(item._source["@type"]=='ao:PostIt') {
+			  	  		$("#items-"+setId).append(
+				  	  		"Post it (score: " + item._score + ") <br/>" 
+		  	  			);
+		  	  			alert(item._source["ao:context"][0]["ao:hasSelector"]["ao:prefix"]);
+		  	  			if(item._source["ao:context"][0]["ao:hasSelector"]["ao:prefix"] || item._source["ao:context"][0]["ao:hasSelector"]["ao:exact"] 
+			  	  				|| item._source["ao:context"][0]["ao:hasSelector"]["ao:suffix"] ) {
+				  	  		$("#items-"+setId).append(
+				  	  			'<span class="prefix">' + item._source["ao:context"][0]["ao:hasSelector"]["ao:prefix"] + "</span>" 
+						  	);
+				  	  		$("#items-"+setId).append(
+				  	  			'<span class="match">' + item._source["ao:context"][0]["ao:hasSelector"]["ao:exact"] + "</span>" 
+						  	);
+				  	  		$("#items-"+setId).append(
+				  	  			'<span class="suffix">' + item._source["ao:context"][0]["ao:hasSelector"]["ao:suffix"] + "</span>" 
+						  	);
+		  	  			} else if(item._source["ao:context"][0]["domeo:displaySource"]) {
+			  	  			$("#items-"+setId).append(
+				  	  			'<img alt="Loading image...."  src="' + item._source["ao:context"][0]["domeo:displaySource"] + '"/>' 
+						  	);
+				  	  	}
+				  	} else if(item._source["@type"]=='ao:Qualifier') {
+			  	  		$("#items-"+setId).append(
+				  	  		"Qualifier (score: " + item._score + ") <br/>" 
+		  	  			);
+			  	  		$("#items-"+setId).append(
+			  	  			'<div class="match" style="display: inline;"><a target="_blank" href="' + item._source["ao:hasTopic"][0]["@id"] + '">' + item._source["ao:hasTopic"][0]["rdfs:label"] + "</a>" +
+			  	  			"</div> <div style='display: inline;'>from " + item._source["ao:hasTopic"][0]["dct:source"]["rdfs:label"] + "</div><br/>" 
+			  	  		);
+			  	  		if(item._source["ao:context"][0]["ao:hasSelector"]["ao:prefix"] || item._source["ao:context"][0]["ao:hasSelector"]["ao:exact"] 
+	  	  						|| item._source["ao:context"][0]["ao:hasSelector"]["ao:suffix"] ) {
+				  	  		$("#items-"+setId).append(
+				  	  			'<span class="prefix">' + item._source["ao:context"][0]["ao:hasSelector"]["ao:prefix"] + "</span>" 
+						  	);
+				  	  		$("#items-"+setId).append(
+				  	  			'<span class="match">' + item._source["ao:context"][0]["ao:hasSelector"]["ao:exact"] + "</span>" 
+						  	);
+				  	  		$("#items-"+setId).append(
+				  	  			'<span class="suffix">' + item._source["ao:context"][0]["ao:hasSelector"]["ao:suffix"] + "</span>" 
+						  	);
+			  	  		} else if(item._source["ao:context"][0]["domeo:displaySource"]) {
+			  	  			$("#items-"+setId).append(
+				  	  			'<img alt="Loading image...."  src="' + item._source["ao:context"][0]["domeo:displaySource"] + '"/>' 
+						  	);
+				  	  	}
+				  	} else if(item._source["@type"]=='ao:AntibodyAnnotation') {
+			  	  		$("#items-"+setId).append(
+					  	  		"AntibodyAnnotation (score: " + item._score + ") <br/>" 
+			  	  			);
+		  	  			/*
+				  	  		$("#items-"+setId).append(
+				  	  			'<div class="match" style="display: inline;"><a target="_blank" href="' + item._source["ao:hasTopic"][0]["@id"] + '">' + item._source["ao:hasTopic"][0]["rdfs:label"] + "</a>" +
+				  	  			"</div> <div style='display: inline;'>from " + item._source["ao:hasTopic"][0]["dct:source"]["rdfs:label"] + "</div><br/>" 
+				  	  		);
+				  	  	*/
+				  	  		if(item._source["ao:context"][0]["ao:hasSelector"]["ao:prefix"] || item._source["ao:context"][0]["ao:hasSelector"]["ao:exact"] 
+		  	  						|| item._source["ao:context"][0]["ao:hasSelector"]["ao:suffix"] ) {
+					  	  		$("#items-"+setId).append(
+					  	  			'<span class="prefix">' + item._source["ao:context"][0]["ao:hasSelector"]["ao:prefix"] + "</span>" 
+							  	);
+					  	  		$("#items-"+setId).append(
+					  	  			'<span class="match">' + item._source["ao:context"][0]["ao:hasSelector"]["ao:exact"] + "</span>" 
+							  	);
+					  	  		$("#items-"+setId).append(
+					  	  			'<span class="suffix">' + item._source["ao:context"][0]["ao:hasSelector"]["ao:suffix"] + "</span>" 
+							  	);
+				  	  		} else if(item._source["ao:context"][0]["domeo:displaySource"]) {
+				  	  			$("#items-"+setId).append(
+					  	  			'<img alt="Loading image...."  src="' + item._source["ao:context"][0]["domeo:displaySource"] + '"/>' 
+							  	);
+					  	  	}
+					  	}else {
 			  	  		$("#items-"+setId).append(
 				  	  		'Item: ' + item + "<br/>" 
 		  	  			);
@@ -236,7 +314,7 @@
 			$.each(data.annotationListItemWrappers, function(i,item){
 				var color = i%2==0?"#fff":"#efefef"
   				$('#resultsList').append('<div style="border: 1px solid #eee; padding: 5px; background: '+color+'"><table width="100%"><tr><td>' +
-  					'<span style="font-weight: bold;">'+item.annotationSetIndex.label + '</span>' + getDescription(item) +
+  					'<span style="font-weight: bold;">'+getName(item) + '</span>' + getDescription(item) +
   					'<br/>' +
   					getProvenance(item) +
   					'<br/>' +
