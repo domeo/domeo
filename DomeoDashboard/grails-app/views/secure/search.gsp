@@ -233,12 +233,15 @@
 			  	  		$("#items-"+setId).append(
 					  	  		"AntibodyAnnotation (score: " + item._score + ") <br/>" 
 			  	  			);
-		  	  			/*
+		  	  			
 				  	  		$("#items-"+setId).append(
-				  	  			'<div class="match" style="display: inline;"><a target="_blank" href="' + item._source["ao:hasTopic"][0]["@id"] + '">' + item._source["ao:hasTopic"][0]["rdfs:label"] + "</a>" +
-				  	  			"</div> <div style='display: inline;'>from " + item._source["ao:hasTopic"][0]["dct:source"]["rdfs:label"] + "</div><br/>" 
+				  	  			'<div class="match" style="display: inline;"><a target="_blank" href="' + item._source["ao:body"][0]["domeo:antibody"]["@id"] + '">' + item._source["ao:body"][0]["domeo:antibody"][0]["rdfs:label"] + "</a>" +
+				  	  			"</div> <div style='display: inline;'>" +
+				  	  			(item._source["ao:body"][0]["domeo:protocol"]?"with method " + item._source["ao:body"][0]["domeo:protocol"][0]["rdfs:label"]:"")  + 
+				  	  			(item._source["ao:body"][0]["domeo:model"]? " on " + item._source["ao:body"][0]["domeo:model"]["rdfs:label"]:"") + 
+				  	  			"</div><br/>" 
 				  	  		);
-				  	  	*/
+				  	  	
 				  	  		if(item._source["ao:context"][0]["ao:hasSelector"]["ao:prefix"] || item._source["ao:context"][0]["ao:hasSelector"]["ao:exact"] 
 		  	  						|| item._source["ao:context"][0]["ao:hasSelector"]["ao:suffix"] ) {
 					  	  		$("#items-"+setId).append(
