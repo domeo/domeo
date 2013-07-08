@@ -328,6 +328,12 @@ class BootStrap {
 			status: "enabled"
 		).save(failOnError: true, flash: true)
 		
+		DomeoClientProfileEntry.findByProfileAndPlugin(completeProfile, "org.mindinformatics.gwt.domeo.plugins.annotation.micropubs")?: new DomeoClientProfileEntry(
+			profile: completeProfile,
+			plugin: "org.mindinformatics.gwt.domeo.plugins.annotation.micropubs",
+			status: "enabled"
+		).save(failOnError: true, flash: true)
+		
 		DomeoClientProfileEntry.findByProfileAndPlugin(completeProfile, "org.mindinformatics.gwt.domeo.plugins.resource.pubmed")?: new DomeoClientProfileEntry(
 			profile: completeProfile,
 			plugin: "org.mindinformatics.gwt.domeo.plugins.resource.pubmed",

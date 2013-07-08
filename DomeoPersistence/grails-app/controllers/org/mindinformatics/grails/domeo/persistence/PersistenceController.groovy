@@ -1040,7 +1040,7 @@ class PersistenceController {
 			
 			// Query for all the annotation sets available for the URL
 			// and crossing them with those available to the user
-			def existingAnnotationSets = LastAnnotationSetIndex.findAllByAnnotatesUrl(JSON_REQUEST.get(0).url);
+			def existingAnnotationSets = LastAnnotationSetIndex.findAllByAnnotatesUrl(JSON_REQUEST.get(0).url, [sort:"dateCreated", order:"desc"]);
 			existingAnnotationSets.each { annotationSet ->
 				privateLineageIdentifiers.each { lineageUri ->
 					if(annotationSet.lineageUri.equals(lineageUri))
@@ -1172,6 +1172,9 @@ class PersistenceController {
 					"Only " + counter + " sets out of " + JSON_REQUEST[0].ids.size() + " have been retrieved.");
 				return;
 			}
+			
+//			String ret = '[{"@type":"ao:AnnotationSet","@id":"urn:domeoclient:uuid:4C4BC864-BC0E-49A2-AA68-853F781792E4","ao:annotatesResource":"http://localhost:8080/text/faces/DocumentViewPage.xhtml?setId=Laut&docId=3","pav:createdBy":"urn:person:uuid:paolociccarese","pav:createdOn":"2013-06-13 15:13:35 -0400","pav:createdWith":"http://www.commonsemantics.com/agent/domeo_b5","rdfs:label":"Default Set","dct:description":"The default set is created automatically by Domeo when no other set is existing.","pav:lineageUri":"urn:domeoserver:annotationset:145ce92b-e79a-4f60-acc3-7cf118ef57f5","pav:versionNumber":"1","pav:previousVersion":"","ao:item":[{"@type":"ao:Highlight","@id":"urn:domeoclient:uuid:8A972D93-C84F-450E-BE4C-3FCBE7BF8601","pav:createdBy":"urn:person:uuid:paolociccarese","pav:createdOn":"2013-06-13 15:13:35 -0400","pav:createdWith":"http://www.commonsemantics.com/agent/domeo_b5","pav:lastSavedOn":"2013-06-13 15:13:37 -0400","rdfs:label":"Highlight","pav:lineageUri":"urn:domeoserver:annotation:eaaa3822-f24a-4a96-9bfc-54f85e28419c","pav:versionNumber":"1","pav:previousVersion":"","domeo_temp_hasChanged":"true","domeo_temp_saveAsNewVersion":"true","ao:context":[{"@type":"ao:SpecificResource","@id":"urn:domeoclient:uuid:158FB4A3-B9A5-47F5-9856-455F54B42756","ao:hasSource":"http://localhost:8080/text/faces/DocumentViewPage.xhtml?setId=Laut&docId=3","ao:hasSelector":{"@type":"ao:PrefixSuffixTextSelector","@id":"urn:domeoclient:uuid:158FB4A3-B9A5-47F5-9856-455F54B42756","domeo:uuid":"158FB4A3-B9A5-47F5-9856-455F54B42756","pav:createdOn":"2013-06-13 15:13:35 -0400","ao:prefix":"expressed ","ao:exact":"in many ","ao:suffix":" tissues and concentrated in the"}}]}],"permissions:permissions":{"permissions:accessType":"urn:domeo:access:public","permissions:isLocked":"false"},"domeo:agents":[{"@id":"urn:person:uuid:paolociccarese","@type":"foafx:Person","rdfs:label":"Paolo Ciccarese","foafx:name":"Paolo Ciccarese","foafx:homepage":"","foafx:title":"Dr.","foafx:email":"paolo.ciccarese@gmail.com","foafx:firstname":"Paolo","foafx:middlename":"Nunzio","foafx:lastname":"Ciccarese","foafx:picture":"http://www.hcklab.org/images/me/paolo%20ciccarese-boston.jpg"},{"@id":"http://www.commonsemantics.com/agent/domeo_b5","@type":"foafx:Software","rdfs:label":"Domeo","foafx:name":"Domeo","foafx:homepage":"","foafx:version":"b5","foafx:build":""}],"pav:lastSavedOn":"2013-06-13 15:13:37 -0400"}]'
+//			def responseToSets = JSON.parse(ret);
 			render (responseToSets as JSON);
 		} catch(Exception e) {
 			trackException(userId, textContent, "FAILURE: Retrieval of existing annotation sets failed " + e.getMessage());
