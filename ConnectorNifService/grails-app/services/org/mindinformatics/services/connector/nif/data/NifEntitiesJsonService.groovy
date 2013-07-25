@@ -62,7 +62,7 @@ class NifEntitiesJsonService {
         log.info("Searching " + resource + " for: " + query)
         def url = composeUrl(resource, query);
         log.info("Searching url: " + url);
-        return nifRegistryResultsConversionService.convert(url, callRegistryService(url), new NifDataRequestParameters());
+        return nifRegistryResultsConversionService.convert(url, callRegistryService(resource, url), new NifDataRequestParameters());
     }
     
     /**
@@ -72,11 +72,11 @@ class NifEntitiesJsonService {
      * @return The search URL
      */
     private String composeUrl(String resource, String  query) {
-        return SERVICE_URL + resource + '?q=' + 
+        return SERVICE_URL + resource + '?includePrimaryData=true&q=' + 
             ((query!=null&&query.trim().length()>0)?URLEncoder.encode(query, MiscUtils.DEFAULT_ENCODING):'*');
     }
     
-    private ArrayList<NifResourceItem> callRegistryService(String url) {
+    private ArrayList<NifResourceItem> callRegistryService(String resource, String url) {
         try {
             ArrayList<NifResourceItem> items = new ArrayList<NifResourceItem>();
             def http = new HTTPBuilder(url)
@@ -93,7 +93,7 @@ class NifEntitiesJsonService {
                 response.success = { resp, xml ->
                     log.info("response status: ${resp.statusLine}");
                     log.info("The response contenType is $resp.contentType");
-                    log.info("XML was ${xml} " + xml.text());
+                    //log.info("XML was ${xml} " + xml.text());
                     
                     //def annotations = new XmlParser().parse(xml);
                     def dataItems = xml.childNodes();
@@ -112,9 +112,7 @@ class NifEntitiesJsonService {
                                         //println 'page results: ' + rowElements.size();
                                         rowElements.each { rowElement ->
                                             def valuesMap = [:];
-											
-											def code = 0;
-											
+
                                             // println counter + ' items: ' + rowElement.name(); -> row
                                             // Creating the map
                                             def dataElements = rowElement.childNodes();
@@ -127,19 +125,19 @@ class NifEntitiesJsonService {
                                                     if(nameValueElement.name()=="value") value = nameValueElement.text();
                                                 }
 												
-                                                if(name=="Resource Name" || name=="Database/Catalog id") {
-													if(name=="Database/Catalog id") code = 1; 
-                                                    int hrefStartIndex = value.indexOf('href="');
-                                                    int hrefEndIndex = value.indexOf('">', hrefStartIndex);
-                                                    int endIdIndex = value.indexOf('</a', hrefEndIndex);
-                                                    valuesMap.put("Resource URL", value.substring(hrefStartIndex+6, hrefEndIndex));
-                                                    valuesMap.put("Resource Name", value.substring(hrefEndIndex+2, endIdIndex));
-                                                } else {
-                                                    valuesMap.put(name, value);
-                                                }
+												if(name=="url") {
+													valuesMap.put("Resource URL", value);
+												} else if(name=="name") {
+													valuesMap.put("Name", value);
+												} else if(name=="resource_name") {
+													valuesMap.put("Name", value);
+												} else {
+													valuesMap.put(name, value);
+												}
                                             }
 											
-											// http://neuinfo.org/servicesv1/v1/federation/data/nif-0000-08137-1?q=mouse
+											//http://neuinfo.org/servicesv1/v1/federation/data/nif-0000-08137-1?q=human&includePrimaryData=true
+											//http://neuinfo.org/servicesv1/v1/federation/data/nlx_144509-1?includePrimaryData=true&q=plank
                                             
                                             if(valuesMap.get("Resource URL")==null)
                                                 log.warn("**************** Resource URL NOT FOUND *********************");
@@ -147,18 +145,17 @@ class NifEntitiesJsonService {
                                             NifResourceItem item = new NifResourceItem();
                                             item.id = valuesMap.get("Resource URL");
                                             item.url = valuesMap.get("Resource URL");
+											item.name = valuesMap.get("Name");
 											
-											if(code==1) item.name = valuesMap.get("Name");
-											else item.name = valuesMap.get("Resource Name");
-											
-											if(code==1) {
-												item.description = valuesMap.get("Name") + "; " + valuesMap.get("Gene Symbol") + "; " + valuesMap.get("Genomic Alteration");
-											} else item.description = valuesMap.get("Description");
+											if(resource=='nif-0000-08137-1') {
+												item.description = valuesMap.get("Name") + "; " + valuesMap.get("gene") + "; " + 
+													valuesMap.get("genomic_alteration");
+											} else item.description = valuesMap.get("description");
 										
-											log.warn("Description " + valuesMap.get("Description"));
+											//log.warn("Description " + item.description);
+											log.info("Resource URL: " + item.url);
                                             counter++;
-                                            log.info("Resource URL: " + valuesMap.get("Resource URL"));
-
+                                           
                                             items.add(item);
                                         }
                                     }
