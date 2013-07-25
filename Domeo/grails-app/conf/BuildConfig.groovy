@@ -46,6 +46,7 @@ grails.project.dependency.resolution = {
 		provided 'mysql:mysql-connector-java:5.1.13'
 		runtime 'mysql:mysql-connector-java:5.1.13'
         compile 'com.googlecode.json-simple:json-simple:1.1'
+		
     }
 
     plugins {
