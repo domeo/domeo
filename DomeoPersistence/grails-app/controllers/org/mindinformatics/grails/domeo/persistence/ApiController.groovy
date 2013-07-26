@@ -27,6 +27,8 @@ import org.mindinformatics.domeo.persistence.ElasticSearchWrapper
 
 /**
  * @author Paolo Ciccarese <paolo.ciccarese@gmail.com>
+ * 
+ * curl -v http://localhost:3333/Domeo/api/exportLastVersionPublicAnnotation?key=xxx
  */
 class ApiController {
 

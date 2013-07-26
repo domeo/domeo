@@ -51,13 +51,13 @@ class NifAnnotatorResultsConversionService {
 		
 		def textToAnnotate = params.content;
 		JSONArray agents = new JSONArray();
-		
+
 		JSONObject annotationSet = new JSONObject();
 		annotationSet.put(IOntology.generalId, UUID.uuid());
 		annotationSet.put(IOntology.generalType, "ao:AnnotationSet");
 		annotationSet.put(IOntology.generalLabel, "Nif Annotator Results");
 		annotationSet.put(IOntology.generalDescription, generateSetDescription());
-		
+
 		JSONObject ncboAnnotator = new JSONObject();
 		ncboAnnotator.put(IOntology.generalId, "http://nif-services.neuinfo.org/servicesv1/resource_AnnotateService.html");
 		ncboAnnotator.put(IOntology.generalType, "foafx:Software");
@@ -76,7 +76,7 @@ class NifAnnotatorResultsConversionService {
 		bioportalConnector.put("foafx:version", "0.1");
 		bioportalConnector.put("foafx:build", "001");
 		agents.add(1, bioportalConnector);
-		
+
 		JSONObject domeo = new JSONObject();
 		def domeoUrn = "urn:domeo:software:id:"+grailsApplication.metadata.'app.name'+"-"+grailsApplication.metadata.'app.version'+"-"+grailsApplication.metadata.'app.build';
 		domeo.put(IOntology.generalId, domeoUrn);
@@ -86,7 +86,7 @@ class NifAnnotatorResultsConversionService {
 		domeo.put("foafx:version", grailsApplication.metadata.'app.version');
 		domeo.put("foafx:build", grailsApplication.metadata.'app.build');
 		agents.add(2, domeo);
-		
+
 		// annotationSet.put("pav:lineageUri", "");
 		// annotationSet.put("pav:createdBy", "");
 		// annotationSet.put("pav:lastSavedOn", dateFormat.format(new Date()));
@@ -107,7 +107,7 @@ class NifAnnotatorResultsConversionService {
 		def sortedAnnotations = items
 		// Go through the ncbo results in the order the matches are found in the document
 		sortedAnnotations.sort{a,b-> a.start.compareTo(b.start)}
-		
+
 		JSONArray annotations = new JSONArray();
 		Integer previousStartIdx = sortedAnnotations.empty ? null : sortedAnnotations[0].start
 		Integer previousSelectorOffset = 0
@@ -117,16 +117,16 @@ class NifAnnotatorResultsConversionService {
 				previousSelectorOffset = previousSelectorOffset + 1
 			}
 			previousStartIdx = nifAnnotation.start;
-			
+
 			JSONObject selector = findOrCreateAndSaveSelectorUsingStringSearch(nifAnnotation, textToAnnotate, previousSelectorOffset);
 			if(selector) previousSelectorOffset = selector['ao:offset']
-			
+
 			JSONObject specificTarget = new JSONObject();
 			specificTarget.put(IOntology.generalId, UUID.uuid());
 			specificTarget.put(IOntology.generalType, IOntology.specificResource);
 			specificTarget.put(IOntology.source, url);
 			specificTarget.put(IOntology.selector, selector);
-			
+
 			JSONObject annotation = new JSONObject();
 			annotation.put(IOntology.generalId, UUID.uuid());
 			annotation.put(IOntology.generalType, IOntology.annotationQualifier);
@@ -163,23 +163,24 @@ class NifAnnotatorResultsConversionService {
 	private JSONObject findOrCreateAndSaveSelectorUsingStringSearch(NifAnnotationItem annotation, String content, Integer start){
 		String putativeExactMatch = null
 		Map<String,Object> matchInfo = null
-		
+
 		//putativeExactMatch = annotation.match;
 		putativeExactMatch = content.getAt([annotation.start..(annotation.end-1)])
+
 		//println ')))))))))))))' + putativeExactMatch + "(((((((((((((";
 		Integer matchLength = annotation.end - annotation.start 
+
 		//if(matchLength != putativeExactMatch.size()){
 		//	throw new RuntimeException("The length of the match in results from ${annotation.start} to ${annotation.end} does not match the length of the exact match ${putativeExactMatch}")
 		//}
 		matchInfo =  searchForMatch(content, putativeExactMatch, start)
-
 		if(!matchInfo){
 			String termNotFoundMsg = "MgrepContext.term.name=${annotation.match}"
 			log && log.warn("A selector could not be generated for annotation bean with from=${annotation.start},to=${annotation.end} ${termNotFoundMsg}")
 			//println "A selector could not be generated for annotation bean with from=${annotation.start},to=${annotation.end} ${termNotFoundMsg}"
 			return null
 		}
-		
+
 		JSONObject selector = new JSONObject();
 		selector.put(IOntology.generalId, UUID.uuid());
 		selector.put(IOntology.generalType, IOntology.selectorTextQuote);
@@ -193,8 +194,11 @@ class NifAnnotatorResultsConversionService {
 	
 	private def searchForMatch(String textToAnnotate, String putativeExactMatch, int start) {
 		String matchRegex = putativeExactMatch.replaceAll(/\s+/,"\\\\s+")
+		matchRegex = matchRegex.replaceAll("[)]", "\\\\)")
+		matchRegex = matchRegex.replaceAll("[(]", "\\\\(")
 		Pattern pattern = Pattern.compile("\\b${matchRegex}\\b", Pattern.MULTILINE | Pattern.CASE_INSENSITIVE)
 		Matcher matcher = pattern.matcher(textToAnnotate)
+
 		int startPos = -1
 		int endPos = -1
 		if (matcher.find(start)) {

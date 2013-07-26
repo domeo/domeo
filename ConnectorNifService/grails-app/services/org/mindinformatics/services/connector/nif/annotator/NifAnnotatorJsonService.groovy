@@ -150,7 +150,7 @@ class NifAnnotatorJsonService {
                     log.info("response status: ${resp.statusLine}");
                     log.info("The response contenType is $resp.contentType");
                     log.info("XML was ${xml} " + xml.text());
-					
+
 					//def annotations = new XmlParser().parse(xml);
 					def annotations = xml.childNodes();
 					annotations.each { annotation ->
@@ -159,11 +159,13 @@ class NifAnnotatorJsonService {
 						item.match = annotation.text();
 						def attributes = annotation.attributes();
 						//println attributes.get("start");
+
 						item.start = new Integer(attributes.get("start"));
 						//println attributes.get("end");
 						item.end = new Integer(attributes.get("end"));
 						def entity = annotation.childNodes().next();
 						//println entity.text();
+
 						def entityAttributes = entity.attributes();
 						//println entityAttributes.get("category");
 						item.category = entityAttributes.get("category");
