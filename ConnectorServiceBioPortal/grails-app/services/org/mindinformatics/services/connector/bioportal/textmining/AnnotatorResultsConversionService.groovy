@@ -232,6 +232,8 @@ class AnnotatorResultsConversionService {
 	
 	private def searchForMatch(String ncboTextToAnnotate, String putativeExactMatch, int start) {
 		String matchRegex = putativeExactMatch.replaceAll(/\s+/,"\\\\s+")
+		matchRegex = matchRegex.replaceAll("[)]", "\\\\)")
+		matchRegex = matchRegex.replaceAll("[(]", "\\\\(")
 		Pattern pattern = Pattern.compile("\\b${matchRegex}\\b", Pattern.MULTILINE | Pattern.CASE_INSENSITIVE)
 		Matcher matcher = pattern.matcher(ncboTextToAnnotate)
 		int startPos = -1
