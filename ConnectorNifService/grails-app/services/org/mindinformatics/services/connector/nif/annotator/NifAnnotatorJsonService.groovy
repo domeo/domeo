@@ -82,7 +82,7 @@ class NifAnnotatorJsonService {
 		log.info("Nif annotate(" + url + "," + content + "," + include + "," + exclude + "," + longestOnly + "," + includeAbbrev + "," + includeAcronym + "," + includeAcronym + ")"); 
 		NifAnnotatorRequestParameters params = new NifAnnotatorRequestParameters();
 		params.content = content;
-		ArrayList<NifAnnotationItem> annotations = callService(composeUrl(content, "", "", longestOnly, includeAbbrev, includeAcronym, includeAcronym));
+		ArrayList<NifAnnotationItem> annotations = callService(composeUrl(content, include, exclude, longestOnly, includeAbbrev, includeAcronym, includeAcronym));
 		return nifAnnotatorResultsConversionService.convert(url, annotations, params);
 	}
 	
@@ -96,8 +96,10 @@ class NifAnnotatorJsonService {
 	private String composeUrl(String content, String include, String exclude, String longestOnly, String includeAbbrev, String includeAcronym, String includeNumbers) {
 		def includes = parseCommaSeparatedList(include);
 		def excludes = parseCommaSeparatedList(exclude);
+		
 		def includesText = createParametersList(ONTOLOGY_IN, includes);
 		def excludesText = createParametersList(ONTOLOGY_OUT, excludes);
+
 		def longestOnlyText = createParameterItem(LONGEST_ONLY, longestOnly);
 		def includeAbbrevText = createParameterItem(INCLUDE_ABBREV, includeAbbrev);
 		def includeAcronymText = createParameterItem(INCLUDE_ACRONYM, includeAcronym);
@@ -113,9 +115,14 @@ class NifAnnotatorJsonService {
 	 */
 	private def parseCommaSeparatedList(String list) {
 		def items = [];
+		if(list.trim().length()==0) return items;
+		if(list.indexOf(",")<=0) {
+			items.add(list)
+			return items;
+		}
 		StringTokenizer st = new StringTokenizer(list,",");
 		while(st.hasMoreTokens()) {
-			items <- st.nextToken();
+			items.add(st.nextToken());
 		}
 		return items;
 	}

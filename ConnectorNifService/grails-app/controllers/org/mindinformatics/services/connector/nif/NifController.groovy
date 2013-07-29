@@ -121,11 +121,11 @@ class NifController {
 		String includeAbbrev = params.includeAbbrev;
 		String includeAcronym = params.includeAcronym;
 		String includeNumbers = params.includeNumbers;
-		String ontologiesIn = params.ontologiesIn;
-		String ontologiesOut = params.ontologiesOut
+		String categoriesIn = params.categoriesIn;
+		String categoriesOut = params.categoriesOut;
 		
 		try {
-			JSONObject jsonResult = nifAnnotatorJsonService.annotate(url, content, ontologiesIn, ontologiesOut, longestOnly,
+			JSONObject jsonResult = nifAnnotatorJsonService.annotate(url, content, categoriesIn, categoriesOut, longestOnly,
 				includeAbbrev, includeAcronym, includeNumbers);
 			render(contentType:'text/json', encoding:MiscUtils.DEFAULT_ENCODING,  text: jsonResult.toString());
 		} catch (ConnectorHttpResponseException e) {
