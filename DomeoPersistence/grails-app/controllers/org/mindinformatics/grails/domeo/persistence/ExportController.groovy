@@ -1,7 +1,5 @@
 package org.mindinformatics.grails.domeo.persistence
 
-import java.text.SimpleDateFormat;
-
 import grails.converters.JSON
 
 import org.codehaus.groovy.grails.web.json.JSONArray
@@ -170,6 +168,45 @@ class ExportController {
             render "Nothing to be exported"
         }
     }
+	
+	def document = {
+		def urls = [] as Set
+		def id = params.id;
+		if(id!=null) {
+			def ids = BibliographicIdMapping.findAllByIdValue(id);
+			ids.each {
+				def bibs = BibliographicSetIndex.findAllByUuidBibliographicIdMapping(it.uuid);
+				bibs.each { bib ->
+					urls.add(bib.annotatesUrl)
+				}
+			}
+		}
+		
+		def ids = [] as Set
+		urls.each {
+			//render '**** ' + it + '<br/>'
+			def lasts = LastAnnotationSetIndex.findAllByAnnotatesUrl(it);
+			lasts.each { last ->
+				ids.add(last.lastVersionId);
+				//render last.lastVersionId + '<br/>'
+			}
+		}
+		
+		ElasticSearchWrapper esWrapper = new ElasticSearchWrapper(grailsApplication.config.elastico.database, grailsApplication.config.elastico.collection, grailsApplication.config.elastico.ip, grailsApplication.config.elastico.port);
+		
+		ids.each{	
+			//render AnnotationSetIndex.findById(it).mongoUuid + '<br/>';				
+			String document = esWrapper.getDocument(AnnotationSetIndex.findById(it).mongoUuid);
+			//render document + '<br/>';
+			def json = JSON.parse(document);
+			def items = json.hits.hits._source[0]["ao:item"];
+			items.each {
+				render it['rdfs:label'] + '<br/>'
+			}
+			render '<br/><br/>'
+			//log.debug("Retrieved: " + document);
+		}
+	}
 
     /**
     * User injection
