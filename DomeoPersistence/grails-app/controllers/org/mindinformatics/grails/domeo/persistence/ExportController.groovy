@@ -15,6 +15,7 @@ class ExportController {
     def readOnlyService;
     def springSecurityService
     def usersManagementService
+	def mappingsService;
     
     def export = {
         if (params.mine) {
@@ -169,11 +170,46 @@ class ExportController {
         }
     }
 	
+	// http://localhost:3333/Domeo/export/idmappings?id=10.1111%2Fj.1460-9568.2004.03745.x
+	// http://localhost:3333/Domeo/export/idmappings/15548226
+	def idmappings = {
+		def TYPE = "id-mappings";
+		def id = params.id;
+		def ip = request.remoteAddr;
+
+		// Request details
+		JSONObject req = new JSONObject();
+		JSONObject reqContent = new JSONObject();
+		reqContent.put("id", (id!=null)?id:"");
+		req.put("content", reqContent);
+		req.put("type", TYPE);
+		req.put("ip", ip);
+		
+		try {
+			JSONObject mo = new JSONObject();
+			mo.put("request", req);
+			mo.put("response", mappingsService.findMappingsById(id));
+
+			log.debug mo;
+			render mo
+		} catch(Exception e) {
+			JSONObject mo = new JSONObject();
+			mo.put("request", req);
+			mo.put("exception", e.getMessage().replaceAll("\n", " "));
+			render mo;
+		}	
+	}
+	
 	def document = {
 		def urls = [] as Set
 		def id = params.id;
+		
+		log.info "----------------------------"
+		log.info " Looking for: " + id
+		
 		if(id!=null) {
 			def ids = BibliographicIdMapping.findAllByIdValue(id);
+			log.info " Mappings: " + ids
 			ids.each {
 				def bibs = BibliographicSetIndex.findAllByUuidBibliographicIdMapping(it.uuid);
 				bibs.each { bib ->
@@ -181,6 +217,10 @@ class ExportController {
 				}
 			}
 		}
+		
+		
+		
+		
 		
 		def ids = [] as Set
 		urls.each {
@@ -194,19 +234,73 @@ class ExportController {
 		
 		ElasticSearchWrapper esWrapper = new ElasticSearchWrapper(grailsApplication.config.elastico.database, grailsApplication.config.elastico.collection, grailsApplication.config.elastico.ip, grailsApplication.config.elastico.port);
 		
+		def O = "<td>"
+		def C = "</td>"
+		def CO = C + O;
+		
+		render '<table>'
 		ids.each{	
+			
 			//render AnnotationSetIndex.findById(it).mongoUuid + '<br/>';				
 			String document = esWrapper.getDocument(AnnotationSetIndex.findById(it).mongoUuid);
 			//render document + '<br/>';
 			def json = JSON.parse(document);
+			def annotates = json.hits.hits._source[0]['ao:annotatesResource'];
+			println annotates
 			def items = json.hits.hits._source[0]["ao:item"];
 			items.each {
-				render it['rdfs:label'] + '<br/>'
+				render '<tr>'
+				//render json.hits.hits._source[0] 
+				def anntype = it['@type'];
+				if(it["ao:context"]['ao:hasSource'][0]) 
+					render O + it["@id"] + CO + it["ao:context"]['ao:hasSource'][0] + CO + it['@type'] + CO + it["pav:lastSavedOn"]
+				else {
+					println 'problem with serialization ' + it
+					render O + it["@id"] + CO + annotates + CO + it['@type'] + CO + it["pav:lastSavedOn"]
+				}
+				if(it["ao:hasTopic"]) {
+					 //render " --- " + it["ao:hasTopic"][0]
+					 render CO + it["ao:hasTopic"][0]["rdfs:label"]
+					 render CO + it["ao:hasTopic"][0]["@id"]
+				} else if (it["ao:body"]){
+					if(anntype.contains("oa:PostIt") || anntype.contains("ao:Comment")) {
+						render CO + it["ao:body"][0]["cnt:chars"]
+					} else if (anntype.contains("AntibodyAnnotation")) {
+						if(it["ao:body"][0]["domeo:protocol"])
+						render CO + it["ao:body"][0]["domeo:protocol"]["rdfs:label"]
+						if(it["ao:body"][0]["domeo:method"])
+						render CO + it["ao:body"][0]["domeo:method"]["rdfs:label"]
+						if(it["ao:body"][0]["domeo:antibody"])
+						render CO + it["ao:body"][0]["domeo:antibody"]["@id"]
+					} else if (anntype.contains("Curation")) {
+						//println "Curation " + it 
+						if(it["ao:body"][0]["rdf:value"])
+							render CO + it["ao:body"][0]["rdf:value"] + CO + it["ao:context"][0]["ao:hasSelector"]["ao:annotation"]
+					}  
+//					render " --- " + it["ao:body"]["@type"]
+					
+//					render " --- " + it["ao:body"]["@type"]
+//					if(it["ao:body"][0] && it["ao:body"][0]["@type"] && it["ao:body"][0]["@type"]=="cnt:ContentAsText") {
+//						render " --- " + it["ao:body"][0]["@type"]
+//					}
+				} else {
+					if (anntype.contains("ao:Highlight")) {
+						if(it["ao:context"][0]["ao:hasSelector"]["@type"]=="ao:PrefixSuffixTextSelector") 
+							render CO + it["ao:context"][0]["ao:hasSelector"]["ao:exact"]
+					}
+				}
+				//render it  
+				render C
+				render '</tr>'
 			}
-			render '<br/><br/>'
+			
 			//log.debug("Retrieved: " + document);
 		}
+		
+		render '</table>'
 	}
+	
+	// http://localhost:3333/Domeo/export/document/PMC2700002
 
     /**
     * User injection
