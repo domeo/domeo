@@ -86,18 +86,18 @@ environments {
 			// http://logging.apache.org/log4j/1.2/apidocs/org/apache/log4j/PatternLayout.html
 			appenders {
 				// Uncomment the following line for a more detailed logging in development mode
-			    console name:'stdout', threshold: org.apache.log4j.Level.INFO, layout:pattern(conversionPattern: '%d{dd MMM yyyy HH:mm:ss,SSS} %c{2} %m%n')
+			    console name:'stdout', threshold: org.apache.log4j.Level.DEBUG, layout:pattern(conversionPattern: '%d{dd MMM yyyy HH:mm:ss,SSS} %c{2} %m%n')
 				//console name:'stdout', threshold: org.apache.log4j.Level.INFO, layout:pattern(conversionPattern: '%m%n')
 			}
+			
+			debug   "server.RealmVerifier",
+					"consumer.ConsumerManager",
+					'grails.app.controllers.org.mindinformatics.grails.domeo.persistence.ExportController'
             
             info    'grails.app', // Necessary for Bootstrap logging
                     'org.mindinformatics.grails.domeo.dashboard.security',
                     'org.mindinformatics.services.connector.pubmed.dataaccess',
                     'org.mindinformatics.services.connector.pubmed'
-			
-			debug   "server.RealmVerifier",
-				    "consumer.ConsumerManager",
-                    'grails.app.controller.org.mindinformatics.grails.domeo.persistence.ExportController'
 		
 			error  'org.codehaus.groovy.grails.web.servlet',  //  controllers
 				   'org.codehaus.groovy.grails.web.pages', //  GSP
@@ -172,6 +172,7 @@ grails.plugins.springsecurity.logout.handlerNames = ['rememberMeServices', 'secu
 
 grails.plugins.springsecurity.openid.domainClass = 'org.mindinformatics.grails.domeo.dashboard.security.OpenID'
 
+// grails.plugins.springsecurity.providerNames = ['daoAuthenticationProvider', 'ldapAuthProvider', 'rememberMeAuthenticationProvider']
 grails.plugins.springsecurity.controllerAnnotations.staticRules = [
 	'/secure/**': ['ROLE_ADMIN', 'ROLE_MANAGER', 'ROLE_USER'],
 	'/web/domeo': ['ROLE_ADMIN', 'ROLE_MANAGER', 'ROLE_USER'],

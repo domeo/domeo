@@ -16,6 +16,8 @@ class UrlMappings {
 		"/profile/$id/info" (controller:"/profiles", action: "info")
 		"/gwt/domeo/profile/$id/all" (controller:"/profiles", action: "all")
 		"/profile/$id/all" (controller:"/profiles", action: "all")
+		"/gwt/domeo/profile/$id/save" (controller:"/profiles", action: "save")
+		"/profile/$id/save" (controller:"/profiles", action: "save")
 		
 		//"/tests/gene6606.html" (controller:'testPages', action:'gene6606')
         //"/tests/gene6606" (controller:'testPages', action:'gene6606') 
