@@ -59,6 +59,100 @@
 		font-style: italic;
 	}
 
+.tags{
+	margin:0;
+	padding:0;
+	position:relative;
+	right:24px;
+	bottom:0px;
+	list-style:none;
+	padding-left: 2px;
+	left:-10px;
+	display: inline;
+	}
+	
+.tags li, .tags a{
+	float:left;
+	height:16px;
+	line-height:16px;
+	position:relative;
+	font-size:11px;
+	padding-top: 2px;
+	padding-bottom: 4px;
+	}
+	
+.tags a{
+	margin-left:10px;
+	padding:0 7px 0 7px;
+	/*
+	background:#0089e0;
+	color:#fff;
+	*/
+	color:#333;
+	background:#EEEEEE;
+	border: 1px solid #CCCCCC;
+	
+	text-decoration:none;
+	-moz-border-radius-bottomright:4px;
+	-webkit-border-bottom-right-radius:4px;	
+	border-bottom-right-radius:4px;
+	-moz-border-radius-topright:4px;
+	-webkit-border-top-right-radius:4px;	
+	border-top-right-radius:4px;	
+	} 
+	
+.tags a:before{
+	content:"";
+	float:left;
+	position:absolute;
+	top:-1px;
+	left:-8px;
+	width:0;
+	height:0;
+	border-color:transparent #eee transparent transparent;
+	/*
+	border-color:transparent #0089e0 transparent transparent;
+	*/
+	border-style:solid;
+	/*
+	border-width:8px 8px 8px 0;	
+	*/	
+	border-width:10px 8px 8px 0;
+    border-color: #888;
+	}
+	
+.tags a:after{
+	content:"";
+	position:absolute;
+	top:2px;
+	left:-6px;
+	float:left;
+	width:4px;
+	height:4px;
+	-moz-border-radius:2px;
+	-webkit-border-radius:2px;
+	border-radius:2px;
+	background:#fff;
+	-moz-box-shadow:-1px -1px 2px #aaa;
+	-webkit-box-shadow:-1px -1px 2px #aaa;
+	box-shadow:-1px -1px 2px #aaa;
+	/*
+	-moz-box-shadow:-1px -1px 2px #004977;
+	-webkit-box-shadow:-1px -1px 2px #004977;
+	box-shadow:-1px -1px 2px #004977;
+	*/
+	}
+	
+.tags a:hover{background:#ddd; text-decoration: none;}	
+
+.tags a:hover:before{/*border-color:transparent #ddd transparent transparent;*/}
+
+.tags a:visited{color: #333;}
+
+.tags .source {
+	font-style:italic;
+}
+
 </style>
 <script type="text/JavaScript">
 
@@ -184,11 +278,11 @@
 			  	  		$("#items-"+setId).append(
 			  	  			'<span class="suffix">' + item._source["ao:context"][0]["ao:hasSelector"]["ao:suffix"] + "</span>" 
 					  	);
-			  	  	} else if(item._source["@type"]=='ao:PostIt') {
+			  	  	} else if(JSON.stringify(item._source["@type"]).indexOf('ao:PostIt')>0) {
 			  	  		$("#items-"+setId).append(
 				  	  		"Post it (score: " + item._score + ") <br/>" 
 		  	  			);
-		  	  			alert(item._source["ao:context"][0]["ao:hasSelector"]["ao:prefix"]);
+		  	  			//alert(item._source["ao:context"][0]["ao:hasSelector"]["ao:prefix"]);
 		  	  			if(item._source["ao:context"][0]["ao:hasSelector"]["ao:prefix"] || item._source["ao:context"][0]["ao:hasSelector"]["ao:exact"] 
 			  	  				|| item._source["ao:context"][0]["ao:hasSelector"]["ao:suffix"] ) {
 				  	  		$("#items-"+setId).append(
@@ -205,6 +299,10 @@
 				  	  			'<img alt="Loading image...."  src="' + item._source["ao:context"][0]["domeo:displaySource"] + '"/>' 
 						  	);
 				  	  	}
+
+		  	  			$("#items-"+setId).append(
+		  	  				'<br/>' + item._source["rdfs:label"] + ': '+item._source["ao:body"][0]['cnt:chars']
+				  	  	);
 				  	} else if(item._source["@type"]=='ao:Qualifier') {
 			  	  		$("#items-"+setId).append(
 				  	  		"Qualifier (score: " + item._score + ") <br/>" 
@@ -258,10 +356,84 @@
 					  	  			'<img alt="Loading image...."  src="' + item._source["ao:context"][0]["domeo:displaySource"] + '"/>' 
 							  	);
 					  	  	}
-					  	}else {
+				  	} else if(item._source["@type"]=='ao:MicroPublicationAnnotation') {
+				  		$("#items-"+setId).append(
+				  	  		"MicroPublicationAnnotation (score: " + item._score + ") <br/>" 
+		  	  			);
+
+				  		var type = 'Claim';
+		  	  			if(JSON.stringify(item._source["ao:body"][0]["mp:argues"]["@type"]).indexOf('Hypo')>0) type = "Hypothesis";
+
+				  		$("#items-"+setId).append(
+				  				type + ': <div class="match" style="display: inline;"><a target="_blank" href="' + item._source["ao:body"][0]["mp:argues"]["@id"] + '">' + item._source["ao:body"][0]["mp:argues"]["mp:hasContent"] + "</a>" +/*
+			  	  			"</div> <div style='display: inline;'>" +
+			  	  			(item._source["ao:body"][0]["domeo:protocol"]?"with method " + item._source["ao:body"][0]["domeo:protocol"][0]["rdfs:label"]:"")  + 
+			  	  			(item._source["ao:body"][0]["domeo:model"]? " on " + item._source["ao:body"][0]["domeo:model"]["rdfs:label"]:"") + */
+			  	  			"</div>" 
+			  	  		);
+
+				  		var support = item._source["ao:body"][0]["mp:argues"]["mp:supportedBy"];
+			  	  		if(support) {
+			  	  			$("#items-"+setId).append('<br/>supportedBy:<br/>');
+				  	  		for(var j=0; j<support.length; j++) {
+				  	  			var supportingText = '';
+				  	  			if(support[j]['reif:resource']['@type']=='mp:DataImage') {
+				  	  				supportingText += '<td style="padding:5px; vertical-align: top;"><img src=\"${resource(dir:'images/secure',file:'database-green.gif')}\"/></td>';
+				  	  				supportingText += '<td><img src=\"' + support[j]['reif:resource']['ao:context']['domeo:displaySource'] + '\"/></td>';
+					  	  		} else if(support[j]['reif:resource']['@type'].indexOf('ArticleReference')>0) {
+					  	  			supportingText += '<td style="padding:5px; vertical-align: top;"><img src=\"${resource(dir:'images/secure',file:'document-green.gif')}\"/></td>';
+		  	  						supportingText += '<td>'+support[j]['reif:resource']['authorNames'] + ". <span style='font-weight: bold;'>" + support[j]['reif:resource']['title'] + "</span>. " +
+				  	  					support[j]['reif:resource']['publicationInfo'] + '</td>';
+					  	  		} else if(support[j]['reif:resource']['@type']=='mp:Statement') {
+					  	  			var from = ' same source'
+						  	  		if(support[j]['reif:resource']['ao:context']['ao:hasSource']!=item._source["ao:body"][0]['mp:argues']['ao:context']['ao:hasSource']) from =  support[j]['reif:resource']['ao:context']['ao:hasSource'];
+					  	  			supportingText += '<td style="padding:5px; vertical-align: top;"><img src=\"${resource(dir:'images/secure',file:'double-arrow-green.gif')}\"/></td>';
+					  	  			supportingText += '<td>Statement: <span style="font-weight: bold;">' + support[j]['reif:resource']['mp:hasContent'] + '</span> from ' + 
+					  	  				from + '</td>'
+					  	  		}
+				  	  			$("#items-"+setId).append('<table><tr>' + supportingText + '</tr></table>');
+				  	  		}
+				  	  	}
+
+				  	  	var challenge = item._source["ao:body"][0]["mp:argues"]["mp:challengedBy"];
+			  	  		if(challenge) {
+			  	  			$("#items-"+setId).append('<br/>challengedBy:<br/>');
+				  	  		for(var j=0; j<challenge.length; j++) {
+				  	  			var supportingText = '';
+				  	  			if(challenge[j]['reif:resource']['@type']=='mp:DataImage') {
+				  	  				supportingText += '<td style="padding:5px; vertical-align: top;"><img src=\"${resource(dir:'images/secure',file:'database-red.gif')}\"/></td>';
+		  	  						supportingText += '<td><img src=\"' + challenge[j]['reif:resource']['ao:context']['domeo:displaySource'] + '\"/></td>';
+					  	  		} else if(challenge[j]['reif:resource']['@type'].indexOf('ArticleReference')>0) {
+					  	  			supportingText += '<td style="padding:5px; vertical-align: top;"><img src=\"${resource(dir:'images/secure',file:'document-red.gif')}\"/></td>';
+		  	  						supportingText += '<td>'+challenge[j]['reif:resource']['authorNames'] + ". <span style='font-weight: bold;'>" + challenge[j]['reif:resource']['title'] + "</span>. " +
+					  	  				challenge[j]['reif:resource']['publicationInfo'] + '</td>';
+					  	  		} else if(support[j]['reif:resource']['@type']=='mp:Statement') {
+									var from = ' same source'
+						  	  		if(challenge[j]['reif:resource']['ao:context']['ao:hasSource']!=item._source["ao:body"][0]['mp:argues']['ao:context']['ao:hasSource']) from =  challenge[j]['reif:resource']['ao:context']['ao:hasSource'];
+					  	  			supportingText += '<td style="padding:5px; vertical-align: top;"><img src=\"${resource(dir:'images/secure',file:'double-arrow-red.gif')}\"/></td>';
+					  	  			supportingText += '<td>Statement: <span style="font-weight: bold;">'+ challenge[j]['reif:resource']['mp:hasContent'] + '</span> from ' + 
+					  	  				from + '</td>'
+					  	  		}
+				  	  			$("#items-"+setId).append('<table><tr>' + supportingText + '</tr></table>');
+				  	  		}
+				  	  	}
+
+				  	  	var qualifiers = item._source["ao:body"][0]["mp:argues"]["mp:qualifiedBy"];
+			  	  		if(qualifiers) {
+			  	  			$("#items-"+setId).append('<br/>qualifiedBy:<br/>');
+			  	  			var tagsText = '';
+				  	  		for(var j=0; j<qualifiers.length; j++) {
+				  	  			tagsText +=
+					  	  			'<li><a target="_blank" href="' + qualifiers[j]["reif:resource"]["@id"] + '">' + qualifiers[j]["reif:resource"]["rdfs:label"] + "</a>" +
+					  	  			"from " + qualifiers[j]["reif:resource"]["dct:source"]["rdfs:label"] + "</li>";
+				  	  		}
+				  	  		$("#items-"+setId).append('<div style="overflow: hidden;"><ul class="tags">' + tagsText + '</ul></div>');
+				  	  	}
+					}else {
 			  	  		$("#items-"+setId).append(
 				  	  		'Item: ' + item + "<br/>" 
 		  	  			);
+				  	
 				  	}
 			  	  	$("#items-"+setId).append("<br/>");
 			  	});		
