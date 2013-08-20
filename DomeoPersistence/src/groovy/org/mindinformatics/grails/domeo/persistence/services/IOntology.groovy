@@ -30,6 +30,7 @@ class IOntology {
 	static final annotationLink = "ao:Link";
 	static final annotationPostIt = "ao:PostIt";
 	static final annotationAntibody = "ao:AntibodyAnnotation";
+	static final annotationMicroPublication = "ao:MicroPublicationAnnotation";
 	
 	static final hasTarget = "ao:context";
 	static final selector = "ao:hasSelector";

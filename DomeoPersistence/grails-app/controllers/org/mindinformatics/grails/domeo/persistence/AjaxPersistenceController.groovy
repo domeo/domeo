@@ -361,6 +361,55 @@ class AjaxPersistenceController {
 							*/
 						} else if(typesSet.contains(IOntology.annotationComment)) {
 							annotation.put("content", annotations[i][IOntology.content]);
+						} else if(typesSet.contains(IOntology.annotationMicroPublication)) {
+							def typo = annotations[i][IOntology.content][0]["mp:argues"]['@type'].indexOf("Hypo")>0? "Hypothesis" : "Claim";
+							def content = typo + ": " + annotations[i][IOntology.content][0]["mp:argues"]["mp:hasContent"];
+							if(annotations[i][IOntology.content][0]["mp:argues"]["mp:supportedBy"]!=null && annotations[i][IOntology.content][0]["mp:argues"]["mp:supportedBy"].size()>0) {
+								content += '<br/><div style="margin-top:5px;">supportedBy</div>'
+								for(int x=0; x<annotations[i][IOntology.content][0]["mp:argues"]["mp:supportedBy"].size(); x++) {
+									def item = annotations[i][IOntology.content][0]["mp:argues"]["mp:supportedBy"][x]["reif:resource"];
+									if(item["@type"]=="mp:DataImage") { 
+										content += "<table><td style='padding:5px; padding-top: 10px; vertical-align: top;'><img src='"+ createLinkTo(dir:"images/secure", file:"database-green.gif") + "'></td><td style='padding:5px; padding-top: 10px;'>" + "<img src='" + item["ao:context"]["domeo:displaySource"] + "'></td></tr></table>"
+									} else if(item["@type"]=="mp:Statement") {
+										content += "<table><td style='padding:5px; padding-top: 10px; vertical-align: top;'><img src='"+ createLinkTo(dir:"images/secure", file:"document-green.gif") + "'></td><td style='padding:5px; padding-top: 10px;'>" + "Statement: <span style='font-weight: bold;'>" + item["mp:hasContent"] + "</span></td></tr></table>"
+									} else if(item["@type"].indexOf("ArticleReference")>0) {
+										content += "<table><td style='padding:5px; padding-top: 10px;'><img src='"+ createLinkTo(dir:"images/secure", file:"document-green.gif") + "'></td><td style='padding:5px;padding-top: 10px; '>" + item["authorNames"] + ". <span style='font-weight: bold;'>" + item["title"] + "</span>. " + item["publicationInfo"]+ "</td></tr></table>"
+									}
+								}
+							}
+							if(annotations[i][IOntology.content][0]["mp:argues"]["mp:challengedBy"]!=null && annotations[i][IOntology.content][0]["mp:argues"]["mp:challengedBy"].size()>0) {
+								content += '<br/><div style="margin-top:5px;">challengedBy</div>'
+								for(int x=0; x<annotations[i][IOntology.content]["mp:argues"]["mp:challengedBy"].size(); x++) {
+									def item = annotations[i][IOntology.content][0]["mp:argues"]["mp:challengedBy"][x]["reif:resource"];
+									if(item["@type"]=="mp:DataImage") { 
+										content += "<table><td style='padding:5px; padding-top: 10px; vertical-align: top;'><img src='"+ createLinkTo(dir:"images/secure", file:"database-red.gif") + "'></td><td>" + "<img src='" + item["ao:context"]["domeo:displaySource"] + "'></td></tr></table><br/>"
+									} else if(item["@type"]=="mp:Statement") {
+										content += "<table><td style='padding:5px; padding-top: 10px; vertical-align: top;'><img src='"+ createLinkTo(dir:"images/secure", file:"document-red.gif") + "'></td><td style='padding:5px; padding-top: 10px;'>" + "Statement: <span style='font-weight: bold;'>" + item["mp:hasContent"] + "</span></td></tr></table>"
+									} else if(item["@type"].indexOf("ArticleReference")>0) {
+										content += "<table><td style='padding:5px; padding-top: 10px; vertical-align: top;'><img src='"+ createLinkTo(dir:"images/secure", file:"document-red.gif") + "'></td><td>" + item["authorNames"] + ". <span style='font-weight: bold;'>" + item["title"] + "</span>. " + item["publicationInfo"]+ "</td></tr></table><br/>"
+									}
+								}
+							}
+							
+							JSONArray cloudTerms = new JSONArray();
+							JSONArray contentTerms = new JSONArray();
+							
+							
+							if(annotations[i][IOntology.content][0]["mp:argues"]["mp:qualifiedBy"].size()>0) {
+								content += '<br/><div style="margin-top:5px;">qualifiedBy</div>' 
+								content += '<ul class="tags">'
+								for(def kk=0; kk<annotations[i][IOntology.content][0]["mp:argues"]["mp:qualifiedBy"].size(); kk++) {
+									cloudTerms.add("'" + annotations[i][IOntology.content][0]["mp:argues"]["mp:qualifiedBy"][kk]["reif:resource"][IOntology.generalLabel] + "'");
+									contentTerms.add("<a href=\"" +annotations[i][IOntology.content][0]["mp:argues"]["mp:qualifiedBy"][kk]["reif:resource"][IOntology.generalId] + "\">" + 
+										annotations[i][IOntology.content][0]["mp:argues"]["mp:qualifiedBy"][kk]["reif:resource"][IOntology.generalLabel] + "</a>");
+									content += '<li>' + annotations[i][IOntology.content][0]["mp:argues"]["mp:qualifiedBy"][kk]["reif:resource"][IOntology.generalLabel] + '</li>';
+								}
+								content += '</ul><br style="clear:both;"/>'
+							}
+							
+							annotation.put("content", content);	
+							annotation.put("cloud", cloudTerms);
+							//annotation.put("content", contentTerms);
 						}
 						
 						// TODO multiple targets and distinguish by selector
