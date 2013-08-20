@@ -30,18 +30,12 @@ class UsersController {
 	def info = {
 		def user = getUser();
 		if(params.format.equals("json")) {
-			render('[');
-			render("  {");
-			render("    \"uri\": \"");
-			render("urn:user:uuid:"+user.username);
-			render("\",");
-			render("    \"username\": \"");
+			render('[{"uri": "urn:user:uuid:'+ user.username + '","username": "');
 			render(user.username);
-			render("\",");
-			render("    \"screenname\": \"");
+			render('","screenname": "');
 			render(user.displayName);
 			render("\"");
-			render("  },");
+			render("  }");
 			render(']');
 		} else {
 			render(" info >>>>>> " + params.id);
@@ -58,37 +52,26 @@ class UsersController {
 			userGroups.each { userGroup->
 				
 				// TODO groups
-				render("  {");
-				render("    \"uuid\": \"");
+				render("{\"uuid\": \"");
 				render(userGroup.group.id);
-				render("\",");
-				render("    \"uri\": \"");
-				//render("urn:group:uuid:"+ userGroup.group.id);
+				render("\",\"uri\": \"");
 				render(userGroup.group.uri);
-				render("\",");
-				render("    \"name\": \"");
+				render("\",\"name\": \"");
 				render(userGroup.group.name);
-				render("\",");
-				render("    \"description\": \"");
+				render("\",\"description\": \"");
 				render(userGroup.group.description);
-				render("\",");
-				render("    \"memberssince\": \"");
+				render("\",\"memberssince\": \"");
 				render(userGroup.dateCreated);
-				render("\",");
-				render("    \"grouplink\": \"");
+				render("\",\"grouplink\": \"");
 				render("http://" + request.getServerName() + ":" + request.getServerPort() + request.getContextPath()+"/group/?uri="+
 					"urn:group:uuid:"+ userGroup.group.id);
-				render("\",");
-				render("    \"roles\": [");
+				render("\",\"roles\": [");
 				userGroup.roles.each{role->
-					render("       {");
-					render("         \"uuid\": \"");
+					render("{\"uuid\": \"");
 					render(role.authority);
-					render("\",");
-					render("         \"name\": \"");
+					render("\",\"name\": \"");
 					render(role.label);
-					render("\"");
-					render("       },");
+					render("\"}");
 				}
 				render("    ]");
 				render(",");
@@ -124,7 +107,7 @@ class UsersController {
 					render(      false);
 				}
 				render(          "\"");
-				render("  },");
+				render("  }");
 			}
 			
 			render(']');

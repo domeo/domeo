@@ -26,13 +26,8 @@ class AgentsController {
 		if(params.format.equals("json")) {
 			render('[');
 			
-			render("  {");
-			render("    \"uri\": \"");
-			//render("http://" + request.getServerName() + ":" + request.getServerPort() + request.getContextPath()+"/user/"+
-			//		user.id);
-			render("urn:domeo:person:uuid:"+user.id);
-			render("\",");
-			render("    \"@id\": \"");
+			render("  {\"uri\": \"urn:domeo:person:uuid:"+user.id);
+			render("\",\"@id\": \"");
 			//render("http://" + request.getServerName() + ":" + request.getServerPort() + request.getContextPath()+"/user/"+
 			//		user.id);
 			render("urn:person:uuid:"+user.id);
@@ -64,7 +59,7 @@ class AgentsController {
 			render("    \"foafx:picture\": \"");
 			render("http://www.hcklab.org/images/me/paolo%20ciccarese-boston.jpg");
 			render("\"");
-			render("  },");
+			render("  }");
 			
 			render(']');
 		}
@@ -79,8 +74,8 @@ class AgentsController {
 		if(params.format.equals("json") && params.id.equals("domeo")) {
 			render('[');
 			
-			render("  {");
-			render("    \"@id\": \"");
+			render("{");
+			render("\"@id\": \"");
 			render("urn:domeo:software:id:"+name+"-"+version+"-"+build);
 			render("\",");
 			render("    \"@type\": \"");
@@ -98,7 +93,7 @@ class AgentsController {
 			render("    \"foafx:build\": \"");
 			render(build);
 			render("\"");
-			render("  },");
+			render("  }");
 			
 			render(']');
 		}
