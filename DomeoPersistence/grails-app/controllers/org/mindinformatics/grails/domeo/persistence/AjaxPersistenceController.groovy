@@ -395,7 +395,7 @@ class AjaxPersistenceController {
 							JSONArray contentTerms = new JSONArray();
 							
 							
-							if(annotations[i][IOntology.content][0]["mp:argues"]["mp:qualifiedBy"].size()>0) {
+							if(annotations[i][IOntology.content][0]["mp:argues"]["mp:qualifiedBy"]!=null && annotations[i][IOntology.content][0]["mp:argues"]["mp:qualifiedBy"].size()>0) {
 								content += '<br/><div style="margin-top:5px;">qualifiedBy</div>' 
 								content += '<ul class="tags">'
 								for(def kk=0; kk<annotations[i][IOntology.content][0]["mp:argues"]["mp:qualifiedBy"].size(); kk++) {
