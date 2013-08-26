@@ -48,7 +48,7 @@ class JsonPubmedAccessService {
 	public static final int DEFAULT_START_MONTH = 1;
 	public static final int DEFAULT_START_YEAR = 1900;
 	public static final int DEFAULT_END_MONTH = 12;
-	public static final int DEFAULT_END_YEAR = 2013;
+	public static final int DEFAULT_END_YEAR = Calendar.getInstance().get(Calendar.YEAR);
 	public static final int DEFAULT_MAX_RESULTS = 90;
 	public static final int DEFAULT_OFFSET = 0;
 	
@@ -196,7 +196,7 @@ class JsonPubmedAccessService {
 		log.info("proxy: " + grailsApplication.config.domeo.proxy.ip + "-" + grailsApplication.config.domeo.proxy.port) ;
 		IPubmedArticleManager pa = new PubmedArticleManagerImpl((grailsApplication.config.domeo.proxy.ip.isEmpty()?"":grailsApplication.config.domeo.proxy.ip), 
 			(grailsApplication.config.domeo.proxy.port.isEmpty()?"":grailsApplication.config.domeo.proxy.port));
-		List<ExternalPubmedArticle> epas = pa.getPubmedArticles(typeQuery, textQuery, new Integer(1), new Integer(1900), new Integer(12), new Integer(2012));
+		List<ExternalPubmedArticle> epas = pa.getPubmedArticles(typeQuery, textQuery, new Integer(1), new Integer(1900), new Integer(DEFAULT_END_MONTH), new Integer(DEFAULT_END_YEAR));
 		JSONArray pas = new JSONArray();
 		for(ExternalPubmedArticle epa: epas) {
 			pas.add(convertExternalPubmedArticle(epa));
