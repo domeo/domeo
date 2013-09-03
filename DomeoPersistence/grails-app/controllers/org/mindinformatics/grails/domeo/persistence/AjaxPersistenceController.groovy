@@ -278,13 +278,70 @@ class AjaxPersistenceController {
 					jsonSet.put("permissions", set[IOntology.permissions]);
 					responseToSets.put("set", jsonSet);
 					
-					def annotationsMap = [:];
-					def commentsMap = [:];
-					def commentsCounter = [:];
-					def jsonItems = new JSONArray();
+					// All annotations
 					def annotations = set[IOntology.annotations];
+					
+					// Comments extraction
+					def commentsMap = [:];
+					def annotatedByMap = [:];
 					for(def i=0; i<annotations.length(); i++) {
 						JSONObject annotation = new JSONObject();
+						annotation.put("id", annotations[i][IOntology.generalId]);
+
+						// Extract types
+						def typesSet = [] as Set;
+						if(annotations[i][IOntology.generalType] instanceof  org.codehaus.groovy.grails.web.json.JSONArray) {
+							for(def j=0; j<annotations[i][IOntology.generalType].length(); j++) {
+								typesSet.add(annotations[i][IOntology.generalType][j]);
+								if(!annotations[i][IOntology.generalType][j].equals("ao:PostIt")) {
+									annotation.put("type", annotations[i][IOntology.generalType][j]);
+									annotation.put("label", annotations[i][IOntology.generalLabel]);
+								}
+							}
+						} else {
+							annotation.put("type", annotations[i][IOntology.generalType]);
+							annotation.put("label", annotations[i][IOntology.generalLabel]);
+							typesSet.add(annotations[i][IOntology.generalType]);
+						}
+						
+						if(typesSet.contains(IOntology.annotationComment)) {
+							// General
+							annotation.put("createdOn", annotations[i][IOntology.pavCreatedOn]);
+							//annotation.put("createdBy", agentsCache.get(annotations[i][IOntology.pavCreatedBy]['@id']));
+							annotation.put("createdBy", agentsCache.get(annotations[i][IOntology.pavCreatedBy]));
+							//annotation.put("createdByName", agentsCache.get(annotations[i][IOntology.pavCreatedBy]['@id'])['foafx:name']);
+							annotation.put("createdByName", agentsCache.get(annotations[i][IOntology.pavCreatedBy])['foafx:name']);
+						
+							//def up = agentsCache.get(annotations[i][IOntology.pavCreatedBy]['@id'])['@id'].toString();
+							def up = agentsCache.get(annotations[i][IOntology.pavCreatedBy])['@id'].toString();
+							annotation.put("createdById", up.replaceAll(~/urn:person:uuid:/, ""));
+							//annotation.put("createdByUri", agentsCache.get(annotations[i][IOntology.pavCreatedBy]['@id'])['@id']);
+							annotation.put("createdByUri", agentsCache.get(annotations[i][IOntology.pavCreatedBy])['@id']);
+							annotation.put("lastSavedOn", annotations[i][IOntology.pavLastSavedOn]);
+							annotation.put("version", annotations[i][IOntology.pavVersionNumber]);
+							
+							// Comment dependent
+							annotation.put("content", annotations[i][IOntology.content]);
+							
+							if(annotations[i][IOntology.hasTarget][0][IOntology.selector]!=null && annotations[i][IOntology.hasTarget][0][IOntology.selector][IOntology.generalType] == IOntology.selectorAnnotation) {
+								println 'Comment ' +  annotations[i][IOntology.generalId] + ' on ' + annotations[i][IOntology.hasTarget][0][IOntology.selector]['ao:annotation']
+								commentsMap.put(annotations[i][IOntology.generalId], annotations[i][IOntology.hasTarget][0][IOntology.selector]['ao:annotation']);
+								annotatedByMap.put(annotations[i][IOntology.hasTarget][0][IOntology.selector]['ao:annotation'], annotations[i]);
+							}
+						}
+					}
+					
+					
+					def annotationsMap = [:];
+				
+					def commentsCounter = [:];
+					def jsonItems = new JSONArray();
+					
+					for(def i=0; i<annotations.length(); i++) {
+						JSONObject annotation = new JSONObject();
+						def typesSet = extractBasicAnnotationProperties(agentsCache, annotation, annotations[i]);
+						
+						/*
 						annotation.put("id", annotations[i][IOntology.generalId]);
 
 						// Extract types
@@ -317,6 +374,7 @@ class AjaxPersistenceController {
 						annotation.put("createdByUri", agentsCache.get(annotations[i][IOntology.pavCreatedBy])['@id']);
 						annotation.put("lastSavedOn", annotations[i][IOntology.pavLastSavedOn]);
 						annotation.put("version", annotations[i][IOntology.pavVersionNumber]);
+						*/
 						
 						if(typesSet.contains(IOntology.annotationHighlight)) {
 							annotation.put("content", annotations[i][IOntology.hasTarget][0]["ao:hasSelector"]["ao:exact"]);
@@ -360,7 +418,7 @@ class AjaxPersistenceController {
 							annotation.put("cloud", cloudTerms);
 							*/
 						} else if(typesSet.contains(IOntology.annotationComment)) {
-							annotation.put("content", annotations[i][IOntology.content]);
+							//annotation.put("content", annotations[i][IOntology.content]);
 						} else if(typesSet.contains(IOntology.annotationMicroPublication)) {
 							def typo = annotations[i][IOntology.content][0]["mp:argues"]['@type'].indexOf("Hypo")>0? "Hypothesis" : "Claim";
 							def content = typo + ": " + annotations[i][IOntology.content][0]["mp:argues"]["mp:hasContent"];
@@ -421,8 +479,8 @@ class AjaxPersistenceController {
 							commentsMap.put(annotations[i][IOntology.generalId], null);
 							annotationsMap.put(annotations[i][IOntology.generalId], annotation);
 						} else if(annotations[i][IOntology.hasTarget][0][IOntology.selector]!=null && annotations[i][IOntology.hasTarget][0][IOntology.selector][IOntology.generalType] == IOntology.selectorAnnotation) {
-							println 'Comment on ' + annotations[i][IOntology.hasTarget][0][IOntology.selector]['ao:annotation']
-							commentsMap.put(annotations[i][IOntology.generalId], annotations[i][IOntology.hasTarget][0][IOntology.selector]['ao:annotation']);
+							// println 'Comment on ' + annotations[i][IOntology.hasTarget][0][IOntology.selector]['ao:annotation']
+							//commentsMap.put(annotations[i][IOntology.generalId], annotations[i][IOntology.hasTarget][0][IOntology.selector]['ao:annotation']);
 						} else if(annotations[i][IOntology.hasTarget][0][IOntology.selector]!=null && annotations[i][IOntology.hasTarget][0][IOntology.selector][IOntology.generalType] == IOntology.selectorImage) {
 							annotation.put("imageInDocumentSelector", annotations[i][IOntology.hasTarget][0][IOntology.selector][IOntology.generalType]);
 							annotation.put("image", annotations[i][IOntology.hasTarget][0][IOntology.source]);
@@ -433,13 +491,62 @@ class AjaxPersistenceController {
 							//}
 							annotationsMap.put(annotations[i][IOntology.generalId], annotation);
 						}
+						
+						println "Annotated by: " + annotatedByMap.get(annotations[i][IOntology.generalId]);
+						def annotatedBy = annotatedByMap.get(annotations[i][IOntology.generalId]);
+						if(annotatedBy!=null) {
+							JSONObject annotationOnAnnotation = new JSONObject();
+							
+							extractBasicAnnotationProperties(agentsCache, annotationOnAnnotation, annotatedBy);
+							
+							annotationOnAnnotation.put("id", annotatedBy[IOntology.generalId]);
+							annotationOnAnnotation.put("content", annotatedBy[IOntology.content]['cnt:chars'][0]);
+							
+							/*
+							def typesSet2 = [] as Set;
+							if(annotatedBy[IOntology.generalType] instanceof  org.codehaus.groovy.grails.web.json.JSONArray) {
+								for(def j=0; j<annotatedBy[IOntology.generalType].length(); j++) {
+									typesSet2.add(annotatedBy[IOntology.generalType][j]);
+									if(!annotatedBy[IOntology.generalType][j].equals("ao:PostIt")) {
+										annotationOnAnnotation.put("type", annotatedBy[IOntology.generalType][j]);
+										annotationOnAnnotation.put("label", annotatedBy[IOntology.generalLabel]);
+									}
+								}
+							} else {
+								annotationOnAnnotation.put("type", annotatedBy[IOntology.generalType]);
+								annotationOnAnnotation.put("label", annotatedBy[IOntology.generalLabel]);
+								typesSet2.add(annotatedBy[IOntology.generalType]);
+							}
+							
+							
+							annotationOnAnnotation.put("createdOn", annotatedBy[IOntology.pavCreatedOn]);
+							//annotation.put("createdBy", agentsCache.get(annotations[i][IOntology.pavCreatedBy]['@id']));
+							annotationOnAnnotation.put("createdBy", agentsCache.get(annotatedBy[IOntology.pavCreatedBy]));
+							//annotation.put("createdByName", agentsCache.get(annotations[i][IOntology.pavCreatedBy]['@id'])['foafx:name']);
+							annotationOnAnnotation.put("createdByName", agentsCache.get(annotatedBy[IOntology.pavCreatedBy])['foafx:name']);
+						
+							//def up = agentsCache.get(annotations[i][IOntology.pavCreatedBy]['@id'])['@id'].toString();
+							def up2 = agentsCache.get(annotatedBy[IOntology.pavCreatedBy])['@id'].toString();
+							annotationOnAnnotation.put("createdById", up2.replaceAll(~/urn:person:uuid:/, ""));
+							//annotation.put("createdByUri", agentsCache.get(annotations[i][IOntology.pavCreatedBy]['@id'])['@id']);
+							annotationOnAnnotation.put("createdByUri", agentsCache.get(annotatedBy[IOntology.pavCreatedBy])['@id']);
+							annotationOnAnnotation.put("lastSavedOn", annotatedBy[IOntology.pavLastSavedOn]);
+							annotationOnAnnotation.put("version", annotatedBy[IOntology.pavVersionNumber]);
+							*/
+							
+							JSONArray annotatedBys = new JSONArray();
+							annotatedBys.add(annotationOnAnnotation);
+							
+							annotation.put("annotatedBy", annotatedBys);
+						}
 					}
+					
 					
 			
 					
 					// Count comments for each annotation
 					commentsMap.values().each { comment ->
-						println comment;
+						println '---> ' + comment;
 					}
 					
 					commentsMap.keySet().each { commentId ->
@@ -478,6 +585,40 @@ class AjaxPersistenceController {
 			render (responseToSets as JSON);
 			return;
 		}
+	}
+	
+	private Set extractBasicAnnotationProperties(def agentsCache, def jsonAnnotation, def originalAnnotation) {
+		jsonAnnotation.put("id", originalAnnotation[IOntology.generalId]);
+		
+		def typesSet = [] as Set;
+		if(originalAnnotation[IOntology.generalType] instanceof  org.codehaus.groovy.grails.web.json.JSONArray) {
+			for(def j=0; j<originalAnnotation[IOntology.generalType].length(); j++) {
+				typesSet.add(originalAnnotation[IOntology.generalType][j]);
+				if(!originalAnnotation[IOntology.generalType][j].equals("ao:PostIt")) {
+					jsonAnnotation.put("type", originalAnnotation[IOntology.generalType][j]);
+					jsonAnnotation.put("label", originalAnnotation[IOntology.generalLabel]);
+				}
+			}
+		} else {
+			jsonAnnotation.put("type", originalAnnotation[IOntology.generalType]);
+			jsonAnnotation.put("label", originalAnnotation[IOntology.generalLabel]);
+			typesSet.add(originalAnnotation[IOntology.generalType]);
+		}
+		
+		jsonAnnotation.put("createdOn", originalAnnotation[IOntology.pavCreatedOn]);
+		jsonAnnotation.put("createdBy", agentsCache.get(originalAnnotation[IOntology.pavCreatedBy]));
+		jsonAnnotation.put("createdByName", agentsCache.get(originalAnnotation[IOntology.pavCreatedBy])['foafx:name']);
+
+		def up = agentsCache.get(originalAnnotation[IOntology.pavCreatedBy])['@id'].toString();
+		jsonAnnotation.put("createdById", up.replaceAll(~/urn:person:uuid:/, ""));
+		jsonAnnotation.put("createdByUri", agentsCache.get(originalAnnotation[IOntology.pavCreatedBy])['@id']);
+		jsonAnnotation.put("lastSavedOn", originalAnnotation[IOntology.pavLastSavedOn]);
+		jsonAnnotation.put("version", originalAnnotation[IOntology.pavVersionNumber]);		
+		return typesSet;
+	}
+	
+	private void extractAnnotationOnAnnotationChain(def annotatedByMap, def annotation, def maxLevels, def counter) {
+		
 	}
 	
 	/*
