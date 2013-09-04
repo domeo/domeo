@@ -78,9 +78,11 @@
 		
 		blockquote.style4 {
 		  font: 14px/20px;
-		  padding-left: 0px;
+		  padding-left: 40px;
 		  padding-right: 10px;
+		  min-height: 40px;
 		  margin: 5px;
+		  background-image: url(../../images/secure/quotes.gif);
 		  background-position: middle left;
 		  background-repeat: no-repeat;
 		  text-indent: 5px;
@@ -99,6 +101,101 @@
 			color: #aaa;
 			font-style: italic;
 		}
+		
+		.tags{
+	margin:0;
+	padding:0;
+	position:relative;
+	right:24px;
+	bottom:0px;
+	list-style:none;
+	padding-left: 2px;
+	left:-10px;
+	display: inline;
+	}
+	
+.tags li, .tags a{
+	float:left;
+	height:16px;
+	line-height:16px;
+	position:relative;
+	font-size:11px;
+	padding-top: 2px;
+	padding-bottom: 4px;
+	}
+	
+.tags a{
+	margin-left:10px;
+	padding:0 7px 0 7px;
+	/*
+	background:#0089e0;
+	color:#fff;
+	*/
+	color:#333;
+	background:#EEEEEE;
+	border: 1px solid #CCCCCC;
+	
+	text-decoration:none;
+	-moz-border-radius-bottomright:4px;
+	-webkit-border-bottom-right-radius:4px;	
+	border-bottom-right-radius:4px;
+	-moz-border-radius-topright:4px;
+	-webkit-border-top-right-radius:4px;	
+	border-top-right-radius:4px;	
+	} 
+	
+.tags a:before{
+	content:"";
+	float:left;
+	position:absolute;
+	top:-1px;
+	left:-8px;
+	width:0;
+	height:0;
+	border-color:transparent #eee transparent transparent;
+	/*
+	border-color:transparent #0089e0 transparent transparent;
+	*/
+	border-style:solid;
+	/*
+	border-width:8px 8px 8px 0;	
+	*/	
+	border-width:10px 8px 8px 0;
+    border-color: #888;
+	}
+	
+.tags a:after{
+	content:"";
+	position:absolute;
+	top:2px;
+	left:-6px;
+	float:left;
+	width:4px;
+	height:4px;
+	-moz-border-radius:2px;
+	-webkit-border-radius:2px;
+	border-radius:2px;
+	background:#fff;
+	-moz-box-shadow:-1px -1px 2px #aaa;
+	-webkit-box-shadow:-1px -1px 2px #aaa;
+	box-shadow:-1px -1px 2px #aaa;
+	/*
+	-moz-box-shadow:-1px -1px 2px #004977;
+	-webkit-box-shadow:-1px -1px 2px #004977;
+	box-shadow:-1px -1px 2px #004977;
+	*/
+	}
+	
+.tags a:hover{background:#ddd; text-decoration: none;}	
+
+.tags a:hover:before{/*border-color:transparent #ddd transparent transparent;*/}
+
+.tags a:visited{color: #333;}
+
+.tags .source {
+	padding-left: 5px;
+	font-style:italic;
+}
 	</style>
 	<script type="text/javascript">
 	$(document).ready(function() {
@@ -106,7 +203,7 @@
 	
 		var dataToSend = { userId: '${loggedUser.id}', setUri:'${setUri}' };
 		$.ajax({
-	  	  	url: "${appBaseUrl}/ajaxPersistence/exhibitAnnotationSet",
+	  	  	url: "${appBaseUrl}/ajaxPersistence/jsonAnnotationSet",
 	  	  	context: $("#resultsList"),
 	  	  	data: dataToSend,
 	  	  	success: function(data){
@@ -141,7 +238,7 @@
 		});
 	});
 
-	function getAnnotationTitleBar(annotation, indentation) {
+	function getAnnotationTitleBar(annotation, indentation, annotationOnAnnotation) {
 		return '<div style="padding-left: ' + indentation + 'px; padding-right: ' + indentation + 'px;padding-bottom: 10px;">' + 
 			'<div style="border: 1px solid #ddd;">' +
 				'<table width="100%" class="barContainer">' +
@@ -164,19 +261,22 @@
 						'</td>' +
 					'</tr>' +
 				'</table>' +		
-			'<div class="annbody">' +
-	   		'<div class="annbody-content">' + annotation.content + '</div>' +
-	   		
-	   		getAnnotationContext(annotation) +
-	   		
-	   		getAnnotationComments(annotation) +
+				'<div class="annbody">' +
+	   				'<div class="annbody-content">' + annotation.content + '</div>' +
+	   				(!annotationOnAnnotation? getAnnotationContext(annotation):'')+
+	   				getAnnotationComments(annotation) +
+	   				'</div>' +
 	   		'</div>' +
    		'</div>';
 	}
 
 	function getAnnotationComments(annotation) {
 		if(annotation.annotatedBy && annotation.annotatedBy.length>0) {
-			return '<div class="contextTitle">'+ getAnnotationCommentsCounter(annotation) +'</div>' + getAnnotationTitleBar(annotation.annotatedBy[0], 20, true);
+			var comments = '<div class="contextTitle">'+ getAnnotationCommentsCounter(annotation) +'</div>';
+			for(var j=0; j<annotation.annotatedBy.length; j++) {
+				comments += getAnnotationTitleBar(annotation.annotatedBy[j], 20, true);
+			}
+			return comments;
 		} else return "";
 	}
 
@@ -185,9 +285,9 @@
 			return 	'<div class="miscBar">' +
 	   		'<span ex:if-exists=".commentsCounter">' +
 				'<img src="${resource(dir:'images/secure',file:'comments16x16.png',plugin:'users-module')}"/> <span>' + annotation.commentsCounter + '</span> Comments' +
-			'</span>';
+			'</span></div>';
 		else return '';
-	}
+	} 
 
 	function getAnnotationContext(annotation) {
 		if(annotation.match) 
@@ -199,8 +299,10 @@
 	       		'<span ex:content=".suffix" class="suffix">' + annotation.suffix + '</span>' +
 	       		'...' +
 	       	'</blockquote>';
-	    else return '<div class="contextTitle">Annotating: </div>' + '<div  ex:if-exists=".imageInDocumentSelector" class="context-content">' +
+	    else return '<div class="contextTitle">Annotating: </div>' + 
+	    	'<blockquote class="style4">' +
 	       		'<img src="' + annotation.image+ '">' +
+	       		'</blockquote>' +
 	       	'</div>' + '</div>' ;
 	}
 

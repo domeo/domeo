@@ -493,6 +493,12 @@ class AjaxPersistenceController {
 						}
 						
 						println "Annotated by: " + annotatedByMap.get(annotations[i][IOntology.generalId]);
+						
+						JSONArray annotatedBys = new JSONArray();
+						chainAnnotationsOnAnnotations(annotatedByMap, agentsCache, annotatedBys, annotations[i][IOntology.generalId]);
+						if(annotatedBys.size()>0) annotation.put("annotatedBy", annotatedBys); 
+						
+						/*
 						def annotatedBy = annotatedByMap.get(annotations[i][IOntology.generalId]);
 						if(annotatedBy!=null) {
 							JSONObject annotationOnAnnotation = new JSONObject();
@@ -501,44 +507,13 @@ class AjaxPersistenceController {
 							
 							annotationOnAnnotation.put("id", annotatedBy[IOntology.generalId]);
 							annotationOnAnnotation.put("content", annotatedBy[IOntology.content]['cnt:chars'][0]);
+
 							
-							/*
-							def typesSet2 = [] as Set;
-							if(annotatedBy[IOntology.generalType] instanceof  org.codehaus.groovy.grails.web.json.JSONArray) {
-								for(def j=0; j<annotatedBy[IOntology.generalType].length(); j++) {
-									typesSet2.add(annotatedBy[IOntology.generalType][j]);
-									if(!annotatedBy[IOntology.generalType][j].equals("ao:PostIt")) {
-										annotationOnAnnotation.put("type", annotatedBy[IOntology.generalType][j]);
-										annotationOnAnnotation.put("label", annotatedBy[IOntology.generalLabel]);
-									}
-								}
-							} else {
-								annotationOnAnnotation.put("type", annotatedBy[IOntology.generalType]);
-								annotationOnAnnotation.put("label", annotatedBy[IOntology.generalLabel]);
-								typesSet2.add(annotatedBy[IOntology.generalType]);
-							}
-							
-							
-							annotationOnAnnotation.put("createdOn", annotatedBy[IOntology.pavCreatedOn]);
-							//annotation.put("createdBy", agentsCache.get(annotations[i][IOntology.pavCreatedBy]['@id']));
-							annotationOnAnnotation.put("createdBy", agentsCache.get(annotatedBy[IOntology.pavCreatedBy]));
-							//annotation.put("createdByName", agentsCache.get(annotations[i][IOntology.pavCreatedBy]['@id'])['foafx:name']);
-							annotationOnAnnotation.put("createdByName", agentsCache.get(annotatedBy[IOntology.pavCreatedBy])['foafx:name']);
-						
-							//def up = agentsCache.get(annotations[i][IOntology.pavCreatedBy]['@id'])['@id'].toString();
-							def up2 = agentsCache.get(annotatedBy[IOntology.pavCreatedBy])['@id'].toString();
-							annotationOnAnnotation.put("createdById", up2.replaceAll(~/urn:person:uuid:/, ""));
-							//annotation.put("createdByUri", agentsCache.get(annotations[i][IOntology.pavCreatedBy]['@id'])['@id']);
-							annotationOnAnnotation.put("createdByUri", agentsCache.get(annotatedBy[IOntology.pavCreatedBy])['@id']);
-							annotationOnAnnotation.put("lastSavedOn", annotatedBy[IOntology.pavLastSavedOn]);
-							annotationOnAnnotation.put("version", annotatedBy[IOntology.pavVersionNumber]);
-							*/
-							
-							JSONArray annotatedBys = new JSONArray();
 							annotatedBys.add(annotationOnAnnotation);
 							
 							annotation.put("annotatedBy", annotatedBys);
 						}
+						*/
 					}
 					
 					
@@ -584,6 +559,312 @@ class AjaxPersistenceController {
 			JSON.use("deep")
 			render (responseToSets as JSON);
 			return;
+		}
+	}
+	
+	def jsonAnnotationSet = {
+		def setUri = params.setUri;
+		def userId = params.userId;
+		
+		println 'setUri ' + setUri;
+		println 'userId ' + userId;
+		 
+		if (setUri?.trim() && userId?.trim()) {
+			int counter = 0;
+			JSONObject responseToSets = new JSONObject();
+			def annotationSetIndex = AnnotationSetIndex.findByIndividualUri(setUri);
+			if(annotationSetIndex) {
+				println 'MongoId: ' + annotationSetIndex.mongoUuid
+
+				def set;
+				if(!ELASTICO) {
+					SleepyMongooseWrapper mongoWrapper = new SleepyMongooseWrapper(grailsApplication.config.mongodb.url, grailsApplication.config.mongodb.database, grailsApplication.config.mongodb.collection);
+					String document = mongoWrapper.doMongoDBFindByObjectId(annotationSetIndex.mongoUuid);
+					if(document!=null && document.length()>0) {
+						def temp = JSON.parse(document);
+						if(temp.results.size()>0) {
+							set = temp.results[0]
+						}
+					}
+				} else {
+					ElasticSearchWrapper esWrapper = new ElasticSearchWrapper(grailsApplication.config.elastico.database, grailsApplication.config.elastico.collection, grailsApplication.config.elastico.ip, grailsApplication.config.elastico.port);
+					String document = esWrapper.getDocument(annotationSetIndex.mongoUuid, false, null);
+					if(document!=null) {
+						def ret = JSON.parse(document);
+						if(ret.hits.total==1) {
+							set = ret.hits.hits[0]._source;
+						}
+					}
+				}
+				
+				//if(set.results.size()>0) {
+					//responseToSets.add(set.results[0]);
+					
+					// Cache agents
+					def agents = set[IOntology.agents];
+					def agentsCache = [:];
+					agents.each { agent ->
+						agentsCache.put(agent["@id"], agent);
+					}
+					
+					JSONObject jsonSet = new JSONObject();
+					jsonSet.put("id", set[IOntology.generalId]);
+					jsonSet.put("type", set[IOntology.generalType]);
+					jsonSet.put("label", set[IOntology.generalLabel]);
+					jsonSet.put("description", set[IOntology.generalDescription]);
+					jsonSet.put("target", set[IOntology.target]);
+					jsonSet.put("createdOn", set[IOntology.pavCreatedOn]);
+					
+					//jsonSet.put("createdBy", agentsCache.get(set[IOntology.pavCreatedBy]['@id']));
+					jsonSet.put("createdBy", agentsCache.get(set[IOntology.pavCreatedBy]));
+					
+					//def up1 = agentsCache.get(set[IOntology.pavCreatedBy]['@id'])['@id'].toString();
+					def up1 = agentsCache.get(set[IOntology.pavCreatedBy])['@id'].toString();
+					jsonSet.put("createdById", up1.replaceAll(~/urn:person:uuid:/, ""));
+					
+					//jsonSet.put("createdByName", agentsCache.get(set[IOntology.pavCreatedBy]['@id'])['foafx:name']);
+					jsonSet.put("createdByName", agentsCache.get(set[IOntology.pavCreatedBy])['foafx:name']);
+					jsonSet.put("version", set[IOntology.pavVersionNumber]);
+					jsonSet.put("permissions", set[IOntology.permissions]);
+					responseToSets.put("set", jsonSet);
+					
+					// All annotations
+					def annotations = set[IOntology.annotations];
+					
+					// Comments extraction
+					def commentsMap = [:];
+					def annotatedByMap = [:];
+					for(def i=0; i<annotations.length(); i++) {
+						JSONObject annotation = new JSONObject();
+						annotation.put("id", annotations[i][IOntology.generalId]);
+
+						// Extract types
+						def typesSet = [] as Set;
+						if(annotations[i][IOntology.generalType] instanceof  org.codehaus.groovy.grails.web.json.JSONArray) {
+							for(def j=0; j<annotations[i][IOntology.generalType].length(); j++) {
+								typesSet.add(annotations[i][IOntology.generalType][j]);
+								if(!annotations[i][IOntology.generalType][j].equals("ao:PostIt")) {
+									annotation.put("type", annotations[i][IOntology.generalType][j]);
+									annotation.put("label", annotations[i][IOntology.generalLabel]);
+								}
+							}
+						} else {
+							annotation.put("type", annotations[i][IOntology.generalType]);
+							annotation.put("label", annotations[i][IOntology.generalLabel]);
+							typesSet.add(annotations[i][IOntology.generalType]);
+						}
+						
+						if(typesSet.contains(IOntology.annotationComment)) {
+							// General
+							annotation.put("createdOn", annotations[i][IOntology.pavCreatedOn]);
+							//annotation.put("createdBy", agentsCache.get(annotations[i][IOntology.pavCreatedBy]['@id']));
+							annotation.put("createdBy", agentsCache.get(annotations[i][IOntology.pavCreatedBy]));
+							//annotation.put("createdByName", agentsCache.get(annotations[i][IOntology.pavCreatedBy]['@id'])['foafx:name']);
+							annotation.put("createdByName", agentsCache.get(annotations[i][IOntology.pavCreatedBy])['foafx:name']);
+						
+							//def up = agentsCache.get(annotations[i][IOntology.pavCreatedBy]['@id'])['@id'].toString();
+							def up = agentsCache.get(annotations[i][IOntology.pavCreatedBy])['@id'].toString();
+							annotation.put("createdById", up.replaceAll(~/urn:person:uuid:/, ""));
+							//annotation.put("createdByUri", agentsCache.get(annotations[i][IOntology.pavCreatedBy]['@id'])['@id']);
+							annotation.put("createdByUri", agentsCache.get(annotations[i][IOntology.pavCreatedBy])['@id']);
+							annotation.put("lastSavedOn", annotations[i][IOntology.pavLastSavedOn]);
+							annotation.put("version", annotations[i][IOntology.pavVersionNumber]);
+							
+							// Comment dependent
+							annotation.put("content", annotations[i][IOntology.content]);
+							
+							if(annotations[i][IOntology.hasTarget][0][IOntology.selector]!=null && annotations[i][IOntology.hasTarget][0][IOntology.selector][IOntology.generalType] == IOntology.selectorAnnotation) {
+								println 'Comment ' +  annotations[i][IOntology.generalId] + ' on ' + annotations[i][IOntology.hasTarget][0][IOntology.selector]['ao:annotation']
+								commentsMap.put(annotations[i][IOntology.generalId], annotations[i][IOntology.hasTarget][0][IOntology.selector]['ao:annotation']);
+								annotatedByMap.put(annotations[i][IOntology.hasTarget][0][IOntology.selector]['ao:annotation'], annotations[i]);
+							}
+						}
+					}
+					
+					
+					def annotationsMap = [:];
+				
+					def commentsCounter = [:];
+					def jsonItems = new JSONArray();
+					
+					for(def i=0; i<annotations.length(); i++) {
+						JSONObject annotation = new JSONObject();
+						def typesSet = extractBasicAnnotationProperties(agentsCache, annotation, annotations[i]);
+
+						if(typesSet.contains(IOntology.annotationHighlight)) {
+							annotation.put("content", annotations[i][IOntology.hasTarget][0]["ao:hasSelector"]["ao:exact"]);
+						} else if(typesSet.contains(IOntology.annotationQualifier)) {
+							JSONArray cloudTerms = new JSONArray();
+							StringBuffer contentTerms = new StringBuffer();
+							contentTerms.append("<div style='overflow: hidden;'><ul class='tags'>");
+							for(def kk=0; kk<annotations[i]["ao:hasTopic"].length(); kk++) {
+								cloudTerms.add("'" + annotations[i]["ao:hasTopic"][kk][IOntology.generalLabel] + "'");
+								contentTerms.append("<li><a href=\"" + annotations[i]["ao:hasTopic"][kk][IOntology.generalId] + "\">" + 
+									annotations[i]["ao:hasTopic"][kk][IOntology.generalLabel] + "</a><span class='source'>from " + annotations[i]["ao:hasTopic"][kk]["dct:source"]["rdfs:label"] + "</span></li>");
+							}
+							contentTerms.append("</ul></div>");
+							annotation.put("cloud", cloudTerms.toString());
+							annotation.put("content", contentTerms);
+						} else if(typesSet.contains(IOntology.annotationPostIt)) {
+							annotation.put("content", annotations[i][IOntology.content]['cnt:chars']);
+						} else if(typesSet.contains(IOntology.annotationAntibody)) {
+							annotation.put("content", annotations[i][IOntology.content][0]['domeo:antibody'][0]['rdfs:label']);
+						} else if(typesSet.contains(IOntology.annotationComment)) {
+							//annotation.put("content", annotations[i][IOntology.content]);
+						} else if(typesSet.contains(IOntology.annotationMicroPublication)) {
+							def typo = annotations[i][IOntology.content][0]["mp:argues"]['@type'].indexOf("Hypo")>0? "Hypothesis" : "Claim";
+							def content = typo + ": " + annotations[i][IOntology.content][0]["mp:argues"]["mp:hasContent"];
+							if(annotations[i][IOntology.content][0]["mp:argues"]["mp:supportedBy"]!=null && annotations[i][IOntology.content][0]["mp:argues"]["mp:supportedBy"].size()>0) {
+								content += '<br/><div style="margin-top:5px;">supportedBy</div>'
+								for(int x=0; x<annotations[i][IOntology.content][0]["mp:argues"]["mp:supportedBy"].size(); x++) {
+									def item = annotations[i][IOntology.content][0]["mp:argues"]["mp:supportedBy"][x]["reif:resource"];
+									if(item["@type"]=="mp:DataImage") {
+										content += "<table><td style='padding:5px; padding-top: 10px; vertical-align: top;'><img src='"+ createLinkTo(dir:"images/secure", file:"database-green.gif") + "'></td><td style='padding:5px; padding-top: 10px;'>" + "<img src='" + item["ao:context"]["domeo:displaySource"] + "'></td></tr></table>"
+									} else if(item["@type"]=="mp:Statement") {
+										content += "<table><td style='padding:5px; padding-top: 10px; vertical-align: top;'><img src='"+ createLinkTo(dir:"images/secure", file:"document-green.gif") + "'></td><td style='padding:5px; padding-top: 10px;'>" + "Statement: <span style='font-weight: bold;'>" + item["mp:hasContent"] + "</span></td></tr></table>"
+									} else if(item["@type"].indexOf("ArticleReference")>0) {
+										content += "<table><td style='padding:5px; padding-top: 10px;'><img src='"+ createLinkTo(dir:"images/secure", file:"document-green.gif") + "'></td><td style='padding:5px;padding-top: 10px; '>" + item["authorNames"] + ". <span style='font-weight: bold;'>" + item["title"] + "</span>. " + item["publicationInfo"]+ "</td></tr></table>"
+									}
+								}
+							}
+							if(annotations[i][IOntology.content][0]["mp:argues"]["mp:challengedBy"]!=null && annotations[i][IOntology.content][0]["mp:argues"]["mp:challengedBy"].size()>0) {
+								content += '<br/><div style="margin-top:5px;">challengedBy</div>'
+								for(int x=0; x<annotations[i][IOntology.content]["mp:argues"]["mp:challengedBy"].size(); x++) {
+									def item = annotations[i][IOntology.content][0]["mp:argues"]["mp:challengedBy"][x]["reif:resource"];
+									if(item["@type"]=="mp:DataImage") {
+										content += "<table><td style='padding:5px; padding-top: 10px; vertical-align: top;'><img src='"+ createLinkTo(dir:"images/secure", file:"database-red.gif") + "'></td><td>" + "<img src='" + item["ao:context"]["domeo:displaySource"] + "'></td></tr></table><br/>"
+									} else if(item["@type"]=="mp:Statement") {
+										content += "<table><td style='padding:5px; padding-top: 10px; vertical-align: top;'><img src='"+ createLinkTo(dir:"images/secure", file:"document-red.gif") + "'></td><td style='padding:5px; padding-top: 10px;'>" + "Statement: <span style='font-weight: bold;'>" + item["mp:hasContent"] + "</span></td></tr></table>"
+									} else if(item["@type"].indexOf("ArticleReference")>0) {
+										content += "<table><td style='padding:5px; padding-top: 10px; vertical-align: top;'><img src='"+ createLinkTo(dir:"images/secure", file:"document-red.gif") + "'></td><td>" + item["authorNames"] + ". <span style='font-weight: bold;'>" + item["title"] + "</span>. " + item["publicationInfo"]+ "</td></tr></table><br/>"
+									}
+								}
+							}
+							
+							JSONArray cloudTerms = new JSONArray();
+							JSONArray contentTerms = new JSONArray();
+							
+							
+							
+							if(annotations[i][IOntology.content][0]["mp:argues"]["mp:qualifiedBy"]!=null && annotations[i][IOntology.content][0]["mp:argues"]["mp:qualifiedBy"].size()>0) {
+								content += '<br/><div style="margin-top:5px;">qualifiedBy</div>'
+								content += '<ul class="tags">'
+								for(def kk=0; kk<annotations[i][IOntology.content][0]["mp:argues"]["mp:qualifiedBy"].size(); kk++) {
+									cloudTerms.add("'" + annotations[i][IOntology.content][0]["mp:argues"]["mp:qualifiedBy"][kk]["reif:resource"][IOntology.generalLabel] + "'");
+									contentTerms.add("<a href=\"" +annotations[i][IOntology.content][0]["mp:argues"]["mp:qualifiedBy"][kk]["reif:resource"][IOntology.generalId] + "\">" +
+										annotations[i][IOntology.content][0]["mp:argues"]["mp:qualifiedBy"][kk]["reif:resource"][IOntology.generalLabel] + "</a>");
+									content += "<li><a href=\"" +annotations[i][IOntology.content][0]["mp:argues"]["mp:qualifiedBy"][kk]["reif:resource"][IOntology.generalId] + "\">" +
+										annotations[i][IOntology.content][0]["mp:argues"]["mp:qualifiedBy"][kk]["reif:resource"][IOntology.generalLabel] + "</a><span class='source'> from " + annotations[i][IOntology.content][0]["mp:argues"]["mp:qualifiedBy"][kk]["reif:resource"]["dct:source"]["rdfs:label"] + "</span></li>";
+								}
+								content += '</ul><br style="clear:both;"/>'
+							}
+							
+							annotation.put("content", content);
+							annotation.put("cloud", cloudTerms);
+							//annotation.put("content", contentTerms);
+						}
+						
+						// TODO multiple targets and distinguish by selector
+						if(annotations[i][IOntology.hasTarget][0][IOntology.selector]!=null && annotations[i][IOntology.hasTarget][0][IOntology.selector][IOntology.generalType] == IOntology.selectorTextQuote) {
+							annotation.put("textQuoteSelector", annotations[i][IOntology.hasTarget][0][IOntology.selector][IOntology.generalType]);
+							annotation.put("prefix", annotations[i][IOntology.hasTarget][0][IOntology.selector][IOntology.selectorTextQuotePrefix]);
+							annotation.put("match", annotations[i][IOntology.hasTarget][0][IOntology.selector][IOntology.selectorTextQuoteMatch]);
+							annotation.put("suffix", annotations[i][IOntology.hasTarget][0][IOntology.selector][IOntology.selectorTextQuoteSuffix]);
+							commentsMap.put(annotations[i][IOntology.generalId], null);
+							annotationsMap.put(annotations[i][IOntology.generalId], annotation);
+						} else if(annotations[i][IOntology.hasTarget][0][IOntology.selector]!=null && annotations[i][IOntology.hasTarget][0][IOntology.selector][IOntology.generalType] == IOntology.selectorAnnotation) {
+							// println 'Comment on ' + annotations[i][IOntology.hasTarget][0][IOntology.selector]['ao:annotation']
+							//commentsMap.put(annotations[i][IOntology.generalId], annotations[i][IOntology.hasTarget][0][IOntology.selector]['ao:annotation']);
+						} else if(annotations[i][IOntology.hasTarget][0][IOntology.selector]!=null && annotations[i][IOntology.hasTarget][0][IOntology.selector][IOntology.generalType] == IOntology.selectorImage) {
+							annotation.put("imageInDocumentSelector", annotations[i][IOntology.hasTarget][0][IOntology.selector][IOntology.generalType]);
+							annotation.put("image", annotations[i][IOntology.hasTarget][0][IOntology.source]);
+							//if(annotations[i][IOntology.hasTarget][0][IOntology.displaySource]!=null) {
+								annotation.put("display", annotations[i][IOntology.hasTarget][0][IOntology.displaySource]);
+							//} else {
+							//	annotation.put("display", annotations[i][IOntology.hasTarget][0][IOntology.source]);
+							//}
+							annotationsMap.put(annotations[i][IOntology.generalId], annotation);
+						}
+						
+						println "Annotated by: " + annotatedByMap.get(annotations[i][IOntology.generalId]);
+						
+						JSONArray annotatedBys = new JSONArray();
+						chainAnnotationsOnAnnotations(annotatedByMap, agentsCache, annotatedBys, annotations[i][IOntology.generalId]);
+						if(annotatedBys.size()>0) annotation.put("annotatedBy", annotatedBys);
+						
+						/*
+						def annotatedBy = annotatedByMap.get(annotations[i][IOntology.generalId]);
+						if(annotatedBy!=null) {
+							JSONObject annotationOnAnnotation = new JSONObject();
+							
+							extractBasicAnnotationProperties(agentsCache, annotationOnAnnotation, annotatedBy);
+							
+							annotationOnAnnotation.put("id", annotatedBy[IOntology.generalId]);
+							annotationOnAnnotation.put("content", annotatedBy[IOntology.content]['cnt:chars'][0]);
+
+							
+							annotatedBys.add(annotationOnAnnotation);
+							
+							annotation.put("annotatedBy", annotatedBys);
+						}
+						*/
+					}
+					
+					
+			
+					
+					// Count comments for each annotation
+					commentsMap.values().each { comment ->
+						println '---> ' + comment;
+					}
+					
+					commentsMap.keySet().each { commentId ->
+						def pivot = commentId
+						if(commentsMap.get(pivot)!=null) {
+							while(commentsMap.get(pivot)!=null) {
+								pivot = commentsMap.get(pivot);
+							}
+							println 'pivot ' + pivot
+							if(commentsCounter.containsKey(pivot)) {
+								def counting = commentsCounter.get(pivot);
+								counting++;
+								commentsCounter.put(pivot, counting);
+							} else commentsCounter.put(pivot, "1");
+						}
+					}
+					
+					commentsCounter.keySet().each { comment ->
+						println ""+ comment + " count " + commentsCounter.get(comment);
+					}
+					annotationsMap.keySet().each { annotationId ->
+						if(commentsCounter.get(annotationId) && commentsCounter.get(annotationId)!=null) {
+							annotationsMap.get(annotationId).put("commentsCounter", commentsCounter.get(annotationId))
+							annotationsMap.get(annotationId).put("withComments", "yes")
+						}
+						jsonItems.add(annotationsMap.get(annotationId));
+					}
+					
+					def items = new JSONObject();
+					items.put("items", jsonItems)
+					responseToSets.put("items", items);
+					counter++;
+					
+			}
+			JSON.use("deep")
+			render (responseToSets as JSON);
+			return;
+		}
+	}
+	
+	private void chainAnnotationsOnAnnotations(def annotatedByMap, def agentsCache, JSONArray annotationsOnAnnotation, def annotationId) {
+		JSONObject annotationOnAnnotation = new JSONObject();
+		def annotatedBy = annotatedByMap.get(annotationId);
+		if(annotatedBy!=null) {		
+			extractBasicAnnotationProperties(agentsCache, annotationOnAnnotation, annotatedBy);
+			annotationOnAnnotation.put("id", annotatedBy[IOntology.generalId]);
+			annotationOnAnnotation.put("content", annotatedBy[IOntology.content]['cnt:chars'][0]);
+			annotationsOnAnnotation.add(annotationOnAnnotation);
+			chainAnnotationsOnAnnotations(annotatedByMap, agentsCache, annotationsOnAnnotation, annotatedBy[IOntology.generalId])
 		}
 	}
 	
