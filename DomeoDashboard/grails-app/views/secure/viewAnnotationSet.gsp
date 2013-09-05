@@ -366,6 +366,7 @@
 	var tags = {};
 	var tagsCounters = {};
 	var agents = {};
+	var references = {};
 	
 	$(document).ready(function() {
 
@@ -396,7 +397,7 @@
 				  		'<div id="citation-' + data.set.id.substring(data.set.id.lastIndexOf(':')+1) + '"><img id=\"groupsSpinner\" src=\"${resource(dir:'images',file:'spinner.gif',plugin:'users-module')}\" /> Retrieving Citation</div>' 
 					);
 		  			retrieveCitation(data.set);
-		  			$('#resultsList').append("<div style='padding-top: 4px; padding-bottom: 5px'><span style='font-size:18px; padding-right: 5px;'>" + data.items.items.length + "</span>" + (data.items.items.length!=1?"Annotations":"Annotation") + "</div>");
+//		  			$('#resultsList').append("<div style='padding-top: 4px; padding-bottom: 5px'><span style='font-size:18px; padding-right: 5px;'>" + data.items.items.length + "</span>" + (data.items.items.length!=1?"Annotations":"Annotation") + " by <span style='font-size:18px; padding-right: 5px;'>" + Object.keys(agents).length + "</span>" + (Object.keys(agents).length!=1?"Contributors":"Contributor") + "</div>");
 		  			for(var i=0; i<data.items.items.length; i++) {
 		  				$('#resultsList').append(getAnnotationTitleBar(data.items.items[i], 0, false));
 		  				//if(data.items.items[i].annotatedBy && data.items.items[i].annotatedBy.length>0) {
@@ -406,8 +407,11 @@
 		  		}
 		  		
 		  		//alert(Object.keys(agents).length);
+		  		
 		  		buildAgentsList();
 		  		buildTagCloud();
+		  		buildReferenceList();
+		  		buildAnnotationTitle(data);
 	  		}
 		});
 
@@ -420,17 +424,21 @@
 		  $('#tagCloudItems a').tagcloud();
 		});
 	});
+
+	function buildAnnotationTitle(data) {
+		$('#resultsListTitle').append("<div style='padding-top: 4px; padding-bottom: 5px'><span style='font-size:18px; padding-right: 5px;'>" + data.items.items.length + "</span>" + (data.items.items.length!=1?"Annotations":"Annotation") + " by <span style='font-size:18px; padding-right: 5px;'>" + Object.keys(agents).length + "</span>" + (Object.keys(agents).length!=1?"Contributors":"Contributor") + "</div>");
+	}
 	
 	function buildAgentsList() {
 		$('#contributorsTitle').append("<div style='padding-top: 4px; padding-bottom: 5px'><span style='font-size:18px; padding-right: 5px;'>" + Object.keys(agents).length + "</span>" + (Object.keys(agents).length!=1?"Contributors":"Contributor") + "</div>");
-		var agentsBuffer = '<div style="border: 1px solid #ddd; padding:5px;">';
+		var agentsBuffer = '<div>';
 			
 		for(var i=0; i<Object.keys(agents).length; i++) {
 			if(agents[Object.keys(agents)[i]]['@type']=='foafx:Person') {
-				//agentsBuffer += "<div><table><tr><td style='width: 50px;'><img src='" + agents[Object.keys(agents)[i]]['foafx:picture'] + "' style='max-width:40px;'></td><td style='vertical-align: middle;'>" + agents[Object.keys(agents)[i]]['foafx:name'] + "</td></tr></table></div>";
-				agentsBuffer += "<div><table><tr><td style='width: 50px;'><img src='${resource(dir:'images/secure',file:'person.png')}' style='max-width:40px;'></td><td style='vertical-align: middle;'>" + agents[Object.keys(agents)[i]]['foafx:name'] + "</td></tr></table></div>";	
+				//agentsBuffer += "<div style='border:1px solid #ddd;'><table><tr><td style='width: 50px;'><img src='" + agents[Object.keys(agents)[i]]['foafx:picture'] + "' style='max-width:40px;'></td><td style='vertical-align: middle;'>" + agents[Object.keys(agents)[i]]['foafx:name'] + "</td></tr></table></div>";
+				agentsBuffer += "<div style='border-bottom:1px solid #ddd; padding: 2px;'><table><tr><td style='width: 50px;'><img src='${resource(dir:'images/secure',file:'person.png')}' style='max-width:40px;'></td><td style='vertical-align: middle;'>" + agents[Object.keys(agents)[i]]['foafx:name'] + "</td></tr></table></div>";	
 			} else if(agents[Object.keys(agents)[i]]['@type']=='foafx:Software') {
-				agentsBuffer += "<div><table><tr><td style='width: 50px;'><img src='${resource(dir:'images/secure',file:'mycomputer.png')}' style='max-width:40px;'></td><td style='vertical-align: middle;'>" + agents[Object.keys(agents)[i]]['foafx:name'] + "</td></tr></table></div>";
+				agentsBuffer += "<div style='border-bottom:1px solid #ddd; padding: 2px;'><table><tr><td style='width: 50px;'><img src='${resource(dir:'images/secure',file:'mycomputer.png')}' style='max-width:40px;'></td><td style='vertical-align: middle;'>" + agents[Object.keys(agents)[i]]['foafx:name'] + "</td></tr></table></div>";
 			}
 		}	
 			
@@ -439,11 +447,16 @@
 	}
 	
 	function buildTagCloud() {
-		$('#tagCloudTitle').append("<div style='padding-top: 4px; padding-bottom: 5px'><span style='font-size:18px; padding-right: 5px;'>" +Object.keys(tags).length + "</span>" + (Object.keys(tags).length!=1?"Tags":"Tag") + "</div>");
-		for(var i=0; i<Object.keys(tags).length; i++) {
-			$('#tagCloudItems').append('<a href="/path" rel="' + tagsCounters[tags[Object.keys(tags)[i]]['@id']] + '">' + tags[Object.keys(tags)[i]]['rdfs:label'] + '</a> ');
-		}	
-		 $('#tagCloudItems a').tagcloud();
+		if(Object.keys(tags).length>0) {
+			$('#tagCloudTitle').append("<div style='padding-top: 4px; padding-bottom: 5px'><span style='font-size:18px; padding-right: 5px;'>" +Object.keys(tags).length + "</span>" + (Object.keys(tags).length!=1?"Tags":"Tag") + "</div>");
+			for(var i=0; i<Object.keys(tags).length; i++) {
+				$('#tagCloudItems').append('<a href="/path" rel="' + tagsCounters[tags[Object.keys(tags)[i]]['@id']] + '">' + tags[Object.keys(tags)[i]]['rdfs:label'] + '</a> ');
+			}	
+			 $('#tagCloudItems a').tagcloud();
+		} else {
+			$('#tagCloudTitle').hide();
+			$('#tagCloud').hide();
+		}
 	}
 
 	function addTag(tag) {
@@ -453,6 +466,19 @@
 		} else tagsCounters[tag['@id']]=1;
 	}
 
+	function buildReferenceList() {
+		if(Object.keys(references).length>0) {
+			$('#referencesTitle').append("<div style='padding-top: 4px; border-bottom:3px solid #ddd; padding-bottom: 5px'><span style='font-size:18px; padding-right: 5px;'>" +Object.keys(references).length + "</span>" + (Object.keys(references).length!=1?"Linked publications":"Linked publication") + "</div>");
+			for(var i=0; i<Object.keys(references).length; i++) {
+				$('#references').append('<div style="padding-bottom: 6px; border-bottom:1px solid #ddd;">' + '<div style="font-weight: bold;background: #eee; padding: 5px;">' + references[Object.keys(references)[i]]['title'] + '</div> ' + references[Object.keys(references)[i]]['authorNames'] 
+					 + '. <span style="font-style:italic">' + references[Object.keys(references)[i]]['publicationInfo'] + '</span></div>');
+			}	
+		} else {
+			$('#referencesTitle').hide();
+			$('#references').hide();
+		}
+	}
+	
 	function getAnnotationTitleBar(annotation, indentation, annotationOnAnnotation) {
 		agents[annotation.createdBy['@id']] = annotation.createdBy;
 		var annotationType = annotation.type;
@@ -466,6 +492,21 @@
 				//var tag = annotation.body[0]['mp:argues']['mp:qualifiedBy'][j]['reif:resource'];
 				//tags[tag['@id']]=tag;
 				addTag(annotation.body[0]['mp:argues']['mp:qualifiedBy'][j]['reif:resource']);
+			}
+			if(annotation.body[0]['mp:argues']['mp:supportedBy']) {
+				for(var j=0; j<annotation.body[0]['mp:argues']['mp:supportedBy'].length;j++) {
+					if(annotation.body[0]['mp:argues']['mp:supportedBy'][j]['reif:resource']) {
+						var ref = annotation.body[0]['mp:argues']['mp:supportedBy'][j]['reif:resource'];
+						if(ref['@type'].contains('PublicationArticleReference')) {
+							references[ref['@id']]=ref;
+						}
+					}
+				}
+			}
+			if(annotation.body[0]['mp:argues']['mp:challengedBy']) {
+				for(var j=0; j<annotation.body[0]['mp:argues']['mp:challengedBy'].length;j++) {
+					alert('challengedBy');
+				}
 			}
 		}
 		
@@ -633,17 +674,23 @@
 	    	
 	    	
 			<div id='sidebar' class="viewerSidebar" style="padding-top: 5px;padding-bottom: 30px; padding-right:2px;">
-				<div id='contributorsTitle'></div>
-				<div id="contributors"></div>
-				<br/>
+				
 				<div id='tagCloudTitle'></div>
-				<div id="tagCloud">
+				<div id="tagCloud" style="border-top: 3px solid #ddd;padding-bottom: 18px;">
 					<div id="tagCloudItems">
 					</div>
 				</div>
+				<div id='referencesTitle'></div>
+				<div id="references" style="border-top:0px solid #ddd; padding-bottom: 18px;">
+				</div>
+				
+				<div id='contributorsTitle' ></div>
+				<div id="contributors" style="border-top: 3px solid #ddd;"></div>
+				<br/>
 			</div>
 		  	
-		  	<div id="resultsList" style="padding: 5px; padding-left: 10px; width: 615px;"></div>
+		  	<div id="resultsListTitle" style="padding-top: 5px; padding-left: 10px; width: 615px;"></div>
+		  	<div id="resultsList" style="padding-left: 10px; width: 615px;"></div>
 	    	
 		    <div class="resultsPagination"></div>
 	      	<div class="clr"></div>
