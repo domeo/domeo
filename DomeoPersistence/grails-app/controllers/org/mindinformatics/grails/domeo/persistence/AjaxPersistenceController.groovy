@@ -705,6 +705,7 @@ class AjaxPersistenceController {
 							contentTerms.append("</ul></div>");
 							annotation.put("cloud", cloudTerms.toString());
 							annotation.put("content", contentTerms);
+							annotation.put("body", annotations[i]["ao:hasTopic"]);
 						} else if(typesSet.contains(IOntology.annotationPostIt)) {
 							annotation.put("content", annotations[i][IOntology.content]['cnt:chars']);
 						} else if(typesSet.contains(IOntology.annotationAntibody)) {
@@ -713,13 +714,13 @@ class AjaxPersistenceController {
 							//annotation.put("content", annotations[i][IOntology.content]);
 						} else if(typesSet.contains(IOntology.annotationMicroPublication)) {
 							def typo = annotations[i][IOntology.content][0]["mp:argues"]['@type'].indexOf("Hypo")>0? "Hypothesis" : "Claim";
-							def content = typo + ": " + annotations[i][IOntology.content][0]["mp:argues"]["mp:hasContent"];
+							def content = "<span style='font-weight: bold;'>" +typo + "</span>: " + annotations[i][IOntology.content][0]["mp:argues"]["mp:hasContent"];
 							if(annotations[i][IOntology.content][0]["mp:argues"]["mp:supportedBy"]!=null && annotations[i][IOntology.content][0]["mp:argues"]["mp:supportedBy"].size()>0) {
-								content += '<br/><div style="margin-top:5px;">supportedBy</div>'
+								content += '<br/><div style="margin-top:5px;font-weight: bold;">Supported By:</div>'
 								for(int x=0; x<annotations[i][IOntology.content][0]["mp:argues"]["mp:supportedBy"].size(); x++) {
 									def item = annotations[i][IOntology.content][0]["mp:argues"]["mp:supportedBy"][x]["reif:resource"];
 									if(item["@type"]=="mp:DataImage") {
-										content += "<table><td style='padding:5px; padding-top: 10px; vertical-align: top;'><img src='"+ createLinkTo(dir:"images/secure", file:"database-green.gif") + "'></td><td style='padding:5px; padding-top: 10px;'>" + "<img src='" + item["ao:context"]["domeo:displaySource"] + "'></td></tr></table>"
+										content += "<table><td style='padding:5px; padding-top: 10px; vertical-align: top;'><img src='"+ createLinkTo(dir:"images/secure", file:"database-green.gif") + "'></td><td style='padding:5px; padding-top: 10px;'>" + "<img src='" + item["ao:context"]["domeo:displaySource"] + "' style='max-width:500px'></td></tr></table>"
 									} else if(item["@type"]=="mp:Statement") {
 										content += "<table><td style='padding:5px; padding-top: 10px; vertical-align: top;'><img src='"+ createLinkTo(dir:"images/secure", file:"document-green.gif") + "'></td><td style='padding:5px; padding-top: 10px;'>" + "Statement: <span style='font-weight: bold;'>" + item["mp:hasContent"] + "</span></td></tr></table>"
 									} else if(item["@type"].indexOf("ArticleReference")>0) {
@@ -728,11 +729,11 @@ class AjaxPersistenceController {
 								}
 							}
 							if(annotations[i][IOntology.content][0]["mp:argues"]["mp:challengedBy"]!=null && annotations[i][IOntology.content][0]["mp:argues"]["mp:challengedBy"].size()>0) {
-								content += '<br/><div style="margin-top:5px;">challengedBy</div>'
+								content += '<br/><div style="margin-top:5px;font-weight: bold;">Challenged By:</div>'
 								for(int x=0; x<annotations[i][IOntology.content]["mp:argues"]["mp:challengedBy"].size(); x++) {
 									def item = annotations[i][IOntology.content][0]["mp:argues"]["mp:challengedBy"][x]["reif:resource"];
 									if(item["@type"]=="mp:DataImage") {
-										content += "<table><td style='padding:5px; padding-top: 10px; vertical-align: top;'><img src='"+ createLinkTo(dir:"images/secure", file:"database-red.gif") + "'></td><td>" + "<img src='" + item["ao:context"]["domeo:displaySource"] + "'></td></tr></table><br/>"
+										content += "<table><td style='padding:5px; padding-top: 10px; vertical-align: top;'><img src='"+ createLinkTo(dir:"images/secure", file:"database-red.gif") + "'></td><td>" + "<img src='" + item["ao:context"]["domeo:displaySource"] + "' style='max-width:500px'></td></tr></table><br/>"
 									} else if(item["@type"]=="mp:Statement") {
 										content += "<table><td style='padding:5px; padding-top: 10px; vertical-align: top;'><img src='"+ createLinkTo(dir:"images/secure", file:"document-red.gif") + "'></td><td style='padding:5px; padding-top: 10px;'>" + "Statement: <span style='font-weight: bold;'>" + item["mp:hasContent"] + "</span></td></tr></table>"
 									} else if(item["@type"].indexOf("ArticleReference")>0) {
@@ -747,7 +748,7 @@ class AjaxPersistenceController {
 							
 							
 							if(annotations[i][IOntology.content][0]["mp:argues"]["mp:qualifiedBy"]!=null && annotations[i][IOntology.content][0]["mp:argues"]["mp:qualifiedBy"].size()>0) {
-								content += '<br/><div style="margin-top:5px;">qualifiedBy</div>'
+								content += '<br/><div style="margin-top:5px;font-weight: bold;">Qualified By:</div>'
 								content += '<ul class="tags">'
 								for(def kk=0; kk<annotations[i][IOntology.content][0]["mp:argues"]["mp:qualifiedBy"].size(); kk++) {
 									cloudTerms.add("'" + annotations[i][IOntology.content][0]["mp:argues"]["mp:qualifiedBy"][kk]["reif:resource"][IOntology.generalLabel] + "'");
@@ -761,6 +762,7 @@ class AjaxPersistenceController {
 							
 							annotation.put("content", content);
 							annotation.put("cloud", cloudTerms);
+							annotation.put("body", annotations[i][IOntology.content]);
 							//annotation.put("content", contentTerms);
 						}
 						

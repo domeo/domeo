@@ -5,8 +5,11 @@
 <!--[if IE 9 ]>    <html lang="en" class="no-js ie9"> <![endif]-->
 <!--[if (gt IE 9)|!(IE)]><!--> <html lang="en" class="no-js"><!--<![endif]-->
 <head>
-<g:javascript library="jquery" plugin="jquery"/>
-<meta name="layout" content="domeo-secure" />
+
+<meta name="layout" content="domeo-secure-no-jquery" />
+<script src="${resource(dir:'js',file:'jquery-1.9.1.js')}"></script>
+<script src="${resource(dir:'js',file:'jquery-ui-1.10.3.js')}"></script>
+<script src="${resource(dir:'js',file:'jquery.tagcloud.js')}"></script>
 <title>Set viewer</title>
 	<style>
 		ul.bar
@@ -196,9 +199,177 @@
 	padding-left: 5px;
 	font-style:italic;
 }
+
+.viewerSidebar {
+	float: right;
+	width: 332px;
+	margin-right: 8px;
+}
+
+#content a:hover {
+	color: #333;
+}
+
+#banner-secondary p.intro {
+	padding: 0;
+	float: left;
+	width: 50%;
+}
+
+#banner-secondary .download-box {
+	border: 1px solid #aaa;
+	background: #333;
+	background: -moz-linear-gradient(left, #333 0%, #444 100%);
+	background: -webkit-linear-gradient(left, #333 0%, #444 100%);
+	background: -o-linear-gradient(left, #333 0%, #444 100%);
+	background: linear-gradient(to right, #333 0%, #444 100%);
+	float: right;
+	width: 40%;
+	text-align: center;
+	font-size: 20px;
+	padding: 10px;
+	border-radius: 5px;
+	box-shadow: 0 0 8px rgba(0, 0, 0, 0.8);
+}
+
+#banner-secondary .download-box h2 {
+	color: #71D1FF;
+	font-size: 26px;
+}
+
+#banner-secondary .download-box .button {
+	float: none;
+	display: block;
+	margin-top: 15px;
+}
+
+#banner-secondary .download-box p {
+	margin: 15px 0 5px;
+}
+
+#banner-secondary .download-option {
+	width: 45%;
+	float: left;
+	font-size: 16px;
+}
+
+#banner-secondary .download-legacy {
+	float: right;
+}
+
+#banner-secondary .download-option span {
+	display: block;
+	font-size: 14px;
+	color: #71D1FF;
+}
+
+#content .dev-links {
+	float: right;
+	width: 30%;
+	margin: -15px -25px .5em 1em;
+	padding: 1em;
+	border: 1px solid #666;
+	border-width: 0 0 1px 1px;
+	border-radius: 0 0 0 5px;
+	box-shadow: -2px 2px 10px -2px #666;
+}
+
+#content .dev-links ul {
+	margin: 0;
+}
+
+#content .dev-links li {
+	padding: 0;
+	margin: .25em 0 .25em 1em;
+	background-image: none;
+}
+
+.demo-list {
+	float: right;
+	width: 25%;
+}
+
+.demo-list h2 {
+	font-weight: normal;
+	margin-bottom: 0;
+}
+
+#content .demo-list ul {
+	width: 100%;
+	border-top: 1px solid #ccc;
+	margin: 0;
+}
+
+#content .demo-list li {
+	border-bottom: 1px solid #ccc;
+	margin: 0;
+	padding: 0;
+	background: #eee;
+}
+
+#content .demo-list .active {
+	background: #fff;
+}
+
+#content .demo-list a {
+	text-decoration: none;
+	display: block;
+	font-weight: bold;
+	font-size: 13px;
+	color: #3f3f3f;
+	text-shadow: 1px 1px #fff;
+	padding: 2% 4%;
+}
+
+.demo-frame {
+	width: 70%;
+	height: 350px;
+}
+
+.view-source a {
+	cursor: pointer;
+}
+
+.view-source > div {
+	overflow: hidden;
+	display: none;
+}
+
+@media all and (max-width: 600px) {
+	#banner-secondary p.intro,
+	#banner-secondary .download-box {
+		float: none;
+		width: auto;
+	}
+
+	#banner-secondary .download-box {
+		overflow: auto;
+	}
+}
+
+@media only screen and (max-width: 480px) {
+	#content .dev-links {
+		width: 55%;
+		margin: -15px -29px .5em 1em;
+		overflow: hidden;
+	}
+}
+
 	</style>
+	
+	 <script>
+
+</script>
 	<script type="text/javascript">
+
+	// Model
+	var tags = {};
+	var tagsCounters = {};
+	var agents = {};
+	
 	$(document).ready(function() {
+
+		$("#accordion").accordion({ heightStyle: "fill" });
 		$('#progressIcon').css("display","block");
 	
 		var dataToSend = { userId: '${loggedUser.id}', setUri:'${setUri}' };
@@ -225,25 +396,84 @@
 				  		'<div id="citation-' + data.set.id.substring(data.set.id.lastIndexOf(':')+1) + '"><img id=\"groupsSpinner\" src=\"${resource(dir:'images',file:'spinner.gif',plugin:'users-module')}\" /> Retrieving Citation</div>' 
 					);
 		  			retrieveCitation(data.set);
-		  			$('#resultsList').append("<span style='font-size:18px; padding-right: 5px;'>" + data.items.items.length + "</span>" + (data.items.items.length!=1?"Annotations":"Annotation") + "<br/>");
+		  			$('#resultsList').append("<div style='padding-top: 4px; padding-bottom: 5px'><span style='font-size:18px; padding-right: 5px;'>" + data.items.items.length + "</span>" + (data.items.items.length!=1?"Annotations":"Annotation") + "</div>");
 		  			for(var i=0; i<data.items.items.length; i++) {
 		  				$('#resultsList').append(getAnnotationTitleBar(data.items.items[i], 0, false));
-		  				$('#resultsList').append("<br/>");
 		  				//if(data.items.items[i].annotatedBy && data.items.items[i].annotatedBy.length>0) {
 		  				//	$('#resultsList').append(getAnnotationTitleBar(data.items.items[i].annotatedBy[0], 20));
 			  			//}
 			  		}
 		  		}
+		  		
+		  		//alert(Object.keys(agents).length);
+		  		buildAgentsList();
+		  		buildTagCloud();
 	  		}
 		});
+
+		$.fn.tagcloud.defaults = {
+		  size: {start: 9, end: 12, unit: 'pt'},
+		  color: {start: '#999', end: '#333'}
+		};
+
+		$(function () {
+		  $('#tagCloudItems a').tagcloud();
+		});
 	});
+	
+	function buildAgentsList() {
+		$('#contributorsTitle').append("<div style='padding-top: 4px; padding-bottom: 5px'><span style='font-size:18px; padding-right: 5px;'>" + Object.keys(agents).length + "</span>" + (Object.keys(agents).length!=1?"Contributors":"Contributor") + "</div>");
+		var agentsBuffer = '<div style="border: 1px solid #ddd; padding:5px;">';
+			
+		for(var i=0; i<Object.keys(agents).length; i++) {
+			if(agents[Object.keys(agents)[i]]['@type']=='foafx:Person') {
+				//agentsBuffer += "<div><table><tr><td style='width: 50px;'><img src='" + agents[Object.keys(agents)[i]]['foafx:picture'] + "' style='max-width:40px;'></td><td style='vertical-align: middle;'>" + agents[Object.keys(agents)[i]]['foafx:name'] + "</td></tr></table></div>";
+				agentsBuffer += "<div><table><tr><td style='width: 50px;'><img src='${resource(dir:'images/secure',file:'person.png')}' style='max-width:40px;'></td><td style='vertical-align: middle;'>" + agents[Object.keys(agents)[i]]['foafx:name'] + "</td></tr></table></div>";	
+			} else if(agents[Object.keys(agents)[i]]['@type']=='foafx:Software') {
+				agentsBuffer += "<div><table><tr><td style='width: 50px;'><img src='${resource(dir:'images/secure',file:'mycomputer.png')}' style='max-width:40px;'></td><td style='vertical-align: middle;'>" + agents[Object.keys(agents)[i]]['foafx:name'] + "</td></tr></table></div>";
+			}
+		}	
+			
+		agentsBuffer += '</table>';
+		$('#contributors').append(agentsBuffer);
+	}
+	
+	function buildTagCloud() {
+		$('#tagCloudTitle').append("<div style='padding-top: 4px; padding-bottom: 5px'><span style='font-size:18px; padding-right: 5px;'>" +Object.keys(tags).length + "</span>" + (Object.keys(tags).length!=1?"Tags":"Tag") + "</div>");
+		for(var i=0; i<Object.keys(tags).length; i++) {
+			$('#tagCloudItems').append('<a href="/path" rel="' + tagsCounters[tags[Object.keys(tags)[i]]['@id']] + '">' + tags[Object.keys(tags)[i]]['rdfs:label'] + '</a> ');
+		}	
+		 $('#tagCloudItems a').tagcloud();
+	}
+
+	function addTag(tag) {
+		tags[tag['@id']]=tag;
+		if(tagsCounters[tag['@id']]) {
+			tagsCounters[tag['@id']]=tagsCounters[tag['@id']]+1
+		} else tagsCounters[tag['@id']]=1;
+	}
 
 	function getAnnotationTitleBar(annotation, indentation, annotationOnAnnotation) {
+		agents[annotation.createdBy['@id']] = annotation.createdBy;
+		var annotationType = annotation.type;
+		if(annotationType=='ao:Qualifier') {
+			for(var j=0; j<annotation.body.length;j++) {
+				addTag(annotation.body[j]);
+				//tags[annotation.body[j]['@id']]=annotation.body[j];
+			}
+		} else if(annotationType=='ao:MicroPublicationAnnotation') {
+			for(var j=0; j<annotation.body[0]['mp:argues']['mp:qualifiedBy'].length;j++) {
+				//var tag = annotation.body[0]['mp:argues']['mp:qualifiedBy'][j]['reif:resource'];
+				//tags[tag['@id']]=tag;
+				addTag(annotation.body[0]['mp:argues']['mp:qualifiedBy'][j]['reif:resource']);
+			}
+		}
+		
 		return '<div style="padding-left: ' + indentation + 'px; padding-right: ' + indentation + 'px;padding-bottom: 10px;">' + 
 			'<div style="border: 1px solid #ddd;">' +
 				'<table width="100%" class="barContainer">' +
 					'<tr>' +
-						'<td width="600px">' +
+						'<td width="500px">' +
 							'<div class="topBar">' +
 								'<div class="titleBar"><span>' + annotation.label + '</span> ' +
 									//'created on <span>' + annotation.createdOn + '</span> by ' +
@@ -301,7 +531,7 @@
 	       	'</blockquote>';
 	    else return '<div class="contextTitle">Annotating: </div>' + 
 	    	'<blockquote class="style4">' +
-	       		'<img src="' + annotation.image+ '">' +
+	       		'<img src="' + annotation.display+ '" style="max-width:500px">' +
 	       		'</blockquote>' +
 	       	'</div>' + '</div>' ;
 	}
@@ -371,9 +601,16 @@
 		  	  	}
 	  	  	}
 		});
-	}
+	}  	
 	
-		  	
+	function edit(annotationId, url) {
+		// document.location = '${appBaseUrl}/web/domeo?annotationId=' + annotationId;
+		document.location = '${appBaseUrl}/web/domeo?url=' + encodeURIComponent(url) + '&setId=' + encodeURIComponent(annotationId);
+	}
+
+	function display(userId) {
+		document.location = '${appBaseUrl}/secure/user/' + userId;
+	}
 	</script>
 </head>
 <body>
@@ -393,13 +630,26 @@
 		    	</td></tr>
 		    </table>
 	    	<div id="resultsIntro" style="padding: 10px; padding-left: 10px; width: 960px; background: #ddd;"></div>
-	    	<div id="resultsList" style="padding: 5px; padding-left: 10px; width: 715px;">
-
-		    </div>
+	    	
+	    	
+			<div id='sidebar' class="viewerSidebar" style="padding-top: 5px;padding-bottom: 30px; padding-right:2px;">
+				<div id='contributorsTitle'></div>
+				<div id="contributors"></div>
+				<br/>
+				<div id='tagCloudTitle'></div>
+				<div id="tagCloud">
+					<div id="tagCloudItems">
+					</div>
+				</div>
+			</div>
+		  	
+		  	<div id="resultsList" style="padding: 5px; padding-left: 10px; width: 615px;"></div>
+	    	
 		    <div class="resultsPagination"></div>
 	      	<div class="clr"></div>
 	      	<br/><br/>
 	    </div>
 	</div>
+
 </body>
 </html>
