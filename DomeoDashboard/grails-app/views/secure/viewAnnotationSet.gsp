@@ -56,11 +56,7 @@
 			border: 4px #fff solid;
 		}
 		
-		.contextTitle {
-			text-align: left;
-			padding-left: 5px;
-			border-top: 4px #fff solid;
-		}
+
 		
 		.context {
 			padding: 10px;
@@ -71,41 +67,10 @@
 			border-left: 4px #fff solid;
 			border-right: 4px #fff solid;
 		}
+
+
 		
-		blockquote.style2 {
-		  font: 14px/22px normal helvetica, sans-serif;
-		  margin-top: 10px;
-		  margin-bottom: 10px;
-		  margin-left: 10px;
-		  padding-left: 15px;
-		  border-left: 3px solid #ccc;
-		} 
-		
-		blockquote.style4 {
-		  font: 14px/20px;
-		  padding-left: 40px;
-		  padding-right: 10px;
-		  min-height: 40px;
-		  margin: 5px;
-		  background-image: url(../../images/secure/quotes.gif);
-		  background-position: middle left;
-		  background-repeat: no-repeat;
-		  text-indent: 5px;
-		} 
-		
-		.prefix {
-			color: #aaa;
-			font-style: italic;
-		}
-		
-		.match {
-			font-weight: bold;
-		}
-		
-		.suffix {
-			color: #aaa;
-			font-style: italic;
-		}
+
 		
 		.tags{
 	margin:0;
@@ -365,6 +330,8 @@
 
 <g:render template="/secure/components/domeo-agents-scripts" />
 <g:render template="/secure/components/domeo-tags-scripts" />
+<g:render template="/secure/components/domeo-references-scripts" />
+<g:render template="/secure/components/domeo-annotations-scripts" />
 
 <script type="text/javascript">
 
@@ -372,9 +339,6 @@
 	var appBaseUrl = '${appBaseUrl}';
 	
 	// Model
-	var agents = {};
-	var references = {};
-
 	
 	$(document).ready(function() {
 
@@ -428,18 +392,7 @@
 	}
 	
 
-	function buildReferenceList() {
-		if(Object.keys(references).length>0) {
-			$('#referencesTitle').append("<div style='padding-top: 4px; border-bottom:3px solid #ddd; padding-bottom: 5px'><span style='font-size:18px; padding-right: 5px;'>" +Object.keys(references).length + "</span>" + (Object.keys(references).length!=1?"Linked publications":"Linked publication") + "</div>");
-			for(var i=0; i<Object.keys(references).length; i++) {
-				$('#references').append('<div style="padding-bottom: 6px; border-bottom:1px solid #ddd;">' + '<div style="font-weight: bold;background: #eee; padding: 5px;">' + references[Object.keys(references)[i]]['title'] + '</div> ' + references[Object.keys(references)[i]]['authorNames'] 
-					 + '. <span style="font-style:italic">' + references[Object.keys(references)[i]]['publicationInfo'] + '</span></div>');
-			}	
-		} else {
-			$('#referencesTitle').hide();
-			$('#references').hide();
-		}
-	}
+
 	
 	function getAnnotationTitleBar(annotation, indentation, annotationOnAnnotation) {
 		agents[annotation.createdBy['@id']] = annotation.createdBy;
@@ -477,15 +430,7 @@
 				'<table width="100%" class="barContainer">' +
 					'<tr>' +
 						'<td width="500px">' +
-							'<div class="topBar">' +
-								'<div class="titleBar"><span>' + annotation.label + '</span> ' +
-						       		' by ' + injectAgentLabel(annotation.createdBy) + 
-						       		'<br/>' +
-						       	'</div>' +
-						       	'<div class="provenanceBar">' +
-						       		'Last saved on <span>' + annotation.lastSavedOn + //'</span> with version <span>' + annotation.version +
-						       	'</div>' +
-							'</div>' +
+							injectAnnotationTopBar(annotation) +
 						'</td>' +
 						'<td>' +
 							getAnnotationCommentsCounter(annotation) +
@@ -520,22 +465,6 @@
 		else return '';
 	} 
 
-	function getAnnotationContext(annotation) {
-		if(annotation.match) 
-		return '<div class="contextTitle">Annotating: </div>' +
-			'<blockquote class="style4">' +
-    			'...' +
-	       		'<span ex:content=".prefix" class="prefix">' + annotation.prefix + '</span>' +
-	       		'<span ex:content=".match" class="match">' + annotation.match + '</span>' +
-	       		'<span ex:content=".suffix" class="suffix">' + annotation.suffix + '</span>' +
-	       		'...' +
-	       	'</blockquote>';
-	    else return '<div class="contextTitle">Annotating: </div>' + 
-	    	'<blockquote class="style4">' +
-	       		'<img src="' + annotation.display+ '" style="max-width:500px">' +
-	       		'</blockquote>' +
-	       	'</div>' + '</div>' ;
-	}
 
 	function getTitle(item) {
 		return '<span style="font-weight: bold;">' + item.label + '</span>';

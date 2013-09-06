@@ -32,6 +32,8 @@ var CLASS_SOFTWARE = 'foafx:Software';
 var USER_PREFIX = '/secure/user/';
 var SOFTWARE_PREFIX = '/secure/software/';
 
+var agents = {};
+
 function buildAgentsList() {
 	$('#contributorsTitle').append("<div style='padding-top: 4px; padding-bottom: 5px'>" +
 		"<span style='font-size:18px; padding-right: 5px;'>" + Object.keys(agents).length + "</span>" + 
