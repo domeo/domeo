@@ -663,7 +663,7 @@ class AjaxPersistenceController {
 							annotation.put("createdByName", agentsCache.get(annotations[i][IOntology.pavCreatedBy])['foafx:name']);
 						
 							//def up = agentsCache.get(annotations[i][IOntology.pavCreatedBy]['@id'])['@id'].toString();
-							def up = agentsCache.get(annotations[i][IOntology.pavCreatedBy])['@id'].toString();
+							def up = agentsCache.get(annotations[i][IOntology.pavCreatedBy])['@id'].toString();           
 							annotation.put("createdById", up.replaceAll(~/urn:person:uuid:/, ""));
 							//annotation.put("createdByUri", agentsCache.get(annotations[i][IOntology.pavCreatedBy]['@id'])['@id']);
 							annotation.put("createdByUri", agentsCache.get(annotations[i][IOntology.pavCreatedBy])['@id']);
@@ -672,9 +672,32 @@ class AjaxPersistenceController {
 							
 							// Comment dependent
 							annotation.put("content", annotations[i][IOntology.content]);
-							
+						
 							if(annotations[i][IOntology.hasTarget][0][IOntology.selector]!=null && annotations[i][IOntology.hasTarget][0][IOntology.selector][IOntology.generalType] == IOntology.selectorAnnotation) {
 								println 'Comment ' +  annotations[i][IOntology.generalId] + ' on ' + annotations[i][IOntology.hasTarget][0][IOntology.selector]['ao:annotation']
+								commentsMap.put(annotations[i][IOntology.generalId], annotations[i][IOntology.hasTarget][0][IOntology.selector]['ao:annotation']);
+								annotatedByMap.put(annotations[i][IOntology.hasTarget][0][IOntology.selector]['ao:annotation'], annotations[i]);
+							}
+						} else if(typesSet.contains(IOntology.annotationCuration)) {
+							annotation.put("createdOn", annotations[i][IOntology.pavCreatedOn]);
+							//annotation.put("createdBy", agentsCache.get(annotations[i][IOntology.pavCreatedBy]['@id']));
+							annotation.put("createdBy", agentsCache.get(annotations[i][IOntology.pavCreatedBy]));
+							//annotation.put("createdByName", agentsCache.get(annotations[i][IOntology.pavCreatedBy]['@id'])['foafx:name']);
+							annotation.put("createdByName", agentsCache.get(annotations[i][IOntology.pavCreatedBy])['foafx:name']);
+						
+							//def up = agentsCache.get(annotations[i][IOntology.pavCreatedBy]['@id'])['@id'].toString();
+							def up = agentsCache.get(annotations[i][IOntology.pavCreatedBy])['@id'].toString();
+							annotation.put("createdById", up.replaceAll(~/urn:person:uuid:/, ""));
+							//annotation.put("createdByUri", agentsCache.get(annotations[i][IOntology.pavCreatedBy]['@id'])['@id']);
+							annotation.put("createdByUri", agentsCache.get(annotations[i][IOntology.pavCreatedBy])['@id']);
+							annotation.put("lastSavedOn", annotations[i][IOntology.pavLastSavedOn]);
+							annotation.put("version", annotations[i][IOntology.pavVersionNumber]);
+							
+							// Comment dependent         
+							annotation.put("content", annotations[i][IOntology.content][0]['rdf:value']);
+							
+							if(annotations[i][IOntology.hasTarget][0][IOntology.selector]!=null && annotations[i][IOntology.hasTarget][0][IOntology.selector][IOntology.generalType] == IOntology.selectorAnnotation) {
+								println 'Curation ' +  annotations[i][IOntology.generalId] + ' on ' + annotations[i][IOntology.hasTarget][0][IOntology.selector]['ao:annotation']
 								commentsMap.put(annotations[i][IOntology.generalId], annotations[i][IOntology.hasTarget][0][IOntology.selector]['ao:annotation']);
 								annotatedByMap.put(annotations[i][IOntology.hasTarget][0][IOntology.selector]['ao:annotation'], annotations[i]);
 							}
@@ -777,6 +800,7 @@ class AjaxPersistenceController {
 						} else if(annotations[i][IOntology.hasTarget][0][IOntology.selector]!=null && annotations[i][IOntology.hasTarget][0][IOntology.selector][IOntology.generalType] == IOntology.selectorAnnotation) {
 							// println 'Comment on ' + annotations[i][IOntology.hasTarget][0][IOntology.selector]['ao:annotation']
 							//commentsMap.put(annotations[i][IOntology.generalId], annotations[i][IOntology.hasTarget][0][IOntology.selector]['ao:annotation']);
+							//annotationsMap.put(annotations[i][IOntology.generalId], annotation);
 						} else if(annotations[i][IOntology.hasTarget][0][IOntology.selector]!=null && annotations[i][IOntology.hasTarget][0][IOntology.selector][IOntology.generalType] == IOntology.selectorImage) {
 							annotation.put("imageInDocumentSelector", annotations[i][IOntology.hasTarget][0][IOntology.selector][IOntology.generalType]);
 							annotation.put("image", annotations[i][IOntology.hasTarget][0][IOntology.source]);
@@ -864,7 +888,11 @@ class AjaxPersistenceController {
 		if(annotatedBy!=null) {		
 			extractBasicAnnotationProperties(agentsCache, annotationOnAnnotation, annotatedBy);
 			annotationOnAnnotation.put("id", annotatedBy[IOntology.generalId]);
-			annotationOnAnnotation.put("content", annotatedBy[IOntology.content]['cnt:chars'][0]);
+			if(annotatedBy['@type'].contains(IOntology.annotationComment)) {
+				annotationOnAnnotation.put("content", annotatedBy[IOntology.content][0]['cnt:chars']);
+			} else if(annotatedBy['@type'].contains(IOntology.annotationCuration)) {
+				annotationOnAnnotation.put("content", annotatedBy[IOntology.content][0]['rdf:value']);
+			}
 			annotationsOnAnnotation.add(annotationOnAnnotation);
 			chainAnnotationsOnAnnotations(annotatedByMap, agentsCache, annotationsOnAnnotation, annotatedBy[IOntology.generalId])
 		}
