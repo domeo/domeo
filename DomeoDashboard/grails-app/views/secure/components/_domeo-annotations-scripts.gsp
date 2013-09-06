@@ -71,6 +71,16 @@ blockquote.contextQuote {
 </style>
 <script type="text/javascript">
 
+function  processAnnotation(annotation) {
+	agents[annotation.createdBy['@id']] = annotation.createdBy;
+	var annotationType = annotation.type;
+	if(annotationType=='ao:Qualifier') {
+		processQualifier(annotation);
+	} else if(annotationType=='ao:MicroPublicationAnnotation') {
+		processMicroPublication(annotation);
+	}
+}
+
 function injectAnnotationTopBar(annotation) {
 	return '<div class="topBar">' +
 		'<div class="titleBar"><span>' + annotation.label + '</span> ' +

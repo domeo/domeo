@@ -327,6 +327,7 @@
 <g:render template="/secure/components/domeo-tags-scripts" />
 <g:render template="/secure/components/domeo-references-scripts" />
 <g:render template="/secure/components/domeo-annotations-scripts" />
+<g:render template="/secure/components/domeo-comments-scripts" />
 <g:render template="/secure/components/domeo-annotations-qualifiers-scripts" />
 <g:render template="/secure/components/domeo-annotations-micropublications-scripts" />
 
@@ -366,10 +367,10 @@
 		  			retrieveCitation(data.set);
 //		  			$('#resultsList').append("<div style='padding-top: 4px; padding-bottom: 5px'><span style='font-size:18px; padding-right: 5px;'>" + data.items.items.length + "</span>" + (data.items.items.length!=1?"Annotations":"Annotation") + " by <span style='font-size:18px; padding-right: 5px;'>" + Object.keys(agents).length + "</span>" + (Object.keys(agents).length!=1?"Contributors":"Contributor") + "</div>");
 		  			for(var i=0; i<data.items.items.length; i++) {
-		  				$('#resultsList').append(getAnnotationTitleBar(data.items.items[i], 0, false));
-		  				//if(data.items.items[i].annotatedBy && data.items.items[i].annotatedBy.length>0) {
-		  				//	$('#resultsList').append(getAnnotationTitleBar(data.items.items[i].annotatedBy[0], 20));
-			  			//}
+		  				processAnnotation(data.items.items[i]);
+		  				$('#resultsList').append(getAnnotationView(i, data.items.items[i], 0, false));
+		  				$('#annotationCounters_'+i).append(getAnnotationCommentsCounter(data.items.items[i]));
+		  				$('#annotationCounters_aoa'+i).append(getAnnotationComments(data.items.items[i]));
 			  		}
 		  		}
 		  		
@@ -387,19 +388,8 @@
 	function buildAnnotationTitle(data) {
 		$('#resultsListTitle').append("<div style='padding-top: 4px; padding-bottom: 5px'><span style='font-size:18px; padding-right: 5px;'>" + data.items.items.length + "</span>" + (data.items.items.length!=1?"Annotations":"Annotation") + " by <span style='font-size:18px; padding-right: 5px;'>" + Object.keys(agents).length + "</span>" + (Object.keys(agents).length!=1?"Contributors":"Contributor") + "</div>");
 	}
-	
 
-
-	
-	function getAnnotationTitleBar(annotation, indentation, annotationOnAnnotation) {
-		agents[annotation.createdBy['@id']] = annotation.createdBy;
-		var annotationType = annotation.type;
-		if(annotationType=='ao:Qualifier') {
-			processQualifier(annotation);
-		} else if(annotationType=='ao:MicroPublicationAnnotation') {
-			processMicroPublication(annotation);
-		}
-		
+	function getAnnotationView(index, annotation, indentation, annotationOnAnnotation) {
 		return '<div style="padding-left: ' + indentation + 'px; padding-right: ' + indentation + 'px;padding-bottom: 10px;">' + 
 			'<div style="border: 1px solid #ddd;">' +
 				'<table width="100%" class="barContainer">' +
@@ -408,38 +398,18 @@
 							injectAnnotationTopBar(annotation) +
 						'</td>' +
 						'<td>' +
-							getAnnotationCommentsCounter(annotation) +
+							'<div id="annotationCounters-' + index + '"></div>' +
 						'</td>' +
 					'</tr>' +
 				'</table>' +		
 				'<div class="annbody">' +
 	   				'<div class="annbody-content">' + annotation.content + '</div>' +
 	   				(!annotationOnAnnotation? getAnnotationContext(annotation):'')+
-	   				getAnnotationComments(annotation) +
+	   				'<div id="annotationCounters_aoa' + index + '"></div>' +
 	   				'</div>' +
 	   		'</div>' +
    		'</div>';
 	}
-
-	function getAnnotationComments(annotation) {
-		if(annotation.annotatedBy && annotation.annotatedBy.length>0) {
-			var comments = '<div class="contextTitle">'+ getAnnotationCommentsCounter(annotation) +'</div>';
-			for(var j=0; j<annotation.annotatedBy.length; j++) {
-				comments += getAnnotationTitleBar(annotation.annotatedBy[j], 20, true);
-			}
-			return comments;
-		} else return "";
-	}
-
-	function getAnnotationCommentsCounter(annotation) {
-		if (annotation.commentsCounter)
-			return 	'<div class="miscBar">' +
-	   		'<span ex:if-exists=".commentsCounter">' +
-				'<img src="${resource(dir:'images/secure',file:'comments16x16.png',plugin:'users-module')}"/> <span>' + annotation.commentsCounter + '</span> ' + (annotation.commentsCounter==1?'Comment':'Comments') +
-			'</span></div>';
-		else return '';
-	} 
-
 
 	function getTitle(item) {
 		return '<span style="font-weight: bold;">' + item.label + '</span>';
