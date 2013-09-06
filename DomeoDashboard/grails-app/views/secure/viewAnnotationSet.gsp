@@ -10,6 +10,8 @@
 <script src="${resource(dir:'js',file:'jquery-1.9.1.js')}"></script>
 <script src="${resource(dir:'js',file:'jquery-ui-1.10.3.js')}"></script>
 <script src="${resource(dir:'js',file:'jquery.tagcloud.js')}"></script>
+
+
 <title>Set viewer</title>
 	<style>
 		ul.bar
@@ -360,17 +362,22 @@
 	 <script>
 
 </script>
-	<script type="text/javascript">
 
+<g:render template="/secure/components/domeo-agents-scripts" />
+<g:render template="/secure/components/domeo-tags-scripts" />
+
+<script type="text/javascript">
+
+	// Contract
+	var appBaseUrl = '${appBaseUrl}';
+	
 	// Model
-	var tags = {};
-	var tagsCounters = {};
 	var agents = {};
 	var references = {};
+
 	
 	$(document).ready(function() {
 
-		$("#accordion").accordion({ heightStyle: "fill" });
 		$('#progressIcon').css("display","block");
 	
 		var dataToSend = { userId: '${loggedUser.id}', setUri:'${setUri}' };
@@ -388,8 +395,7 @@
 		  			$("#resultsSummary").html("Displaying Set");
 			  		set = data[0];
 
-				  	$("#resultsSummary").html("Saved by " + "<a onclick=\"javascript:display('" + data.set.createdById + "')\" style=\"cursor: pointer;\">" + 
-				  			data.set.createdBy['foafx:name'] + "</a> on " + data.set.createdOn + "<br/>" + getVersion(data.set)
+				  	$("#resultsSummary").html("Saved by " + injectUserLabel(data.set.createdBy) + " on " + data.set.createdOn + "<br/>" + getVersion(data.set)
 				  	     + displayAccessType(data.set.permissions['permissions:accessType']) + displayLock(data.set.permissions['permissions:isLocked']));
 				  	$("#resultsStats").append('<table width="160px;"><tr><td align="left">'+getModifyLink(data, data.set.target) + '</td><td align="left"> ' + getHistoryLink(data) + '</td></tr><tr><td align="left">' + getShareLink(data) + '</td><td></td></tr></table>');
 				  	$('#resultsIntro').append(
@@ -415,56 +421,12 @@
 	  		}
 		});
 
-		$.fn.tagcloud.defaults = {
-		  size: {start: 9, end: 12, unit: 'pt'},
-		  color: {start: '#999', end: '#333'}
-		};
-
-		$(function () {
-		  $('#tagCloudItems a').tagcloud();
-		});
 	});
 
 	function buildAnnotationTitle(data) {
 		$('#resultsListTitle').append("<div style='padding-top: 4px; padding-bottom: 5px'><span style='font-size:18px; padding-right: 5px;'>" + data.items.items.length + "</span>" + (data.items.items.length!=1?"Annotations":"Annotation") + " by <span style='font-size:18px; padding-right: 5px;'>" + Object.keys(agents).length + "</span>" + (Object.keys(agents).length!=1?"Contributors":"Contributor") + "</div>");
 	}
 	
-	function buildAgentsList() {
-		$('#contributorsTitle').append("<div style='padding-top: 4px; padding-bottom: 5px'><span style='font-size:18px; padding-right: 5px;'>" + Object.keys(agents).length + "</span>" + (Object.keys(agents).length!=1?"Contributors":"Contributor") + "</div>");
-		var agentsBuffer = '<div>';
-			
-		for(var i=0; i<Object.keys(agents).length; i++) {
-			if(agents[Object.keys(agents)[i]]['@type']=='foafx:Person') {
-				//agentsBuffer += "<div style='border:1px solid #ddd;'><table><tr><td style='width: 50px;'><img src='" + agents[Object.keys(agents)[i]]['foafx:picture'] + "' style='max-width:40px;'></td><td style='vertical-align: middle;'>" + agents[Object.keys(agents)[i]]['foafx:name'] + "</td></tr></table></div>";
-				agentsBuffer += "<div style='border-bottom:1px solid #ddd; padding: 2px;'><table><tr><td style='width: 50px;'><img src='${resource(dir:'images/secure',file:'person.png')}' style='max-width:40px;'></td><td style='vertical-align: middle;'>" + agents[Object.keys(agents)[i]]['foafx:name'] + "</td></tr></table></div>";	
-			} else if(agents[Object.keys(agents)[i]]['@type']=='foafx:Software') {
-				agentsBuffer += "<div style='border-bottom:1px solid #ddd; padding: 2px;'><table><tr><td style='width: 50px;'><img src='${resource(dir:'images/secure',file:'mycomputer.png')}' style='max-width:40px;'></td><td style='vertical-align: middle;'>" + agents[Object.keys(agents)[i]]['foafx:name'] + "</td></tr></table></div>";
-			}
-		}	
-			
-		agentsBuffer += '</table>';
-		$('#contributors').append(agentsBuffer);
-	}
-	
-	function buildTagCloud() {
-		if(Object.keys(tags).length>0) {
-			$('#tagCloudTitle').append("<div style='padding-top: 4px; padding-bottom: 5px'><span style='font-size:18px; padding-right: 5px;'>" +Object.keys(tags).length + "</span>" + (Object.keys(tags).length!=1?"Tags":"Tag") + "</div>");
-			for(var i=0; i<Object.keys(tags).length; i++) {
-				$('#tagCloudItems').append('<a href="/path" rel="' + tagsCounters[tags[Object.keys(tags)[i]]['@id']] + '">' + tags[Object.keys(tags)[i]]['rdfs:label'] + '</a> ');
-			}	
-			 $('#tagCloudItems a').tagcloud();
-		} else {
-			$('#tagCloudTitle').hide();
-			$('#tagCloud').hide();
-		}
-	}
-
-	function addTag(tag) {
-		tags[tag['@id']]=tag;
-		if(tagsCounters[tag['@id']]) {
-			tagsCounters[tag['@id']]=tagsCounters[tag['@id']]+1
-		} else tagsCounters[tag['@id']]=1;
-	}
 
 	function buildReferenceList() {
 		if(Object.keys(references).length>0) {
@@ -517,13 +479,11 @@
 						'<td width="500px">' +
 							'<div class="topBar">' +
 								'<div class="titleBar"><span>' + annotation.label + '</span> ' +
-									//'created on <span>' + annotation.createdOn + '</span> by ' +
-						       		' by <a ex:if-exists=".createdByUri" ex:href-subcontent="http://www.google.com/search/?q={{.createdByUri}}">' +
-						       			'<span>' + annotation.createdBy['foafx:name'] + '</span></a>' +
+						       		' by ' + injectAgentLabel(annotation.createdBy) + 
 						       		'<br/>' +
 						       	'</div>' +
 						       	'<div class="provenanceBar">' +
-						       		//'Last saved on <span>' + annotation.lastSavedOn + '</span> <span ex:if-exists=".version">with version <span>' + annotation.version + '</span></span>' +
+						       		'Last saved on <span>' + annotation.lastSavedOn + //'</span> with version <span>' + annotation.version +
 						       	'</div>' +
 							'</div>' +
 						'</td>' +
@@ -555,7 +515,7 @@
 		if (annotation.commentsCounter)
 			return 	'<div class="miscBar">' +
 	   		'<span ex:if-exists=".commentsCounter">' +
-				'<img src="${resource(dir:'images/secure',file:'comments16x16.png',plugin:'users-module')}"/> <span>' + annotation.commentsCounter + '</span> Comments' +
+				'<img src="${resource(dir:'images/secure',file:'comments16x16.png',plugin:'users-module')}"/> <span>' + annotation.commentsCounter + '</span> ' + (annotation.commentsCounter==1?'Comment':'Comments') +
 			'</span></div>';
 		else return '';
 	} 
@@ -649,9 +609,15 @@
 		document.location = '${appBaseUrl}/web/domeo?url=' + encodeURIComponent(url) + '&setId=' + encodeURIComponent(annotationId);
 	}
 
-	function display(userId) {
-		document.location = '${appBaseUrl}/secure/user/' + userId;
+
+	function displaySoftware(softwareId) {
+		alert('Not implemented: ' + softwareId);
 	}
+	
+	function displayTag(resource) {
+		alert('Not implemented: ' + resource['@id']);
+	}
+	
 	</script>
 </head>
 <body>
@@ -675,22 +641,19 @@
 	    	
 			<div id='sidebar' class="viewerSidebar" style="padding-top: 5px;padding-bottom: 30px; padding-right:2px;">
 				
-				<div id='tagCloudTitle'></div>
-				<div id="tagCloud" style="border-top: 3px solid #ddd;padding-bottom: 18px;">
-					<div id="tagCloudItems">
-					</div>
-				</div>
+				<g:render template="/secure/components/domeo-tags-elements" />
+
 				<div id='referencesTitle'></div>
 				<div id="references" style="border-top:0px solid #ddd; padding-bottom: 18px;">
 				</div>
 				
-				<div id='contributorsTitle' ></div>
-				<div id="contributors" style="border-top: 3px solid #ddd;"></div>
-				<br/>
+				<g:render template="/secure/components/domeo-agents-elements" />
 			</div>
 		  	
 		  	<div id="resultsListTitle" style="padding-top: 5px; padding-left: 10px; width: 615px;"></div>
-		  	<div id="resultsList" style="padding-left: 10px; width: 615px;"></div>
+		  	<div id="resultsList" style="padding-left: 10px; width: 615px;">
+		  		
+		  	</div>
 	    	
 		    <div class="resultsPagination"></div>
 	      	<div class="clr"></div>
