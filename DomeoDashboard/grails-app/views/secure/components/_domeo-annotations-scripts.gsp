@@ -25,6 +25,18 @@
  */
 --%>
 <style>
+.topBar {
+	background: #eee;
+	border: 5px #eee solid;
+}
+
+.titleBar {
+	font-weight: bold;
+}
+
+.provenanceBar {
+}
+
 .contextTitle {
 	text-align: left;
 	padding-left: 5px;

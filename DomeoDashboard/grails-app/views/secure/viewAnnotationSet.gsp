@@ -43,14 +43,9 @@
 			background: #eee;
 		}
 		
-		.topBar {
-			background: #eee;
-			border: 5px #eee solid;
-		}
+
 		
-		.titleBar {
-			font-weight: bold;
-		}
+
 		
 		.annbody-content {
 			border: 4px #fff solid;
@@ -332,6 +327,8 @@
 <g:render template="/secure/components/domeo-tags-scripts" />
 <g:render template="/secure/components/domeo-references-scripts" />
 <g:render template="/secure/components/domeo-annotations-scripts" />
+<g:render template="/secure/components/domeo-annotations-qualifiers-scripts" />
+<g:render template="/secure/components/domeo-annotations-micropublications-scripts" />
 
 <script type="text/javascript">
 
@@ -398,31 +395,9 @@
 		agents[annotation.createdBy['@id']] = annotation.createdBy;
 		var annotationType = annotation.type;
 		if(annotationType=='ao:Qualifier') {
-			for(var j=0; j<annotation.body.length;j++) {
-				addTag(annotation.body[j]);
-				//tags[annotation.body[j]['@id']]=annotation.body[j];
-			}
+			processQualifier(annotation);
 		} else if(annotationType=='ao:MicroPublicationAnnotation') {
-			for(var j=0; j<annotation.body[0]['mp:argues']['mp:qualifiedBy'].length;j++) {
-				//var tag = annotation.body[0]['mp:argues']['mp:qualifiedBy'][j]['reif:resource'];
-				//tags[tag['@id']]=tag;
-				addTag(annotation.body[0]['mp:argues']['mp:qualifiedBy'][j]['reif:resource']);
-			}
-			if(annotation.body[0]['mp:argues']['mp:supportedBy']) {
-				for(var j=0; j<annotation.body[0]['mp:argues']['mp:supportedBy'].length;j++) {
-					if(annotation.body[0]['mp:argues']['mp:supportedBy'][j]['reif:resource']) {
-						var ref = annotation.body[0]['mp:argues']['mp:supportedBy'][j]['reif:resource'];
-						if(ref['@type'].contains('PublicationArticleReference')) {
-							references[ref['@id']]=ref;
-						}
-					}
-				}
-			}
-			if(annotation.body[0]['mp:argues']['mp:challengedBy']) {
-				for(var j=0; j<annotation.body[0]['mp:argues']['mp:challengedBy'].length;j++) {
-					alert('challengedBy');
-				}
-			}
+			processMicroPublication(annotation);
 		}
 		
 		return '<div style="padding-left: ' + indentation + 'px; padding-right: ' + indentation + 'px;padding-bottom: 10px;">' + 
