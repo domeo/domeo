@@ -67,100 +67,7 @@
 		
 
 		
-		.tags{
-	margin:0;
-	padding:0;
-	position:relative;
-	right:24px;
-	bottom:0px;
-	list-style:none;
-	padding-left: 2px;
-	left:-10px;
-	display: inline;
-	}
-	
-.tags li, .tags a{
-	float:left;
-	height:16px;
-	line-height:16px;
-	position:relative;
-	font-size:11px;
-	padding-top: 2px;
-	padding-bottom: 4px;
-	}
-	
-.tags a{
-	margin-left:10px;
-	padding:0 7px 0 7px;
-	/*
-	background:#0089e0;
-	color:#fff;
-	*/
-	color:#333;
-	background:#EEEEEE;
-	border: 1px solid #CCCCCC;
-	
-	text-decoration:none;
-	-moz-border-radius-bottomright:4px;
-	-webkit-border-bottom-right-radius:4px;	
-	border-bottom-right-radius:4px;
-	-moz-border-radius-topright:4px;
-	-webkit-border-top-right-radius:4px;	
-	border-top-right-radius:4px;	
-	} 
-	
-.tags a:before{
-	content:"";
-	float:left;
-	position:absolute;
-	top:-1px;
-	left:-8px;
-	width:0;
-	height:0;
-	border-color:transparent #eee transparent transparent;
-	/*
-	border-color:transparent #0089e0 transparent transparent;
-	*/
-	border-style:solid;
-	/*
-	border-width:8px 8px 8px 0;	
-	*/	
-	border-width:10px 8px 8px 0;
-    border-color: #888;
-	}
-	
-.tags a:after{
-	content:"";
-	position:absolute;
-	top:2px;
-	left:-6px;
-	float:left;
-	width:4px;
-	height:4px;
-	-moz-border-radius:2px;
-	-webkit-border-radius:2px;
-	border-radius:2px;
-	background:#fff;
-	-moz-box-shadow:-1px -1px 2px #aaa;
-	-webkit-box-shadow:-1px -1px 2px #aaa;
-	box-shadow:-1px -1px 2px #aaa;
-	/*
-	-moz-box-shadow:-1px -1px 2px #004977;
-	-webkit-box-shadow:-1px -1px 2px #004977;
-	box-shadow:-1px -1px 2px #004977;
-	*/
-	}
-	
-.tags a:hover{background:#ddd; text-decoration: none;}	
 
-.tags a:hover:before{/*border-color:transparent #ddd transparent transparent;*/}
-
-.tags a:visited{color: #333;}
-
-.tags .source {
-	padding-left: 5px;
-	font-style:italic;
-}
 
 .viewerSidebar {
 	float: right;
@@ -318,16 +225,12 @@
 }
 
 	</style>
-	
-	 <script>
-
-</script>
 
 <g:render template="/secure/components/domeo-agents-scripts" />
 <g:render template="/secure/components/domeo-tags-scripts" />
 <g:render template="/secure/components/domeo-references-scripts" />
 <g:render template="/secure/components/domeo-annotations-scripts" />
-<g:render template="/secure/components/domeo-comments-scripts" />
+<g:render template="/secure/components/domeo-annotationsonannotation-scripts" />
 <g:render template="/secure/components/domeo-annotations-qualifiers-scripts" />
 <g:render template="/secure/components/domeo-annotations-micropublications-scripts" />
 
@@ -336,12 +239,9 @@
 	// Contract
 	var appBaseUrl = '${appBaseUrl}';
 	
-	// Model
-	
-	$(document).ready(function() {
 
+	$(document).ready(function() {
 		$('#progressIcon').css("display","block");
-	
 		var dataToSend = { userId: '${loggedUser.id}', setUri:'${setUri}' };
 		$.ajax({
 	  	  	url: "${appBaseUrl}/ajaxPersistence/jsonAnnotationSet",
@@ -369,13 +269,11 @@
 		  			for(var i=0; i<data.items.items.length; i++) {
 		  				processAnnotation(data.items.items[i]);
 		  				$('#resultsList').append(getAnnotationView(i, data.items.items[i], 0, false));
-		  				$('#annotationCounters_'+i).append(getAnnotationCommentsCounter(data.items.items[i]));
+		  				$('#annotationCounters_'+i).append("<div>"+getAnnotationCurationsCounter(data.items.items[i])+"</div>");
+		  				$('#annotationCounters_'+i).append("<div>"+getAnnotationCommentsCounter(data.items.items[i])+"</div>");		  				
 		  				$('#annotationCounters_aoa'+i).append(getAnnotationComments(data.items.items[i]));
 			  		}
 		  		}
-		  		
-		  		//alert(Object.keys(agents).length);
-		  		
 		  		buildAgentsList();
 		  		buildTagCloud();
 		  		buildReferenceList();
@@ -398,7 +296,7 @@
 							injectAnnotationTopBar(annotation) +
 						'</td>' +
 						'<td>' +
-							'<div id="annotationCounters-' + index + '"></div>' +
+							'<div id="annotationCounters_' + index + '"></div>' +
 						'</td>' +
 					'</tr>' +
 				'</table>' +		
@@ -457,6 +355,10 @@
 		return "<a onclick=\"javascript:displayHistory('" + item.set.id+ "')\" style=\"text-decoration: none; cursor: pointer;\"><img id=\"groupsSpinner\" src=\"${resource(dir:'images/secure',file:'history.png',plugin:'users-module')}\" /> History</a>";
 	}
 
+	function displayHistory(annotationSetUri) {
+		document.location = '${appBaseUrl}/secure/setHistory/' + encodeURIComponent(annotationSetUri);
+	}
+	
 	function getTarget(item) {
 		return "On  <a target='_blank' href='"+ item.target+"'>"+ item.target + " <img id=\"groupsSpinner\" src=\"${resource(dir:'images/secure',file:'external.png',plugin:'users-module')}\" /></a> ";
 	}
@@ -483,15 +385,6 @@
 		document.location = '${appBaseUrl}/web/domeo?url=' + encodeURIComponent(url) + '&setId=' + encodeURIComponent(annotationId);
 	}
 
-
-	function displaySoftware(softwareId) {
-		alert('Not implemented: ' + softwareId);
-	}
-	
-	function displayTag(resource) {
-		alert('Not implemented: ' + resource['@id']);
-	}
-	
 	</script>
 </head>
 <body>

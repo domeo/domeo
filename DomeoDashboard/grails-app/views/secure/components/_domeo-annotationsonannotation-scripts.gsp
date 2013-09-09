@@ -28,21 +28,28 @@
 
 function getAnnotationComments(annotation) {
 	if(annotation.annotatedBy && annotation.annotatedBy.length>0) {
-		var comments = '<div class="contextTitle">'+ getAnnotationCommentsCounter(annotation) +'</div>';
+		var annotations = '<div class="contextTitle">'+ getAnnotationCurationsCounter(annotation) + getAnnotationCommentsCounter(annotation) + '</div>';
 		for(var j=0; j<annotation.annotatedBy.length; j++) {
-			comments += getAnnotationView('c'+j, annotation.annotatedBy[j], 20, true);
+			annotations += getAnnotationView('c'+j, annotation.annotatedBy[j], 20, true);
 		}
-		return comments;
+		return annotations;
 	} else return "";
 }
 
 function getAnnotationCommentsCounter(annotation) {
 	if (annotation.commentsCounter)
-		return 	'<div class="miscBar">' +
-   		'<span ex:if-exists=".commentsCounter">' +
+		return '<span>' +
 			'<img src="${resource(dir:'images/secure',file:'comments16x16.png',plugin:'users-module')}"/> <span>' + annotation.commentsCounter + '</span> ' + (annotation.commentsCounter==1?'Comment':'Comments') +
-		'</span></div>';
+		'</span>';
 	else return '';
 } 
+
+function getAnnotationCurationsCounter(annotation) {
+	if (annotation.curationsCounter)
+		return 	'<span>' +
+			'<img src="${resource(dir:'images/secure',file:'cursor_arrow.png',plugin:'users-module')}"/> <span>' + annotation.curationsCounter + '</span> ' + (annotation.curationsCounter==1?'Curation':'Curations') +
+		'</span>';
+	else return '';
+}
 
 </script>

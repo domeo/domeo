@@ -26,3 +26,4 @@ show.gif - http://iconlet.com/info/21104_show-hide-level_16x16
 history48x48.png - http://www.iconlet.com/info/30411_history_48x48
 downarrow16x16.png - http://www.iconlet.com/info/34436_1downarrow_16x16
 mycomputer.png - http://iconlet.com/icon/11020/mycomputer
+cursor_arrow.png - http://iconlet.com/icon/94416/cursor-arrow

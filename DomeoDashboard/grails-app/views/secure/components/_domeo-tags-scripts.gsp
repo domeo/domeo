@@ -36,6 +36,10 @@ $(document).ready(function() {
 	};
 });
 
+function displayLinkedResource(url, label, description, source) {
+	alert('Linked resource: ' + url);
+}
+
 function buildTagCloud() {
 	if(Object.keys(tags).length>0) {
 		$('#tagCloudTitle').append("<div style='padding-top: 4px; padding-bottom: 5px'>" +
@@ -43,7 +47,7 @@ function buildTagCloud() {
 			(Object.keys(tags).length!=1?"Tags":"Tag") + 
 		"</div>");
 		for(var i=0; i<Object.keys(tags).length; i++) {
-			$('#tagCloudItems').append('<a href="' + tags[Object.keys(tags)[i]]['@id']  + '" rel="' + tagsCounters[tags[Object.keys(tags)[i]]['@id']] + '">' + tags[Object.keys(tags)[i]]['rdfs:label'] + '</a> ');
+			$('#tagCloudItems').append("<a onclick=\"javascript:displayLinkedResource('" + tags[Object.keys(tags)[i]]['@id'] + "', '" + tags[Object.keys(tags)[i]]['rdfs:label'] + "','" + tags[Object.keys(tags)[i]]['dct:description'] + "','" + tags[Object.keys(tags)[i]]['dct:source']['@id'] + "')\" style=\"cursor: pointer;\">" + tags[Object.keys(tags)[i]]['rdfs:label'] + '</a> ');
 		}	
 		 $('#tagCloudItems a').tagcloud();
 	} else {

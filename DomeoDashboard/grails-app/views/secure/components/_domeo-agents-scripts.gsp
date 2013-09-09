@@ -97,7 +97,8 @@ function injectUserTemplate(user) {
  * ============================================================================
  */
 function displaySoftware(softwareId) {
-	document.location = appBaseUrl + SOFTWARE_PREFIX + softwareId;
+	//document.location = appBaseUrl + SOFTWARE_PREFIX + softwareId;
+	alert('Software agent: ' + softwareId);
 }
 
 function injectSoftwareLabel(software) {
