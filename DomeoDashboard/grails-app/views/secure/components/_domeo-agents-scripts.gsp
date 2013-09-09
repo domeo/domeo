@@ -69,7 +69,8 @@ function injectAgentTemplate(agent) {
  * ============================================================================
  */
 function displayUser(userId) {
-	document.location = appBaseUrl + USER_PREFIX + userId;
+	//document.location = appBaseUrl + USER_PREFIX + userId;
+	alert('User agent: ' + userId);
 }
 
 function injectUserLabel(user) {
