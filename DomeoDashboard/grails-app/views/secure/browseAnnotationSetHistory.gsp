@@ -65,7 +65,7 @@
 	}
 
 	function displaySet(annotationUri) {
-		document.location = '${appBaseUrl}/secure/set/' + annotationUri;
+		document.location = '${appBaseUrl}/secure/annset/' + annotationUri;
 	}
 
 	function displayShare(annotationId) {
