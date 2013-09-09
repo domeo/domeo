@@ -24,6 +24,7 @@ class AnnotatorResultsConversionService {
 	static transactional =true
 	def grailsApplication
 	
+	private static String URN_PREFIX = "urn:domeoserver:uuid:";
 	private static Integer MAX_LENGTH_PREFIX_AND_SUFFIX=50
 	
 	SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss Z");
@@ -48,7 +49,7 @@ class AnnotatorResultsConversionService {
 		JSONArray agents = new JSONArray();
 		
 		JSONObject annotationSet = new JSONObject();
-		annotationSet.put(IOntology.generalId, UUID.uuid());
+		annotationSet.put(IOntology.generalId, "urn:domeoserver:uuid:" + UUID.uuid());
 		annotationSet.put(IOntology.generalType, "ao:AnnotationSet"); 
 		annotationSet.put(IOntology.generalLabel, "NCBO Annotator Results");
 		annotationSet.put(IOntology.generalDescription, generateSetDescription(params));
@@ -118,13 +119,13 @@ class AnnotatorResultsConversionService {
 			if(selector) previousSelectorOffset = selector['ao:offset']
 			
 			JSONObject specificTarget = new JSONObject();
-			specificTarget.put(IOntology.generalId, UUID.uuid());
+			specificTarget.put(IOntology.generalId, URN_PREFIX + UUID.uuid());
 			specificTarget.put(IOntology.generalType, IOntology.specificResource);
 			specificTarget.put(IOntology.source, url);
 			specificTarget.put(IOntology.selector, selector);
 			
 			JSONObject annotation = new JSONObject();
-			annotation.put(IOntology.generalId, UUID.uuid());
+			annotation.put(IOntology.generalId, URN_PREFIX + UUID.uuid());
 			annotation.put(IOntology.generalType, IOntology.annotationQualifier);
 			annotation.put(IOntology.generalLabel, "Qualifier");
 			annotation.put("pav:createdBy", "http://www.bioontology.org/wiki/index.php/Annotator_Web_service");
@@ -197,7 +198,7 @@ class AnnotatorResultsConversionService {
 		}
 		
 		JSONObject selector = new JSONObject();
-		selector.put(IOntology.generalId, UUID.uuid());
+		selector.put(IOntology.generalId, URN_PREFIX + UUID.uuid());
 		selector.put(IOntology.generalType, IOntology.selectorTextQuote);
 		selector.put("pav:createdOn", dateFormat.format(new Date()));
 		//println "Prefix: " + matchInfo.prefix

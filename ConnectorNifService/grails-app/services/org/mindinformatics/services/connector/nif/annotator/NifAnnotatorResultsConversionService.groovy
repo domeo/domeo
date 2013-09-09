@@ -42,6 +42,7 @@ class NifAnnotatorResultsConversionService {
 
 	def grailsApplication
 	
+	private static String URN_PREFIX = "urn:domeoserver:uuid:";
 	private static Integer MAX_LENGTH_PREFIX_AND_SUFFIX=50
 	
 	SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss Z");
@@ -122,13 +123,13 @@ class NifAnnotatorResultsConversionService {
 			if(selector) previousSelectorOffset = selector['ao:offset']
 
 			JSONObject specificTarget = new JSONObject();
-			specificTarget.put(IOntology.generalId, UUID.uuid());
+			specificTarget.put(IOntology.generalId, URN_PREFIX + UUID.uuid());
 			specificTarget.put(IOntology.generalType, IOntology.specificResource);
 			specificTarget.put(IOntology.source, url);
 			specificTarget.put(IOntology.selector, selector);
 
 			JSONObject annotation = new JSONObject();
-			annotation.put(IOntology.generalId, UUID.uuid());
+			annotation.put(IOntology.generalId, URN_PREFIX + UUID.uuid());
 			annotation.put(IOntology.generalType, IOntology.annotationQualifier);
 			annotation.put(IOntology.generalLabel, "Qualifier");
 			annotation.put("pav:createdBy", "http://nif-services.neuinfo.org/servicesv1/resource_AnnotateService.html");
@@ -182,7 +183,7 @@ class NifAnnotatorResultsConversionService {
 		}
 
 		JSONObject selector = new JSONObject();
-		selector.put(IOntology.generalId, UUID.uuid());
+		selector.put(IOntology.generalId, URN_PREFIX + UUID.uuid());
 		selector.put(IOntology.generalType, IOntology.selectorTextQuote);
 		selector.put("pav:createdOn", dateFormat.format(new Date()));
 		selector.put(IOntology.selectorTextQuotePrefix, matchInfo.prefix);
