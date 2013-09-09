@@ -30,6 +30,7 @@ function getAnnotationComments(annotation) {
 	if(annotation.annotatedBy && annotation.annotatedBy.length>0) {
 		var annotations = '<div class="contextTitle">'+ getAnnotationCurationsCounter(annotation) + getAnnotationCommentsCounter(annotation) + '</div>';
 		for(var j=0; j<annotation.annotatedBy.length; j++) {
+			agents[annotation.annotatedBy[j].createdBy['@id']] = annotation.annotatedBy[j].createdBy;
 			annotations += getAnnotationView('c'+j, annotation.annotatedBy[j], 20, true);
 		}
 		return annotations;

@@ -284,7 +284,11 @@
 	});
 
 	function buildAnnotationTitle(data) {
-		$('#resultsListTitle').append("<div style='padding-top: 4px; padding-bottom: 5px'><span style='font-size:18px; padding-right: 5px;'>" + data.items.items.length + "</span>" + (data.items.items.length!=1?"Annotations":"Annotation") + " by <span style='font-size:18px; padding-right: 5px;'>" + Object.keys(agents).length + "</span>" + (Object.keys(agents).length!=1?"Contributors":"Contributor") + "</div>");
+		$('#resultsListTitle').append(
+			"<div style='padding-top: 4px; padding-bottom: 5px'><span style='font-size:18px; padding-right: 5px;'>" + data.items.items.length + "</span>" + (data.items.items.length!=1?"Annotations":"Annotation") + 
+
+				" by <span style='font-size:18px; padding-right: 5px;'>" + Object.keys(agents).length + "</span>" + (Object.keys(agents).length!=1?"Contributors":"Contributor") + 
+			"</div>");
 	}
 
 	function getAnnotationView(index, annotation, indentation, annotationOnAnnotation) {
