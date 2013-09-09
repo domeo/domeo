@@ -286,7 +286,8 @@
 	function buildAnnotationTitle(data) {
 		$('#resultsListTitle').append(
 			"<div style='padding-top: 4px; padding-bottom: 5px'><span style='font-size:18px; padding-right: 5px;'>" + data.items.items.length + "</span>" + (data.items.items.length!=1?"Annotations":"Annotation") + 
-
+				(data.totalCurations>0?", <span style='font-size:18px; padding-right: 5px;'>" + data.totalCurations + "</span>" + (data.totalCurations!=1?"Curations":"Curation"):"") +
+				(data.totalComments>0?", <span style='font-size:18px; padding-right: 5px;'>" + data.totalComments + "</span>" + (data.totalComments!=1?" Comments":" Comment"):"") +
 				" by <span style='font-size:18px; padding-right: 5px;'>" + Object.keys(agents).length + "</span>" + (Object.keys(agents).length!=1?"Contributors":"Contributor") + 
 			"</div>");
 	}

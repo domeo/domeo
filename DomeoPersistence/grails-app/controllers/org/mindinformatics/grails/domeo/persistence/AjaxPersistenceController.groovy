@@ -706,6 +706,9 @@ class AjaxPersistenceController {
 				def commentsCounter = [:];
 				def curationsCounter = [:];
 				
+				def curationsTotal = 0;
+				def commentsTotal = 0;
+				
 				def jsonItems = new JSONArray();
 				
 				for(def i=0; i<annotations.length(); i++) {
@@ -823,12 +826,14 @@ class AjaxPersistenceController {
 					if(annotatedByMap.get(pivot)!=null) {
 						while(pivot!=null && annotatedByMap.get(pivot)!=null) {
 							if(annotatedByMap.get(pivot)['@type']==IOntology.annotationComment) {
+								commentsTotal++;
 								if(commentsCounter.containsKey(annotationId)) {
 									def counting = commentsCounter.get(annotationId);
 									counting++;
 									commentsCounter.put(annotationId, counting);
 								} else commentsCounter.put(annotationId, "1");
 							} else if(annotatedByMap.get(pivot)['@type']==IOntology.annotationCuration) {
+								curationsTotal++;
 								if(curationsCounter.containsKey(annotationId)) {
 									def counting = curationsCounter.get(annotationId);
 									counting++;
@@ -883,9 +888,9 @@ class AjaxPersistenceController {
 //					}
 
 					
-					commentsCounter.keySet().each { comment ->
-						println "comment "+ comment + " count " + commentsCounter.get(comment);
-					}
+//					commentsCounter.keySet().each { comment ->
+//						println "comment "+ comment + " count " + commentsCounter.get(comment);
+//					}
 
 					annotationsMap.keySet().each { annotationId ->
 						//println 'id: ' + annotationId
@@ -906,6 +911,9 @@ class AjaxPersistenceController {
 					items.put("items", jsonItems)
 					responseToSets.put("items", items);
 					counter++;
+					
+					responseToSets.put("totalComments", commentsTotal);
+					responseToSets.put("totalCurations", curationsTotal);
 					
 			}
 			JSON.use("deep")
