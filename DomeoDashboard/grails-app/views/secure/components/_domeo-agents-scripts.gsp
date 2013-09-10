@@ -69,17 +69,23 @@ function injectAgentTemplate(agent) {
  * ============================================================================
  */
 function displayUser(userId, userName, userTitle, userHomepage) {
-	//document.location = appBaseUrl + USER_PREFIX + userId;
+	$("#overlayTitle").empty();
+	$("#overlayContent").empty();
+	$("#overlayLinks").empty();
+	
 	if(userId=='urn:person:uuid:${loggedUser.id}') $("#overlayTitle").append("Me (" + userName + ")");
 	else $("#overlayTitle").append("User " + userName);
+	
 	$("#overlayContent").append("<img src='${resource(dir:'images/secure',file:'person.png')}' style='max-width:40px;'><br/>");
-	$("#overlayContent").append("<a href=\"javascript:openUser('" + userId + "')\">" + userName + "</a><br/>");
+	$("#overlayContent").append("<a href=\"javascript:browseUser('" + userId + "')\">" + userName + "</a><br/>");
 	if(userHomepage) $("#overlayContent").append("Homepage " + userHomepage + "<br/>");
+	
 	$("#overlayLinks").append("Browse user's annotations<br/>");
+	
 	$("#viewer").overlay().load();
 }
 
-function openUser(userId) {
+function browseUser(userId) {
 	document.location = appBaseUrl + USER_PREFIX + userId;
 }
 

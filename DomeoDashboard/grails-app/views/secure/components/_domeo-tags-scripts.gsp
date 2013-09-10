@@ -36,8 +36,33 @@ $(document).ready(function() {
 	};
 });
 
-function displayLinkedResource(url, label, description, source) {
-	alert('Linked resource: ' + url);
+function displayLinkedResource(url, label, description, sourceUrl, sourceLabel) {
+	$("#overlayTitle").empty();
+	$("#overlayContent").empty();
+	$("#overlayLinks").empty();
+
+	$("#viewer").width(($(window).width()-200));
+	$("#overlayTable").width(($(window).width()-220));
+	
+	$("#overlayTitle").append("Term: " + label);
+	
+	//$("#overlayContent").append("<img src='${resource(dir:'images/secure',file:'person.png')}' style='max-width:40px;'><br/>");
+	$("#overlayContent").append("<a href=\"javascript:browseLinkedResource('" + url + "')\">" + label + "</a>" + " from <a href=\"javascript:browseLinkedResource('" + sourceUrl + "')\">" + sourceLabel + "<br/>");
+	
+	if(description) $("#overlayContent").append(description + "<br/>");
+	
+	$("#overlayLinks").append("<a href=\"" + url + "\" target=\"_blank\">Open page in new tab <img id=\"groupsSpinner\" src=\"${resource(dir:'images/secure',file:'external.png',plugin:'users-module')}\" /></a><br/>");
+	$("#overlayLinks").append("<iframe src=\"" + url + "\" width=\"" + ($(window).width()-360) + "\" height=\"" + ($(window).height()-300) + "\"></iframe>"); 
+	
+	$("#viewer").overlay().load();
+}
+
+function browseLinkedResource(url) {
+	document.location = url;
+}
+
+function browseResourceInNewWindow(url, label) {
+	window.open(url, label, '')
 }
 
 function buildTagCloud() {
@@ -47,7 +72,7 @@ function buildTagCloud() {
 			(Object.keys(tags).length!=1?"Tags":"Tag") + 
 		"</div>");
 		for(var i=0; i<Object.keys(tags).length; i++) {
-			$('#tagCloudItems').append("<a onclick=\"javascript:displayLinkedResource('" + tags[Object.keys(tags)[i]]['@id'] + "', '" + tags[Object.keys(tags)[i]]['rdfs:label'] + "','" + tags[Object.keys(tags)[i]]['dct:description'] + "','" + tags[Object.keys(tags)[i]]['dct:source']['@id'] + "')\" style=\"cursor: pointer;\">" + tags[Object.keys(tags)[i]]['rdfs:label'] + '</a> ');
+			$('#tagCloudItems').append("<a onclick=\"javascript:displayLinkedResource('" + tags[Object.keys(tags)[i]]['@id'] + "', '" + tags[Object.keys(tags)[i]]['rdfs:label'] + "','" + tags[Object.keys(tags)[i]]['dct:description'] + "','" + tags[Object.keys(tags)[i]]['dct:source']['@id'] + "','" + tags[Object.keys(tags)[i]]['dct:source']['rdfs:label'] + "')\" style=\"cursor: pointer;\">" + tags[Object.keys(tags)[i]]['rdfs:label'] + '</a> ');
 		}	
 		 $('#tagCloudItems a').tagcloud();
 	} else {

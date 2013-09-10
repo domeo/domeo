@@ -62,7 +62,7 @@
 	$(document).ready(function() {
 		 $("#viewer").overlay({
 		    // custom top position
-		    top: 260,
+		    //top: 260,
 
 		    // some mask tweaks suitable for facebox-looking dialogs
 		    mask: {

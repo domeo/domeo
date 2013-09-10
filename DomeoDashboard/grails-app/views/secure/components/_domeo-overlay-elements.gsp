@@ -2,14 +2,14 @@
  		<div>
    		<h2 id="overlayTitle"></h2>
    		<br/>
-   		<table width="480px;">
+   		<table id="overlayTable" >
    		<tr>
-   		<td width="50%"><div id="overlayContent"></div></td>
-   		<td><div id="overlayLinks"></div></td>
+   		<td><div id="overlayContent"></div></td>
+   		<td style="vertical-align:top; border-left: 3px solid #eee;"><div id="overlayLinks"></div></td>
    		</tr>
    		</table>
    		
-	    <p>
+	    <p align="center">
 	    	<button class="close"> Close </button>
 	    </p>
  		</div>
