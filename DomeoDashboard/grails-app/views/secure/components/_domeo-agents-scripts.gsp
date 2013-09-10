@@ -99,7 +99,8 @@ function browseUser(userId) {
 }
 
 function injectUserLabel(user) {
-	return "<a onclick=\"javascript:displayUser('" + user['@id'] + "')\" style=\"cursor: pointer;\">" + 
+	return "<a onclick=\"javascript:displayUser('" + user['@id'] + "', '" + user['foafx:name'] + "', '" + user['foafx:title'] + 
+		"', '" + user['foafx:homepage'] +  "')\" style=\"cursor: pointer;\">" + 
 		user['foafx:name'] + 
 	"</a>";
 }
