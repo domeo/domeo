@@ -41,8 +41,13 @@ function displayLinkedResource(url, label, description, sourceUrl, sourceLabel) 
 	$("#overlayContent").empty();
 	$("#overlayLinks").empty();
 
-	$("#viewer").width(($(window).width()-200));
-	$("#overlayTable").width(($(window).width()-220));
+	if(($(window).width()-200)<800)  {
+		$("#viewer").width(800);
+		$("#overlayTable").width(780);
+	} else { 
+		$("#viewer").width(($(window).width()-200));
+		$("#overlayTable").width(($(window).width()-220));
+	}
 	
 	$("#overlayTitle").append("Term: " + label);
 	

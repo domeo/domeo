@@ -72,6 +72,15 @@ function displayUser(userId, userName, userTitle, userHomepage) {
 	$("#overlayTitle").empty();
 	$("#overlayContent").empty();
 	$("#overlayLinks").empty();
+
+
+	if(($(window).width()-900)<400)  {
+		$("#viewer").width(400);
+		$("#overlayTable").width(380);
+	} else { 
+		$("#viewer").width(($(window).width()-900));
+		$("#overlayTable").width(($(window).width()-920));
+	}
 	
 	if(userId=='urn:person:uuid:${loggedUser.id}') $("#overlayTitle").append("Me (" + userName + ")");
 	else $("#overlayTitle").append("User " + userName);
