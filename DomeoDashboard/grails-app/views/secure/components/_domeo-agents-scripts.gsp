@@ -68,9 +68,19 @@ function injectAgentTemplate(agent) {
  *  Users utilities
  * ============================================================================
  */
-function displayUser(userId) {
+function displayUser(userId, userName, userTitle, userHomepage) {
 	//document.location = appBaseUrl + USER_PREFIX + userId;
-	alert('User agent: ' + userId);
+	if(userId=='urn:person:uuid:${loggedUser.id}') $("#overlayTitle").append("Me (" + userName + ")");
+	else $("#overlayTitle").append("User " + userName);
+	$("#overlayContent").append("<img src='${resource(dir:'images/secure',file:'person.png')}' style='max-width:40px;'><br/>");
+	$("#overlayContent").append("<a href=\"javascript:openUser('" + userId + "')\">" + userName + "</a><br/>");
+	if(userHomepage) $("#overlayContent").append("Homepage " + userHomepage + "<br/>");
+	$("#overlayLinks").append("Browse user's annotations<br/>");
+	$("#viewer").overlay().load();
+}
+
+function openUser(userId) {
+	document.location = appBaseUrl + USER_PREFIX + userId;
 }
 
 function injectUserLabel(user) {
@@ -86,7 +96,9 @@ function injectUserTemplate(user) {
 				"<img src='${resource(dir:'images/secure',file:'person.png')}' style='max-width:40px;'>" + 
 			"</td>" + 
 			"<td style='vertical-align: middle;'>" + 
-				"<a onclick=\"javascript:displayUser('" + user['@id'] + "')\" style=\"cursor: pointer;\">"  + user['foafx:name'] + "</a>" +
+				"<a onclick=\"javascript:displayUser('" + user['@id'] + "', '" + user['foafx:name'] + "', '" + user['foafx:title'] + 
+						"', '" + user['foafx:homepage'] + "')\" style=\"cursor: pointer;\">"  + 
+					user['foafx:name'] + "</a>" +
 			"</td>" +
 		"</tr></table>" + 
 	"</div>";	

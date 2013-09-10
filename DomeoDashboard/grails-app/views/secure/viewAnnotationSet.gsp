@@ -9,7 +9,9 @@
 <meta name="layout" content="domeo-secure-no-jquery" />
 <script src="${resource(dir:'js',file:'jquery-1.9.1.js')}"></script>
 <script src="${resource(dir:'js',file:'jquery-ui-1.10.3.js')}"></script>
+<script src="${resource(dir:'js',file:'jquery.tools.min.js')}"></script>
 <script src="${resource(dir:'js',file:'jquery.tagcloud.js')}"></script>
+
 
 
 <title>Set viewer</title>
@@ -64,7 +66,7 @@
 		}
 
 
-		
+
 
 		
 
@@ -226,6 +228,7 @@
 
 	</style>
 
+<g:render template="/secure/components/domeo-overlay-scripts" />
 <g:render template="/secure/components/domeo-agents-scripts" />
 <g:render template="/secure/components/domeo-tags-scripts" />
 <g:render template="/secure/components/domeo-references-scripts" />
@@ -242,6 +245,7 @@
 
 	$(document).ready(function() {
 		$('#progressIcon').css("display","block");
+
 		var dataToSend = { userId: '${loggedUser.id}', setUri:'${setUri}' };
 		$.ajax({
 	  	  	url: "${appBaseUrl}/ajaxPersistence/jsonAnnotationSet",
@@ -280,6 +284,10 @@
 		  		buildAnnotationTitle(data);
 	  		}
 		});
+
+		    // select the overlay element - and "make it an overlay"
+		     
+		 
 
 	});
 
@@ -432,6 +440,8 @@
 	      	<br/><br/>
 	    </div>
 	</div>
-
+	
+	<g:render template="/secure/components/domeo-overlay-elements" />
+	
 </body>
 </html>
