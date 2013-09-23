@@ -78,6 +78,8 @@ function  processAnnotation(annotation) {
 		processQualifier(annotation);
 	} else if(annotationType=='ao:MicroPublicationAnnotation') {
 		processMicroPublication(annotation);
+	} else if(annotationType=='ao:AntibodyAnnotation') {
+		processAntibodies(annotation);
 	}
 }
 
@@ -107,5 +109,30 @@ function getAnnotationContext(annotation) {
     	'<blockquote class="quote">' +
        		'<img src="' + annotation.display+ '" style="max-width:500px">' +
        	'</blockquote>';
+}
+
+function getAnnotationView(index, annotation, indentation, annotationOnAnnotation) {
+	if(annotation.type=="ao:AntibodyAnnotation") 
+		return getAnnotationAntibodiesView(index, annotation, indentation, annotationOnAnnotation);
+	else
+	return '<div style="padding-left: ' + indentation + 'px; padding-right: ' + indentation + 'px;padding-bottom: 10px;">' + 
+		'<div style="border: 1px solid #ddd;">' +
+			'<table width="100%" class="barContainer">' +
+				'<tr>' +
+					'<td width="500px">' +
+						injectAnnotationTopBar(annotation) +
+					'</td>' +
+					'<td>' +
+						'<div id="annotationCounters_' + index + '"></div>' +
+					'</td>' +
+				'</tr>' +
+			'</table>' +		
+			'<div class="annbody">' +
+   				'<div class="annbody-content">' + annotation.content + '</div>' +
+   				(!annotationOnAnnotation? getAnnotationContext(annotation):'')+
+   				'<div id="annotationCounters_aoa' + index + '"></div>' +
+   				'</div>' +
+   		'</div>' +
+		'</div>';
 }
 </script>

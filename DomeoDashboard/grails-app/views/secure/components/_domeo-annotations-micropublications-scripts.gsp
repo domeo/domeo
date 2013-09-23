@@ -28,8 +28,6 @@
 
 function processMicroPublication(annotation) {
 	for(var j=0; j<annotation.body[0]['mp:argues']['mp:qualifiedBy'].length;j++) {
-		//var tag = annotation.body[0]['mp:argues']['mp:qualifiedBy'][j]['reif:resource'];
-		//tags[tag['@id']]=tag;
 		addTag(annotation.body[0]['mp:argues']['mp:qualifiedBy'][j]['reif:resource']);
 	}
 	if(annotation.body[0]['mp:argues']['mp:supportedBy']) {
@@ -44,7 +42,10 @@ function processMicroPublication(annotation) {
 	}
 	if(annotation.body[0]['mp:argues']['mp:challengedBy']) {
 		for(var j=0; j<annotation.body[0]['mp:argues']['mp:challengedBy'].length;j++) {
-			alert('challengedBy');
+			var ref = annotation.body[0]['mp:argues']['mp:challengedBy'][j]['reif:resource'];
+			if(ref['@type'].contains('PublicationArticleReference')) {
+				references[ref['@id']]=ref;
+			}
 		}
 	}	
 }

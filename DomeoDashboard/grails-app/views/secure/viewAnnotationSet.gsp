@@ -233,8 +233,9 @@
 <g:render template="/secure/components/domeo-tags-scripts" />
 <g:render template="/secure/components/domeo-references-scripts" />
 <g:render template="/secure/components/domeo-annotations-scripts" />
-<g:render template="/secure/components/domeo-annotationsonannotation-scripts" />
+<g:render template="/secure/components/domeo-annotations-on-annotation-scripts" />
 <g:render template="/secure/components/domeo-annotations-qualifiers-scripts" />
+<g:render template="/secure/components/domeo-annotations-antibodies-scripts" />
 <g:render template="/secure/components/domeo-annotations-micropublications-scripts" />
 
 <script type="text/javascript">
@@ -300,27 +301,7 @@
 			"</div>");
 	}
 
-	function getAnnotationView(index, annotation, indentation, annotationOnAnnotation) {
-		return '<div style="padding-left: ' + indentation + 'px; padding-right: ' + indentation + 'px;padding-bottom: 10px;">' + 
-			'<div style="border: 1px solid #ddd;">' +
-				'<table width="100%" class="barContainer">' +
-					'<tr>' +
-						'<td width="500px">' +
-							injectAnnotationTopBar(annotation) +
-						'</td>' +
-						'<td>' +
-							'<div id="annotationCounters_' + index + '"></div>' +
-						'</td>' +
-					'</tr>' +
-				'</table>' +		
-				'<div class="annbody">' +
-	   				'<div class="annbody-content">' + annotation.content + '</div>' +
-	   				(!annotationOnAnnotation? getAnnotationContext(annotation):'')+
-	   				'<div id="annotationCounters_aoa' + index + '"></div>' +
-	   				'</div>' +
-	   		'</div>' +
-   		'</div>';
-	}
+
 
 	function getTitle(item) {
 		return '<span style="font-weight: bold;">' + item.label + '</span>';

@@ -734,6 +734,7 @@ class AjaxPersistenceController {
 						annotation.put("content", annotations[i][IOntology.content]['cnt:chars']);
 					} else if(typesSet.contains(IOntology.annotationAntibody)) {
 						annotation.put("content", annotations[i][IOntology.content][0]['domeo:antibody'][0]['rdfs:label']);
+						annotation.put("body", annotations[i]["ao:body"]);
 					} else if(typesSet.contains(IOntology.annotationComment)) {
 						//annotation.put("content", annotations[i][IOntology.content]);
 					} else if(typesSet.contains(IOntology.annotationMicroPublication)) {
