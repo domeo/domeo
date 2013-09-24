@@ -91,12 +91,18 @@ class AjaxPersistenceController {
 		def permissionPrivate = params.permissionPrivate;
 		int paginationOffset = (params.paginationOffset?Integer.parseInt(params.paginationOffset):0);
 		int paginationRange = (params.paginationRange?Integer.parseInt(params.paginationRange):10); 
+		boolean publicData = (params.publicData?Boolean.parseBoolean(params.publicData):true);
+		boolean groupsData = (params.groupsData?Boolean.parseBoolean(params.groupsData):true);
+		boolean privateData = (params.privateData?Boolean.parseBoolean(params.privateData):true);
 		
-		println '-0-- ' + documentUrl;
-		println '-1-- ' + permissionPublic;
-		println '-2-- ' + permissionPrivate;
-		println '-3-- ' + paginationOffset;
-		println '-4-- ' + paginationRange;
+//		println '-0-- ' + documentUrl;
+//		println '-1-- ' + permissionPublic;
+//		println '-2-- ' + permissionPrivate;
+//		println '-3-- ' + paginationOffset;
+//		println '-4-- ' + paginationRange;
+//		println '-5-- ' + publicData;
+//		println '-6-- ' + groupsData;
+//		println '-7-- ' + privateData;	
 		
 		try {
 			User latestContributor = null;
@@ -110,15 +116,17 @@ class AjaxPersistenceController {
             
 			int globalCounter = 0;
 			int allowedCounter = 0;
+//			println 'total: ' + lastAnnotationSetIndexes.size(); 
 			for(LastAnnotationSetIndex lastAnnotationSetIndex: lastAnnotationSetIndexes) {
 				if(latestContribution==null || lastAnnotationSetIndex.lastVersion.createdOn.after(latestContribution)) {
 					latestContribution = lastAnnotationSetIndex.lastVersion.createdOn;
 					latestContributor = lastAnnotationSetIndex.lastVersion.createdBy;
 				}
-                
-				if(annotationPermissionService.isPermissionGranted(user, lastAnnotationSetIndex.lastVersion)) {
+				
+				if(annotationPermissionService.isPermissionGranted(user, lastAnnotationSetIndex.lastVersion, privateData, groupsData, publicData)) {
+//					println 'hello 1 ' + globalCounter;
 					AnnotationListItemWrapper annotationListItemWrapper = new AnnotationListItemWrapper(lastAnnotationSetIndex: lastAnnotationSetIndex);
-                 
+//					println 'hello 2';
 					List<String> permissions = annotationPermissionService.getAnnotationSetPermissions(user.id, lastAnnotationSetIndex.lastVersion);
 					if (permissions.get(0)==IPermissionTypes.publicAccess) {
 						annotationListItemWrapper.permissionType = IPermissionTypes.publicAccess;
@@ -128,22 +136,19 @@ class AjaxPersistenceController {
 						annotationListItemWrapper.permissionType = IPermissionTypes.privateAccess;
 					}
 					annotationListItemWrapper.isLocked = annotationPermissionService.isLocked(lastAnnotationSetIndex.lastVersion);
-					
-					if(paginationOffset>=0 && paginationRange>0) {
-						println globalCounter;
-						if(globalCounter>paginationOffset && globalCounter<=(paginationOffset+paginationRange)) {
-							annotationListItemWrappers.add(annotationListItemWrapper);
-						}
-					} else {
+//					println 'hello 3';
+					if(globalCounter>=paginationOffset && globalCounter<(paginationOffset+paginationRange)) {
 						annotationListItemWrappers.add(annotationListItemWrapper);
+						allowedCounter++;
 					}
-					allowedCounter++;
-				}
-				globalCounter++;
+//					println 'hello 4 ' + allowedCounter;
+					
+					globalCounter++;
+				} 
 			}
 			
 			AnnotationListResponse theResponse = new AnnotationListResponse(paginationOffset: paginationOffset, paginationRange: paginationRange, latestContributor: latestContributor,
-				latestContribution: latestContribution, annotationListItemWrappers: annotationListItemWrappers, totalResponses: allowedCounter-1);
+				latestContribution: latestContribution, annotationListItemWrappers: annotationListItemWrappers, totalResponses: globalCounter);
 			JSON.use("deep")
 			render (theResponse as JSON);
 		} catch(Exception e) {

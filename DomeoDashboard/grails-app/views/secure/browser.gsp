@@ -132,6 +132,14 @@
 	padding: 5px;;
 }
 </style>
+<style>
+.viewerSidebar {
+	float: right;
+	width: 332px;
+	margin-right: 8px;
+}
+
+</style>
 <script type="text/javascript">
 
 	function edit(annotationId, url) {
@@ -271,8 +279,10 @@
 		$("#resultsList").empty();
 		$('.resultsPaginationTop').empty();
 		$('.resultsPaginationBottom').empty(); 
+		
 		try {
-			var dataToSend = { id: '${loggedUser.id}', paginationOffset:paginationOffset, paginationRange:paginationRange };;
+			var dataToSend = { id: '${loggedUser.id}', paginationOffset:paginationOffset, paginationRange:paginationRange, 
+					publicData:$("#publicFilter").attr('checked')!==undefined, groupsData:$("#groupsFilter").attr('checked')!==undefined, privateData:$("#privateFilter").attr('checked')!==undefined};
 			$.ajax({
 		  	  	url: "${appBaseUrl}/ajaxPersistence/annotationSets",
 		  	  	context: $("#resultsList"),
@@ -285,9 +295,9 @@
 						$("#resultsList").html("No results to display");
 			  		} else {
 			  			var label = data.annotationListItemWrappers.length == 1 ? ' Set' : ' Sets';
-			  			$("#resultsSummary").html("Displaying <span style='font-weight: bold;''>" + (data.paginationOffset+1) + " - " + 
-					  			(data.paginationOffset+Math.min(data.paginationRange,data.annotationListItemWrappers.length)) + label +
-					  			"</span> out of " + data.totalResponses);
+			  			$("#resultsSummary").html(label + " <span style='font-weight: bold;font-size:16px;'>" + (data.paginationOffset!=0?data.paginationOffset+1:0) + " - " + 
+			  					(data.paginationOffset+Math.min(data.paginationRange,data.annotationListItemWrappers.length)) + 
+					  			"</span> out of <span style='font-weight: bold;font-size:16px;'>" + (data.totalResponses>-1?data.totalResponses:0) + '</span> meeting the filtering criteria');
 			  			if(data.latestContributor) {
 				  			$("#resultsStats").html("Last by " + "<a onclick=\"javascript:display('" + data.latestContributor.id + "')\" style=\"cursor: pointer;\">" + 
 				  		  			data.latestContributor.displayName + "</a><br/> on " + data.latestContribution);
@@ -304,13 +314,14 @@
 	
 				  		var numberButtons = Math.ceil(data.totalResponses/data.paginationRange);
 				  		var currentPage = Math.floor((data.paginationOffset+1)/data.paginationRange);
-				  		
-				  		var paginationHtml = '<a href="#" class="page">first</a>';
+
+				  		var paginationHtml = '';
+				  		//var paginationHtml = '<a href="#" class="page">first</a>';
 				  		for(var x=0; x<numberButtons; x++) {
 					  		if(x==currentPage) paginationHtml += '<a href="#" class="page active">' + (x+1) + '</a>';
 					  		else paginationHtml += '<a href="#" class="page" onclick="loadAnnotationSets(\'\',' + (x*data.paginationRange)+ ')"">' + (x+1) + '</a>';
 					  	}
-				  		paginationHtml += '<a href="#" class="page">last</a>';
+				  		//paginationHtml += '<a href="#" class="page">last</a>';
 				  		
 				  		
 				  		$('.resultsPaginationTop').append(paginationHtml);
@@ -479,23 +490,12 @@
 <body>
   <div class="content">
     <div class="content_resize">
-	    <div class="sidebar" style="padding-top: 30px;padding-bottom: 30px; padding-right:2px;">
-	    	<div align="center" style="background: #cc3300; padding: 5px; color: #fff; font-weight: bold;">Filter (not implemented yet)</div>
-	    	<div style="background: #fff; padding: 5px; padding-top: 10px; border: 2px solid #cc3300;">
-	    		<%--
-	    		<div align="left" style="padding-left:4px; background: #FFCC00"><b>By Text</b><br/></div>
-			    <input type="text" name="search" style="width: 220px;"><br><br>
-			    --%>
-			    
-			    <%--
-			    <div align="left" style="padding-left:4px; background: #FFCC00"><b>By Editor</b><br/></div>
-			    <input type="checkbox" name="vehicle" value="Bike" checked>All <input type="checkbox" name="vehicle" value="Bike" checked>Mine<br>
-			    <br>
-			    --%>
-
-			    <div align="left" style="padding-left:4px; background: #FFCC00"><b>By Access</b><br/></div>
-			    <input type="checkbox" name="vehicle" value="Public" checked="checked">Public<br>
-			    <input type="checkbox" name="vehicle" value="Groups">Groups<br>
+	    <div id="sidebar" class="viewerSidebar" style="padding-top: 30px;padding-bottom: 30px; padding-right:2px;">
+	    	<div id='contributorsTitle'>Filtering by Access</div>
+			<div id="contributors" style="border-top: 3px solid #ddd; padding-bottom: 2px;"></div>
+	    	<div style="background: #fff; padding: 5px; padding-top: 10px; ">
+			    <input id="publicFilter" type="checkbox" name="vehicle" checked="checked">Public<br>
+			    <input id="groupsFilter" type="checkbox" name="vehicle" >Groups<br>
 			    
 			  	<div id="groupsList">
 			  		<g:each in="${userGroups}" status="i" var="usergroup">
@@ -503,21 +503,13 @@
 			  		</g:each>
 			  	</div>
 			    
-				<input type="checkbox" name="vehicle" value="Private">Private<br/>
-			  	
-			  		
-				<br/>
-				<div align="center"><input value="Refresh" title="Search" name="lucky" type="submit" id="btn_i"></div>
+				<input id="privateFilter" type="checkbox" name="vehicle" checked="checked">Private<br/><br/>
+				<div align="center"><input value="Refresh" title="Search" name="lucky" type="submit" id="btn_i" onclick="loadAnnotationSets('', 0, '')"></div>
 			</div>
-			<br/>
-			<div align="center" style="background: #cc3300; padding: 5px; color: #fff; font-weight: bold;">People</div>
-	    	<div style="background: #fff; padding: 5px; padding-top: 10px; border: 2px solid #cc3300;">
-	    	
-	    	</div>
 	  	</div>
  
  		<!-- Browsing Navigation -->
-	    <div style="background: #cc3300; color: #fff;">
+	    <div style="background: #cc3300; color: #fff; ">
 	   		<ul class="bar">
 				<li><g:link controller="secure" action="browser"><span>Annotation Sets</span></g:link></li>
 				<li><g:link controller="secure" action="documents"><span>Documents</span></g:link></li>
@@ -526,7 +518,7 @@
 	    </div>
 	    
 	    <div id="progressIcon" align="center" style="padding: 5px; padding-left: 10px; display: none;"><img id="groupsSpinner" src="${resource(dir:'images',file:'progress-bar-2.gif',plugin:'users-module')}" /></div>
-	    <table width="730px;">
+	    <table width="615px;">
 	    	<tr><td>
 	    		<div id="resultsSummary" style="padding: 5px; padding-left: 10px;"></div>
 	    		<div class="resultsPaginationTop"></div>
@@ -535,7 +527,7 @@
 	    	</td></tr>
 	    </table>
 	    
-	    <div id="resultsList" style="padding: 5px; padding-left: 10px; width: 715px;"></div>
+	    <div id="resultsList" style="padding: 5px; padding-left: 10px; width: 615px;"></div>
 	    <div class="resultsPaginationBottom"></div>
       	<div class="clr"></div>
     </div>
