@@ -5,6 +5,9 @@ import org.mindinformatics.grails.domeo.persistence.LastAnnotationSetIndex
 
 class AnnotationListResponse {
 
+	int paginationOffset;
+	int paginationRange;
+	
 	int totalResponses;
 	User latestContributor;
 	Date latestContribution;

@@ -84,7 +84,19 @@ class AjaxPersistenceController {
 	
 	def annotationSets = {
 		def user = userProfile();
+		
+		
         def documentUrl = params.documentUrl;
+		def permissionPublic = params.permissionPublic;
+		def permissionPrivate = params.permissionPrivate;
+		int paginationOffset = (params.paginationOffset?Integer.parseInt(params.paginationOffset):0);
+		int paginationRange = (params.paginationRange?Integer.parseInt(params.paginationRange):10); 
+		
+		println '-0-- ' + documentUrl;
+		println '-1-- ' + permissionPublic;
+		println '-2-- ' + permissionPrivate;
+		println '-3-- ' + paginationOffset;
+		println '-4-- ' + paginationRange;
 		
 		try {
 			User latestContributor = null;
@@ -96,6 +108,8 @@ class AjaxPersistenceController {
             if(!documentUrl) lastAnnotationSetIndexes = LastAnnotationSetIndex.findAll('from LastAnnotationSetIndex as b order by b.lastUpdated desc')
             else lastAnnotationSetIndexes = LastAnnotationSetIndex.findAll('from LastAnnotationSetIndex as b where b.annotatesUrl=\'' + documentUrl + '\' order by b.lastUpdated desc')
             
+			int globalCounter = 0;
+			int allowedCounter = 0;
 			for(LastAnnotationSetIndex lastAnnotationSetIndex: lastAnnotationSetIndexes) {
 				if(latestContribution==null || lastAnnotationSetIndex.lastVersion.createdOn.after(latestContribution)) {
 					latestContribution = lastAnnotationSetIndex.lastVersion.createdOn;
@@ -104,7 +118,6 @@ class AjaxPersistenceController {
                 
 				if(annotationPermissionService.isPermissionGranted(user, lastAnnotationSetIndex.lastVersion)) {
 					AnnotationListItemWrapper annotationListItemWrapper = new AnnotationListItemWrapper(lastAnnotationSetIndex: lastAnnotationSetIndex);
-					annotationListItemWrappers.add(annotationListItemWrapper);
                  
 					List<String> permissions = annotationPermissionService.getAnnotationSetPermissions(user.id, lastAnnotationSetIndex.lastVersion);
 					if (permissions.get(0)==IPermissionTypes.publicAccess) {
@@ -115,11 +128,22 @@ class AjaxPersistenceController {
 						annotationListItemWrapper.permissionType = IPermissionTypes.privateAccess;
 					}
 					annotationListItemWrapper.isLocked = annotationPermissionService.isLocked(lastAnnotationSetIndex.lastVersion);
+					
+					if(paginationOffset>=0 && paginationRange>0) {
+						println globalCounter;
+						if(globalCounter>paginationOffset && globalCounter<=(paginationOffset+paginationRange)) {
+							annotationListItemWrappers.add(annotationListItemWrapper);
+						}
+					} else {
+						annotationListItemWrappers.add(annotationListItemWrapper);
+					}
+					allowedCounter++;
 				}
+				globalCounter++;
 			}
 			
-			AnnotationListResponse theResponse = new AnnotationListResponse(latestContributor: latestContributor,
-				latestContribution: latestContribution, annotationListItemWrappers: annotationListItemWrappers, totalResponses: annotationListItemWrappers.size());
+			AnnotationListResponse theResponse = new AnnotationListResponse(paginationOffset: paginationOffset, paginationRange: paginationRange, latestContributor: latestContributor,
+				latestContribution: latestContribution, annotationListItemWrappers: annotationListItemWrappers, totalResponses: allowedCounter-1);
 			JSON.use("deep")
 			render (theResponse as JSON);
 		} catch(Exception e) {
