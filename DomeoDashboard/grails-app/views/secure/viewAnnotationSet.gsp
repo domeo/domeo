@@ -400,14 +400,11 @@
 	    	<div id="resultsIntro" style="padding: 10px; padding-left: 10px; width: 960px; background: #ddd;"></div>
 	    	
 	    	
-			<div id='sidebar' class="viewerSidebar" style="padding-top: 5px;padding-bottom: 30px; padding-right:2px;">
-				
+			<div id='sidebar' class="viewerSidebar" style="padding-top: 5px;padding-bottom: 30px; padding-right:2px;">		
 				<g:render template="/secure/components/domeo-tags-elements" />
-
 				<div id='referencesTitle'></div>
 				<div id="references" style="border-top:0px solid #ddd; padding-bottom: 18px;">
 				</div>
-				
 				<g:render template="/secure/components/domeo-agents-elements" />
 			</div>
 		  	

@@ -279,10 +279,23 @@
 		$("#resultsList").empty();
 		$('.resultsPaginationTop').empty();
 		$('.resultsPaginationBottom').empty(); 
+
+		var groups = '';
+		$(".groupCheckbox").each(function(i) {
+			if($(this).attr('checked')!=undefined) 
+				groups += $(this).attr('value') + " ";
+		});
 		
 		try {
-			var dataToSend = { id: '${loggedUser.id}', paginationOffset:paginationOffset, paginationRange:paginationRange, 
-					publicData:$("#publicFilter").attr('checked')!==undefined, groupsData:$("#groupsFilter").attr('checked')!==undefined, privateData:$("#privateFilter").attr('checked')!==undefined};
+			var dataToSend = { 
+				id: '${loggedUser.id}', 
+				paginationOffset:paginationOffset, 
+				paginationRange:paginationRange, 
+				publicData: $("#publicFilter").attr('checked')!==undefined, 
+				groupsData: $("#groupsFilter").attr('checked')!==undefined, 
+				groupsIds: groups,
+				privateData:$("#privateFilter").attr('checked')!==undefined
+			};
 			$.ajax({
 		  	  	url: "${appBaseUrl}/ajaxPersistence/annotationSets",
 		  	  	context: $("#resultsList"),
@@ -295,9 +308,18 @@
 						$("#resultsList").html("No results to display");
 			  		} else {
 			  			var label = data.annotationListItemWrappers.length == 1 ? ' Set' : ' Sets';
-			  			$("#resultsSummary").html(label + " <span style='font-weight: bold;font-size:16px;'>" + (data.paginationOffset!=0?data.paginationOffset+1:0) + " - " + 
-			  					(data.paginationOffset+Math.min(data.paginationRange,data.annotationListItemWrappers.length)) + 
-					  			"</span> out of <span style='font-weight: bold;font-size:16px;'>" + (data.totalResponses>-1?data.totalResponses:0) + '</span> meeting the filtering criteria');
+			  			if(data.annotationListItemWrappers.length == 0) {
+			  				$("#resultsSummary").html("No set meeting the filtering criteria");
+			  			} else if(data.annotationListItemWrappers.length == 1) {
+							$("#resultsSummary").html("Set <span style='font-weight: bold;font-size:16px;'>1</span> out of <span style='font-weight: bold;font-size:16px;'>" + 
+									(data.totalResponses>-1?data.totalResponses:0) + '</span> meeting the filtering criteria');
+						} else {	  			
+				  			$("#resultsSummary").html(label + " <span style='font-weight: bold;font-size:16px;'>" + 
+						  			(data.paginationOffset!=0?data.paginationOffset+1:0) + " - " + 
+				  					(data.paginationOffset+Math.min(data.paginationRange,data.annotationListItemWrappers.length)) + 
+						  			"</span> out of <span style='font-weight: bold;font-size:16px;'>" + (data.totalResponses>-1?data.totalResponses:0) + '</span> meeting the filtering criteria');
+						}
+						
 			  			if(data.latestContributor) {
 				  			$("#resultsStats").html("Last by " + "<a onclick=\"javascript:display('" + data.latestContributor.id + "')\" style=\"cursor: pointer;\">" + 
 				  		  			data.latestContributor.displayName + "</a><br/> on " + data.latestContribution);
@@ -499,7 +521,7 @@
 			    
 			  	<div id="groupsList">
 			  		<g:each in="${userGroups}" status="i" var="usergroup">
-			  			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<input type="checkbox" name="${usergroup.group.name}" value="Car">${usergroup.group.name}<br/>
+			  			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<input type="checkbox" name="${usergroup.group.name}" class="groupCheckbox" value="${usergroup.group.id}">${usergroup.group.name}<br/>
 			  		</g:each>
 			  	</div>
 			    

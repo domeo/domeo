@@ -22,7 +22,10 @@ class AnnotationPermissionService {
 		return permissions.isLocked;
 	}
 	
-	def isPermissionGranted(def user, def annotationSet, def privateData, def groupsData, def publicData) {
+	def isPermissionGranted(def user, def annotationSet, def privateData, def groupsData, def groupsIds, def publicData) {
+		
+		if(groupsIds.trim().length()>0) groupsData = true;
+		
         if(!user.hasProperty("id")) {
             // Request by anonymous user
             log.info("Permission denied for User " + user);
