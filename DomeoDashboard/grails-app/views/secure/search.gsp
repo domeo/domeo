@@ -642,6 +642,23 @@
 	  		var currentPage = Math.floor((data.paginationOffset+1)/data.paginationRange);
 	  		//alert(data.paginationRange + '-' + data.paginationOffset + '-' + currentPage);
 
+			var label = data.annotationListItemWrappers.length == 1 ? ' Set' : ' Sets';
+  			if(data.annotationListItemWrappers.length == 0) {
+  				$("#resultsSummary").html("No set meeting the filtering criteria");
+  			} else if(data.annotationListItemWrappers.length == 1) {
+  				if(data.totalResponses==1)
+					$("#resultsSummary").html("Set <span style='font-weight: bold;font-size:16px;'>1</span> out of <span style='font-weight: bold;font-size:16px;'>" + 
+							(data.totalResponses>-1?data.totalResponses:0) + '</span> meeting the searching criteria');
+				else
+					$("#resultsSummary").html("Set <span style='font-weight: bold;font-size:16px;'>" + (data.paginationOffset+1) + "</span> out of <span style='font-weight: bold;font-size:16px;'>" + 
+							(data.totalResponses>-1?data.totalResponses:0) + '</span> meeting the searching criteria');
+			} else {	  			
+	  			$("#resultsSummary").html(label + " <span style='font-weight: bold;font-size:16px;'>" + 
+			  			(data.paginationOffset!=0?data.paginationOffset+1:1) + " - " + 
+	  					(data.paginationOffset+Math.min(data.paginationRange,data.annotationListItemWrappers.length)) + 
+			  			"</span> out of <span style='font-weight: bold;font-size:16px;'>" + (data.totalResponses>-1?data.totalResponses:0) + '</span> meeting the searching criteria');
+			}
+
 	  		var paginationHtml = '';
 	  		//var paginationHtml = '<a href="#" class="page">first</a>';
 	  		for(var x=0; x<numberButtons; x++) {
@@ -651,8 +668,7 @@
 	  		//paginationHtml += '<a href="#" class="page">last</a>';
 	  		
 	  		
-	  		$('.resultsPaginationTop').append(paginationHtml);
-	  		
+	  		$('.resultsPaginationTop').append(paginationHtml);	  		
 	  		$('.resultsPaginationBottom').append(paginationHtml);
 			
 			var users = new Array();
@@ -779,6 +795,7 @@
 		
 		<div id="progressIcon" align="center" style="padding: 5px; padding-left: 10px; display: none;"><img id="groupsSpinner" src="${resource(dir:'images',file:'progress-bar-2.gif',plugin:'users-module')}" /></div>
 	 
+	 	<div id="resultsSummary" style="padding: 5px; padding-left: 10px;"></div>
 	    <div class="resultsPaginationTop"></div>
 	    <div id="resultsList" style="padding: 5px; padding-left: 10px; width: 715px;"></div>
 	   	<div class="resultsPaginationBottom"></div>
