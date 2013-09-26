@@ -289,6 +289,7 @@
 		try {
 			var dataToSend = { 
 				id: '${loggedUser.id}', 
+				documentUrl: url,
 				paginationOffset:paginationOffset, 
 				paginationRange:paginationRange, 
 				publicData: $("#publicFilter").attr('checked')!==undefined, 
@@ -329,7 +330,9 @@
 					  		$('#resultsList').append("<br/>");
 					  		$('#resultsList').append(getShareByUrlLink(url));
 					  		$('#resultsList').append("<br/>");
-					  		window.history.pushState({url:url},"", window.location+'/?url='+url);
+					  		//if(getURLParameter('url')==null) {
+					  		//	window.history.pushState({url:url},"", window.location+'/?url='+url);
+					  		//}
 				  		}
 	
 				  		var users = new Array();
@@ -402,6 +405,14 @@
 		} catch(e) {
 			alert(e);
 		}
+	}
+	
+	function getURLParameter(name) {
+	    return decodeURIComponent((new RegExp('[?|&]' + name + '=' + '([^&;]+?)(&|#|;|$)','i').exec(window.location)||[,""])[1].replace(/\+/g, '%20'))||null;
+	}
+
+	function loadData(url) {
+		loadAnnotationSets(url, paginationOffset, paginationRange);
 	}
 
 	/*
@@ -505,8 +516,13 @@
 
 	$(document).ready(function() {
 		$('#progressIcon').css("display","block");
-		loadAnnotationSets('',0);
+		//var url = getURLParameter("url")!=null ? getURLParameter("url"):'';
+		var url = '';
+		loadAnnotationSets(url,0);
 	});
+	
+
+	
 </script>
 </head>
 <body>

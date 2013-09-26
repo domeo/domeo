@@ -9,6 +9,89 @@
 <meta name="layout" content="domeo-secure" />
 <title>Secured Area - Domeo Browser</title>
 <style>
+.btn {
+    display: inline-block;
+    padding: 10px;
+    border-radius: 5px; /*optional*/
+    color: #aaa;
+    font-size: .875em;
+}
+
+.pagination {
+    background: #f2f2f2;
+    padding: 20px;
+    margin-bottom: 20px;
+}
+
+.page {
+    display: inline-block;
+    padding: 0px 9px;
+    margin-right: 4px;
+    border-radius: 3px;
+    border: solid 1px #c0c0c0;
+    background: #e9e9e9;
+    box-shadow: inset 0px 1px 0px rgba(255,255,255, .8), 0px 1px 3px rgba(0,0,0, .1);
+    font-size: .875em;
+    font-weight: bold;
+    text-decoration: none;
+    color: #717171;
+    text-shadow: 0px 1px 0px rgba(255,255,255, 1);
+}
+
+.page:hover, .page.gradient:hover {
+    background: #fefefe;
+    background: -webkit-gradient(linear, 0% 0%, 0% 100%, from(#FEFEFE), to(#f0f0f0));
+    background: -moz-linear-gradient(0% 0% 270deg,#FEFEFE, #f0f0f0);
+}
+
+.page.active {
+    border: none;
+    background: #616161;
+    box-shadow: inset 0px 0px 8px rgba(0,0,0, .5), 0px 1px 0px rgba(255,255,255, .8);
+    color: #f0f0f0;
+    text-shadow: 0px 0px 3px rgba(0,0,0, .5);
+}
+
+.page.gradient {
+    background: -webkit-gradient(linear, 0% 0%, 0% 100%, from(#f8f8f8), to(#e9e9e9));
+    background: -moz-linear-gradient(0% 0% 270deg,#f8f8f8, #e9e9e9);
+}
+
+.pagination.dark {
+    background: #414449;
+    color: #feffff;
+}
+
+.page.dark {
+    border: solid 1px #32373b;
+    background: #3e4347;
+    box-shadow: inset 0px 1px 1px rgba(255,255,255, .1), 0px 1px 3px rgba(0,0,0, .1);
+    color: #feffff;
+    text-shadow: 0px 1px 0px rgba(0,0,0, .5);
+}
+
+.page.dark:hover, .page.dark.gradient:hover {
+    background: #3d4f5d;
+    background: -webkit-gradient(linear, 0% 0%, 0% 100%, from(#547085), to(#3d4f5d));
+    background: -moz-linear-gradient(0% 0% 270deg,#547085, #3d4f5d);
+}
+
+.page.dark.active {
+    border: none;
+    background: #2f3237;
+    box-shadow: inset 0px 0px 8px rgba(0,0,0, .5), 0px 1px 0px rgba(255,255,255, .1);
+}
+
+.page.dark.gradient {
+    background: -webkit-gradient(linear, 0% 0%, 0% 100%, from(#565b5f), to(#3e4347));
+    background: -moz-linear-gradient(0% 0% 270deg,#565b5f, #3e4347);
+}
+
+.resultsPaginationTop { padding: 5px; padding-left: 10px;}
+.resultsPaginationBottom { padding: 5px; padding-left: 10px;}
+
+</style>
+<style>
 	ul.bar
 	{
 	list-style-type:none;
@@ -154,6 +237,13 @@
 }
 
 </style>
+<style>
+.topBar {
+	background: #eee;
+	padding: 5px;;
+	/*border-bottom: 1px solid grey;*/
+}
+</style>
 <script type="text/JavaScript">
 
 	function getName(item) {
@@ -164,7 +254,7 @@
 
 	function getDescription(item) {
 		if(item.annotationSetIndex.description && item.annotationSetIndex.description.length>0 && item.annotationSetIndex.description!='The default set is created automatically by Domeo when no other set is existing.')
-			return '. ' + item.annotationSetIndex.description;
+			return item.annotationSetIndex.description;
 		else return "";
 	}
 
@@ -172,17 +262,24 @@
 		return 'By  <a onclick=\"javascript:displayUser(\'' + item.annotationSetIndex.createdBy.id + '\')\" style=\"cursor: pointer;\">'  + item.annotationSetIndex.createdBy.displayName + '</a> (et al) on ' + item.annotationSetIndex.createdOn + ' with v. ' + item.annotationSetIndex.versionNumber;
 	}
 
+	/*
 	function getStats(item) {
 		return '# annotation items: '+item.annotationSetIndex.size + displayAccessType(item.permissionType) + displayLock(item.isLocked);
 	}
+	*/
+
+	function getStats(item) {
+		return "<span style='font-size:18px; padding-right: 5px;'>" + item.annotationSetIndex.size + "</span>" + (item.annotationSetIndex.size!=1?'items':'item') + displayLock(item.isLocked);
+	}
+
 
 	function displayAccessType(accessType) {
 		if(accessType=='urn:domeo:access:public') {
-			return ", <img id=\"groupsSpinner\" src=\"${resource(dir:'images/secure',file:'world16x16.png',plugin:'users-module')}\" /> Public"
+			return "Public <img id=\"groupsSpinner\" src=\"${resource(dir:'images/secure',file:'world16x16.png',plugin:'users-module')}\" />"
 		} else if(accessType=='urn:domeo:access:private') {
-			return ", <img id=\"groupsSpinner\" src=\"${resource(dir:'images/secure',file:'personal16x16.png',plugin:'users-module')}\" /> Private"
+			return "Private <img id=\"groupsSpinner\" src=\"${resource(dir:'images/secure',file:'personal16x16.png',plugin:'users-module')}\" />"
 		} else if(accessType=='urn:domeo:access:groups') {
-			return ", <img id=\"groupsSpinner\" src=\"${resource(dir:'images/secure',file:'group16x16.png',plugin:'users-module')}\" /> Restricted"
+			return "Restricted <img id=\"groupsSpinner\" src=\"${resource(dir:'images/secure',file:'group16x16.png',plugin:'users-module')}\" />"
 		}
 	}
 
@@ -222,6 +319,14 @@
 		document.location = '${appBaseUrl}/secure/user/' + userId;
 	}
 
+	function getProvenanceCreator(item) {
+		return 'by <a onclick=\"javascript:displayUser(\'' + item.annotationSetIndex.createdBy.id + '\')\" style=\"cursor: pointer;\">' + item.annotationSetIndex.createdBy.displayName + '</a>';
+	}
+	
+	function getProvenanceDate(item) {
+		return 'Last saved on ' + item.createdOn + ' with v. ' + item.versionNumber;
+	}
+	
 	function getTarget(item) {
 		var u = item.annotationSetIndex.annotatesUrl;
 		var temp = String(u);
@@ -264,7 +369,7 @@
 	  	  	success: function(data){
 		  	  	$("#items-"+setId).html('');
 		  	  	$.each(data, function(i,item){
-		  	  		$("#items-"+setId).append("<br/>");
+		  	  		//$("#items-"+setId).append("<br/>");
 			  	  	if(item._source["@type"]=='ao:Highlight') {
 			  	  		$("#items-"+setId).append(
 				  	  		"Highlight (score: " + item._score + ") <br/>" 
@@ -388,8 +493,7 @@
 					  	  			var from = ' same source'
 						  	  		if(support[j]['reif:resource']['ao:context']['ao:hasSource']!=item._source["ao:body"][0]['mp:argues']['ao:context']['ao:hasSource']) from =  support[j]['reif:resource']['ao:context']['ao:hasSource'];
 					  	  			supportingText += '<td style="padding:5px; vertical-align: top;"><img src=\"${resource(dir:'images/secure',file:'double-arrow-green.gif')}\"/></td>';
-					  	  			supportingText += '<td>Statement: <span style="font-weight: bold;">' + support[j]['reif:resource']['mp:hasContent'] + '</span> from ' + 
-					  	  				from + '</td>'
+					  	  			supportingText += '<td>Statement: <span style="font-weight: bold;">' + support[j]['reif:resource']['mp:hasContent'] + '</span> from ' + from + '</td>';
 					  	  		}
 				  	  			$("#items-"+setId).append('<table><tr>' + supportingText + '</tr></table>');
 				  	  		}
@@ -436,6 +540,7 @@
 				  	
 				  	}
 			  	  	$("#items-"+setId).append("<br/>");
+			  	  	$("#items-"+setId).append("<br/>");
 			  	});		
 	  	  	}
 		});
@@ -468,52 +573,124 @@
 	    return values;
 	}
 
-	function search() {
-		//$("#basic_info_loader_message").text("Saving...");
+
+	$(document).ready(function() {
+		hideBasicInfoComponents();
+		try {
+			$("#domeoSearch form").submit(function(e) {
+				search();
+				
+				return e.preventDefault();
+			});
+		} catch(e) {
+			alert(e);
+		}
+	});
+
+	function hideBasicInfoComponents() {
+		$("#progressIcon").hide();
+	}
+	
+	var paginationOffset;
+	var paginationRange;
+	
+	function searchAnnotation(paginationOffset, paginationRange) {
+		var query = $('#queryField').val();
+		if(!query) {
+			alert('empty');
+			return
+		}
+	
+		var groups = '';
+		$(".groupCheckbox").each(function(i) {
+			if($(this).attr('checked')!=undefined) 
+				groups += $(this).attr('value') + " ";
+		});
+	
+		var dataToSend = { 
+			userId: '${loggedUser.id}', 
+			query: query,
+			paginationOffset: paginationOffset, 
+			paginationRange: paginationRange, 
+			permissionsPublic: $("#publicFilter").attr('checked')!==undefined, 
+			permissionsGroups: $("#groupsFilter").attr('checked')!==undefined, 
+			groupsIds: groups,
+			permissionsPrivate: $("#privateFilter").attr('checked')!==undefined,
+			agentHuman: $("#agentHuman").attr('checked')!==undefined, 
+			agentSoftware: $("#agentSoftware").attr('checked')!==undefined, 
+		};
+		
 		$("#progressIcon").show();
 		var savingRequest = $.ajax({
 			type: "POST",
 			contentType : "text/plain",
 	        dataType: 'json', 
 			url: "${request.getContextPath()}/ajaxPersistence/search",
-			data: JSON.stringify(getSearchFormValues())
+			data: JSON.stringify(dataToSend)
 		}).done(function( data ) {
 			$("#progressIcon").hide();
 			$("#resultsList").html("");
+
+			$('.resultsPaginationTop').empty();
+		$('.resultsPaginationBottom').empty(); 
 
 			if(data.annotationListItemWrappers.length==0) {
 				$('#resultsList').append("No results<br/>");
 			} 
 			
+			var numberButtons = Math.ceil(data.totalResponses/data.paginationRange);
+	  		var currentPage = Math.floor((data.paginationOffset+1)/data.paginationRange);
+	  		//alert(data.paginationRange + '-' + data.paginationOffset + '-' + currentPage);
+
+	  		var paginationHtml = '';
+	  		//var paginationHtml = '<a href="#" class="page">first</a>';
+	  		for(var x=0; x<numberButtons; x++) {
+		  		if(x==currentPage) paginationHtml += '<a href="#" class="page active">' + (x+1) + '</a>';
+		  		else paginationHtml += '<a href="#" class="page" onclick="searchAnnotation(' + (x*data.paginationRange)+ ')"">' + (x+1) + '</a>';
+		  	}
+	  		//paginationHtml += '<a href="#" class="page">last</a>';
+	  		
+	  		
+	  		$('.resultsPaginationTop').append(paginationHtml);
+	  		
+	  		$('.resultsPaginationBottom').append(paginationHtml);
+			
 			var users = new Array();
 			$.each(data.annotationListItemWrappers, function(i,item){
-				var color = i%2==0?"#fff":"#efefef"
-  				$('#resultsList').append('<div style="border: 1px solid #eee; padding: 5px; background: '+color+'"><table width="100%"><tr><td>' +
-  					'<span style="font-weight: bold;">'+getName(item) + '</span>' + getDescription(item) +
-  					'<br/>' +
-  					getProvenance(item) +
-  					'<br/>' +
-  					getStats(item) + 
-  					'<br/>' +
-  					getTarget(item)  +
-  					//'<div id="citation-'+item.annotationSetIndex.id+'"><img id=\"groupsSpinner\" src=\"${resource(dir:'images',file:'spinner.gif',plugin:'users-module')}\" /> Retrieving Citation</div>' +
+				var color = i%2==0?"#fff":"#fff"; //"#FFF8DC"
+  				$('#resultsList').append('<div style="border: 1px solid #eee; padding: 5px; background: '+color+'">' +
+  				
+  				
+  				  	'<table width="100%" style="border-bottom: solid #ddd 1px;"><tr><td class="topBar">' +
+  					'<span style="font-weight: bold;">'+getName(item) + '</span> ' + getProvenanceCreator(item)  + '<br/>' +
+  					getProvenanceDate(item)  +
+  					
   					'</div>' +
   					'</td>' +
-  					'<td width="90px">' +
+  					'<td width="90" class="topBar" align="right">' +
+  					getStats(item) + 
+  					'<br/>' +
+  					displayAccessType(item.permissionType) + 
+  					
+  					'</td>' +
+  					'<td width="90px" rowspan="2" style="padding-left:4px; border-left: 0px solid #eee;">' +
+  					
   					getModifyLink(i, item) +
   					getExploreLink(item) +
   					getShareLink(i, item) +
   					getHistoryLink(item) + 
-		  			'</td>' + 
-  					'</tr></table>' +
+		  			'</td>' +
+		  			'</tr><tr><td>' + getDescription(item) + '<br/>' +
+		  			//(item.lastAnnotationSetIndex.lastVersion.description!='The default set is created automatically by Domeo when no other set is existing.' && item.lastAnnotationSetIndex.lastVersion.description!=''? (item.lastAnnotationSetIndex.lastVersion.description + '<br/>') :'') +
   					
-  					//getTarget(item)  +
-  					'<div id="citation-'+item.annotationSetIndex.id+'"><img id=\"groupsSpinner\" src=\"${resource(dir:'images',file:'spinner.gif',plugin:'users-module')}\" /> Retrieving Citation</div>' +
-  					'<div id="items-'+item.annotationSetIndex.id+'" style="padding-left:12px; margin-left: 7px;border-left: 2px #999 solid;"><img id=\"groupsSpinner\" src=\"${resource(dir:'images',file:'spinner.gif',plugin:'users-module')}\" /> Retrieving Items</div>' 
-  					//'</div>' 	
   					
-  					//'<br/>'
-					
+  					getTarget(item)  +
+  					//'<div id="citation-'+item.lastAnnotationSetIndex.lastVersion.id+'"><img id=\"groupsSpinner\" src=\"${resource(dir:'images',file:'spinner.gif',plugin:'users-module')}\" /> Retrieving Citation</div>' +
+		  			'</td></tr><tr><td>' + 
+		  			'<div id="citation-'+item.annotationSetIndex.id+'"><img id=\"groupsSpinner\" src=\"${resource(dir:'images',file:'spinner.gif',plugin:'users-module')}\" /> Retrieving Citation</div>' +
+		  			
+  					'</td></tr><tr><td style="height:5px;"> </td></tr></table><br/>' +
+  					 '<div id="items-'+item.annotationSetIndex.id+'" style="padding-left:12px; margin-left: 7px;border-left: 2px #999 solid;"><img id=\"groupsSpinner\" src=\"${resource(dir:'images',file:'spinner.gif',plugin:'users-module')}\" /> Retrieving Items</div>' 
   					);
   				retrieveCitation(item);
   				retrieveItems(item.annotationSetIndex.id, item.annotationSetIndex.individualUri, $('#queryField').val());
@@ -537,100 +714,74 @@
 			// Do nothing
 		});	
 	}
-
-	$(document).ready(function() {
-		hideBasicInfoComponents();
-		try {
-			$("#domeoSearch form").submit(function(e) {
-				search();
-				
-				return e.preventDefault();
-			});
-		} catch(e) {
-			alert(e);
-		}
-	});
-
-	function hideBasicInfoComponents() {
-		$("#progressIcon").hide();
-		//$("#progressIconMessage").hide();
-	}
 </script>
+<style>
+.viewerSidebar {
+	float: right;
+	width: 242px;
+	margin-right: 8px;
+}
+
+</style>
 </head>
 <body>
 	
   <div class="content">
 	<div class="content_resize">
-		<div id="domeoSearch">
-		  	<g:form>
-			    <div class="sidebar" style="padding-top: 30px;padding-bottom: 30px; padding-right:2px;">
-			    	<div align="center" style="background: #cc3300; padding: 5px; color: #fff; font-weight: bold;">Facets</div>
-			    	<div style="background: #fff; padding: 5px; padding-top: 10px; border: 2px solid #cc3300;">
-					    <div align="left" style="padding-left:4px; background: #FFCC00"><b>By Access</b><br/></div>
-					    <g:checkBox name="permissionsPublic"  checked="${true}"/> Public<br/>
-					    <input type="checkbox" name="permissionsGroups" value="Groups" checked>Groups<br>
-					    
-					  	<div id="groupsList">
-					  		<g:each in="${userGroups}" status="i" var="usergroup">
-					  			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<input type="checkbox" name="${usergroup.group.name}" value="" checked>${usergroup.group.name}<br/>
-					  		</g:each>
-					  	</div>
-					    
-						<input type="checkbox" name="permissionsPrivate" checked>Private<br/>
-						<br/>
-						
-						<div align="left" style="padding-left:4px; background: #FFCC00"><b>By Agent (not implemented)</b><br/></div>
-						<g:checkBox name="agentHuman"  checked="${true}"/> Human<br/>
-						<g:checkBox name="agentSoftware"  checked="${true}"/> Software<br/>
-						
-						<br/>
-						<div align="left" style="padding-left:4px; background: #FFCC00"><b>Incuding (not implemented)</b><br/></div>
-						<g:checkBox name="annQualifier"  checked="${true}"/> Qualifiers<br/>
-							&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<g:checkBox name="ontoPRO"  checked="${true}"/> Protein Ontology<br/>
-							&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<g:checkBox name="ontoGO"  checked="${true}"/> Gene Ontology<br/>
-							&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<g:checkBox name="ontoNIF"  checked="${true}"/> NIFSTD Ontology<br/>
-						<g:checkBox name="annHighlights"  checked="${true}"/> Highlights<br/>
-						<g:checkBox name="annNotes"  checked="${true}"/> Notes<br/>
-					</div>
-					<br/>
-					<%-- 
-					<div align="center" style="background: #cc3300; padding: 5px; color: #fff; font-weight: bold;">Annotators</div>
-			    	
-			    	<div style="background: #fff; padding: 5px; padding-top: 10px; border: 2px solid #cc3300;">
-			    		
-			    	</div>
-			    	--%>
+		<div id="sidebar" class="viewerSidebar" style="padding-top: 30px;padding-bottom: 30px; padding-right:2px;">
+			<%--
+	    	<div id='contributorsTitle'>Filtering by Access</div>
+			<div id="contributors" style="border-top: 3px solid #ddd; padding-bottom: 2px;"></div>
+	    	<div style="background: #fff; padding: 5px; padding-top: 10px; ">
+			    <input id="publicFilter" type="checkbox" name="vehicle" checked="checked">Public<br>
+			    <input id="groupsFilter" type="checkbox" name="vehicle" >Groups<br>			    
+			  	<div id="groupsList">
+			  		<g:each in="${userGroups}" status="i" var="usergroup">
+			  			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<input type="checkbox" name="${usergroup.group.name}" class="groupCheckbox" value="${usergroup.group.id}">${usergroup.group.name}<br/>
+			  		</g:each>
 			  	</div>
+				<input id="privateFilter" type="checkbox" name="vehicle" checked="checked">Private<br/><br/>
+			</div>
+			
+			<div id='contributorsTitle'>Filtering by Agent</div>
+			<div id="contributors" style="border-top: 3px solid #ddd; padding-bottom: 2px;"></div>
+			<div style="background: #fff; padding: 5px; padding-top: 10px; ">
+				<g:checkBox id="agentHuman" name="agentHuman"  checked="${true}"/> Human<br/>
+				<g:checkBox id="agentSoftware" name="agentSoftware"  checked="${true}"/> Software<br/>
+			</div>
+			<br/>
+			<div align="center"><input value="Refresh" title="Search" name="lucky" type="submit" id="btn_i" onclick="searchAnnotation()"></div>
+			--%>
+	  	</div>
 		 
-		 		<!-- Browsing Navigation -->
-			    <div style="background: #cc3300; color: #fff;">
-			   		<ul class="bar">
-						<li><g:link controller="secure" action="browser"><span>Annotation Sets</span></g:link></li>
-						<li><g:link controller="secure" action="documents"><span>Documents</span></g:link></li>
-						<li><a href="#">Bibliography</a></li>
-					</ul> 
-			    </div>
+ 		<!-- Browsing Navigation -->
+	    <div style="background: #cc3300; color: #fff;">
+	   		<ul class="bar">
+				<li><g:link controller="secure" action="browser"><span>Annotation Sets</span></g:link></li>
+				<li><g:link controller="secure" action="documents"><span>Documents</span></g:link></li>
+				<li><a href="#">Bibliography</a></li>
+			</ul> 
+	    </div>
 			    
-			    
-			    <table width="730px;">
-			    	<tr><td>
-			    		<div id="resultsSummary" style="padding: 5px; padding-left: 10px;"></div>
-			    	</td><td style="text-align:right">
-			    		<div id="resultsStats" style="padding: 5px; "></div>
-			    	</td></tr>
-			    </table>
-			    <div id="searchArea" align="center" style="padding: 5px; padding-top: 15px ;padding-left: 10px; width: 715px;">
-			    	
-			    		<g:textField id="queryField" name="query" size="70" />
-			    		<g:submitButton name="search" value="Search" />   
-			    	
-			    </div>
-		</g:form>
-		  <div id="progressIcon" align="center" style="padding: 5px; padding-left: 10px; display: none;"><img id="groupsSpinner" src="${resource(dir:'images',file:'progress-bar-2.gif',plugin:'users-module')}" /></div>
-	    <div id="resultsList" style="padding: 5px; padding-left: 10px; width: 715px;">
+	    <table width="705px;">
+	    	<tr><td>
+	    		<div id="resultsSummary" style="padding: 5px; padding-left: 10px;"></div>
+	    	</td><td style="text-align:right">
+	    		<div id="resultsStats" style="padding: 5px; "></div>
+	    	</td></tr>
+	    </table>
+	    <div id="searchArea" align="center" style="padding: 5px; padding-top: 15px ;padding-left: 10px; width: 715px;">
+	    	
+	    		<g:textField id="queryField" name="query" size="70" />
+	    		<input value="Search" title="Search" name="lucky" type="submit" id="btn_i" onclick="searchAnnotation()">
 	    	
 	    </div>
-	    <div class="resultsPagination"></div>
+		
+		<div id="progressIcon" align="center" style="padding: 5px; padding-left: 10px; display: none;"><img id="groupsSpinner" src="${resource(dir:'images',file:'progress-bar-2.gif',plugin:'users-module')}" /></div>
+	 
+	    <div class="resultsPaginationTop"></div>
+	    <div id="resultsList" style="padding: 5px; padding-left: 10px; width: 715px;"></div>
+	   	<div class="resultsPaginationBottom"></div>
       	<div class="clr"></div>
     </div>
      </div>

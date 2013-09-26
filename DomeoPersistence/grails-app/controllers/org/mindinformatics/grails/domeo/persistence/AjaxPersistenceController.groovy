@@ -96,7 +96,7 @@ class AjaxPersistenceController {
 		boolean privateData = (params.privateData?Boolean.parseBoolean(params.privateData):true);
 		def groupsIds = params.groupsIds;
 		
-//		println '-0-- ' + documentUrl;
+		println '-0-- ' + documentUrl;
 //		println '-1-- ' + permissionPublic;
 //		println '-2-- ' + permissionPrivate;
 //		println '-3-- ' + paginationOffset;
@@ -1093,6 +1093,84 @@ class AjaxPersistenceController {
 	def search = {		
 		def user = userProfile();
 		
+		int paginationOffset = (request.JSON.paginationOffset?request.JSON.paginationOffset:0);
+		int paginationRange = (request.JSON.paginationRange?request.JSON.paginationRange:2);
+		
+		List<AnnotationSetIndex> annotationListItemWrappers = new ArrayList<AnnotationSetIndex>();
+		if(request.JSON) {
+			int globalCounter = 0;
+			int allowedCounter = 0;
+			
+			def res;
+			println "Query " + request.JSON.query
+			println "Public " + request.JSON.permissionsPublic
+			println "Private " + request.JSON.permissionsPrivate
+			
+			println "Human " + request.JSON.agentHuman
+			println "Software " + request.JSON.agentSoftware
+			
+			def agent;
+			if(request.JSON.agentHuman==true && request.JSON.agentSoftware != true) 
+				agent = 'foafx:Person'
+			else if(request.JSON.agentHuman!=true && request.JSON.agentSoftware == true) 
+				agent = 'foafx:Software'
+				
+
+			if(request.JSON.query) {
+				if(agent!=null) {
+					String[] fields = ['_all', 'pav_!DOMEO_NS!_createdBy.@type']
+					String[] values = [request.JSON.query, agent]
+					
+					res = annotationSearchService.searchMultiple(fields , values,
+						 	request.JSON.permissionsPublic, (request.JSON.permissionsPrivate==true)?"urn:person:uuid:"+userProfileId():null);
+				} else {
+					res = annotationSearchService.search("_all" , request.JSON.query,
+							request.JSON.permissionsPublic==true, (request.JSON.permissionsPrivate==true)?"urn:person:uuid:"+userProfileId():null);
+				}
+				
+				
+				JSONObject r = JSON.parse(res);
+				def hits = r.hits.hits;
+				hits.each { hit ->
+					def annotationSetIndex = AnnotationSetIndex.findByMongoUuid(hit._id);
+					if(annotationSetIndex!=null) {
+						if(annotationPermissionService.isPermissionGranted(user, annotationSetIndex)) {
+							AnnotationSetItemWrapper annotationListItemWrapper = new AnnotationSetItemWrapper(annotationSetIndex: annotationSetIndex);
+							
+							if(globalCounter>=paginationOffset && globalCounter<(paginationOffset+paginationRange)) {
+								annotationListItemWrappers.add(annotationListItemWrapper);
+								allowedCounter++;
+							}
+						 
+							List<String> permissions = annotationPermissionService.getAnnotationSetPermissions(user.id, annotationSetIndex);
+							if (permissions.get(0)==IPermissionTypes.publicAccess) {
+								annotationListItemWrapper.permissionType = IPermissionTypes.publicAccess;
+							} else if (permissions.get(0)==IPermissionTypes.groupsAccess) {
+								annotationListItemWrapper.permissionType = IPermissionTypes.groupsAccess;
+							} else {
+								annotationListItemWrapper.permissionType = IPermissionTypes.privateAccess;
+							}
+							annotationListItemWrapper.isLocked = annotationPermissionService.isLocked(annotationSetIndex);
+							
+							globalCounter++
+						}
+						
+						
+					}
+				}
+			
+			}
+			AnnotationListResponse theResponse = new AnnotationListResponse(
+				paginationOffset: paginationOffset, paginationRange: paginationRange,
+				annotationListItemWrappers: annotationListItemWrappers, totalResponses: globalCounter);
+			JSON.use("deep")
+			render (theResponse as JSON);
+		}
+	}
+	
+	def search2 = {
+		def user = userProfile();
+		
 		List<AnnotationSetIndex> annotationListItemWrappers = new ArrayList<AnnotationSetIndex>();
 		if(request.JSON) {
 			def res;
@@ -1104,9 +1182,9 @@ class AjaxPersistenceController {
 			println "Software " + request.JSON.agentSoftware
 			
 			def agent;
-			if(request.JSON.agentHuman=="checked" && request.JSON.agentSoftware !='checked') 
+			if(request.JSON.agentHuman=="checked" && request.JSON.agentSoftware !='checked')
 				agent = 'foafx:Person'
-			else if(request.JSON.agentHuman!="checked" && request.JSON.agentSoftware =='checked') 
+			else if(request.JSON.agentHuman!="checked" && request.JSON.agentSoftware =='checked')
 				agent = 'foafx:Software'
 				
 			if(request.JSON.query) {
@@ -1115,7 +1193,7 @@ class AjaxPersistenceController {
 					String[] values = [request.JSON.query, agent]
 					
 					res = annotationSearchService.searchMultiple(fields , values,
-						 	(request.JSON.permissionsPublic=="checked")?true:false, (request.JSON.permissionsPrivate=="checked")?"urn:person:uuid:"+userProfileId():null);
+							 (request.JSON.permissionsPublic=="checked")?true:false, (request.JSON.permissionsPrivate=="checked")?"urn:person:uuid:"+userProfileId():null);
 				} else {
 					res = annotationSearchService.search("_all" , request.JSON.query,
 							(request.JSON.permissionsPublic=="checked")?true:false, (request.JSON.permissionsPrivate=="checked")?"urn:person:uuid:"+userProfileId():null);

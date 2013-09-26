@@ -77,7 +77,10 @@ function buildTagCloud() {
 			(Object.keys(tags).length!=1?"Tags":"Tag") + 
 		"</div>");
 		for(var i=0; i<Object.keys(tags).length; i++) {
-			$('#tagCloudItems').append("<a onclick=\"javascript:displayLinkedResource('" + tags[Object.keys(tags)[i]]['@id'] + "', '" + tags[Object.keys(tags)[i]]['rdfs:label'] + "','" + tags[Object.keys(tags)[i]]['dct:description'] + "','" + tags[Object.keys(tags)[i]]['dct:source']['@id'] + "','" + tags[Object.keys(tags)[i]]['dct:source']['rdfs:label'] + "')\" style=\"cursor: pointer;\">" + tags[Object.keys(tags)[i]]['rdfs:label'] + '</a> ');
+			if(tags[Object.keys(tags)[i]]['dct:source']) 
+				$('#tagCloudItems').append("<a onclick=\"javascript:displayLinkedResource('" + tags[Object.keys(tags)[i]]['@id'] + "', '" + tags[Object.keys(tags)[i]]['rdfs:label'] + "','" + tags[Object.keys(tags)[i]]['dct:description'] + "','" + tags[Object.keys(tags)[i]]['dct:source']['@id'] + "','" + tags[Object.keys(tags)[i]]['dct:source']['rdfs:label'] + "')\" style=\"cursor: pointer;\">" + tags[Object.keys(tags)[i]]['rdfs:label'] + '</a> ');
+			else
+				$('#tagCloudItems').append("<a onclick=\"javascript:displayLinkedResource('" + tags[Object.keys(tags)[i]]['@id'] + "', '" + tags[Object.keys(tags)[i]]['rdfs:label'] + "','" + tags[Object.keys(tags)[i]]['dct:description'] + "','','')\" style=\"cursor: pointer;\">" + tags[Object.keys(tags)[i]]['rdfs:label'] + '</a> ');				
 		}	
 		 $('#tagCloudItems a').tagcloud();
 	} else {

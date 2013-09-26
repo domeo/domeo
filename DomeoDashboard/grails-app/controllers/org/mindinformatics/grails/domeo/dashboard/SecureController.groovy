@@ -70,7 +70,24 @@ class SecureController {
 			menuitem: 'browser', navitem: 'annotationSetHistory']);
 	}
 	
-    def search = {
+	def search = {
+		def loggedUser = injectUserProfile();
+
+		println "Query " + params.query;
+		println "Params " + params;
+		
+		def results;
+		if(params.query) {
+			results = annotationSearchService.search("ao_!DOMEO_NS!_item.ao_!DOMEO_NS!_context.ao_!DOMEO_NS!_hasSource" , "http://en.wikipedia.org/wiki/Amyloid_precursor_protein");
+			//results = annotationSearchService.search("ao_!DOMEO_NS!_item.ao_!DOMEO_NS!_context.ao_!DOMEO_NS!_hasSource", "http://www.ncbi.nlm.nih.gov/pmc/articles/PMC2700002/");
+		}
+		
+		render(view:'search', model:[loggedUser: loggedUser, appBaseUrl: request.getContextPath(),
+			userGroups: usersManagementService.getUserGroups(loggedUser), results: results, params: params,
+			menuitem: 'search', navitem: 'search']);
+	}
+	
+    def search2 = {
         def loggedUser = injectUserProfile();
 
         println "Query " + params.query;
@@ -82,7 +99,7 @@ class SecureController {
             //results = annotationSearchService.search("ao_!DOMEO_NS!_item.ao_!DOMEO_NS!_context.ao_!DOMEO_NS!_hasSource", "http://www.ncbi.nlm.nih.gov/pmc/articles/PMC2700002/");
         }
         
-        render(view:'search', model:[loggedUser: loggedUser, appBaseUrl: request.getContextPath(),
+        render(view:'search2', model:[loggedUser: loggedUser, appBaseUrl: request.getContextPath(),
             userGroups: usersManagementService.getUserGroups(loggedUser), results: results, params: params,
             menuitem: 'search', navitem: 'search']);
 	}

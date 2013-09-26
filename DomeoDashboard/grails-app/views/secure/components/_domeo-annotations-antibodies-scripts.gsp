@@ -27,28 +27,15 @@
 <script type="text/javascript">
 
 function processAntibodies(annotation) {
-	/*
-	for(var j=0; j<annotation.body[0]['mp:argues']['mp:qualifiedBy'].length;j++) {
-		//var tag = annotation.body[0]['mp:argues']['mp:qualifiedBy'][j]['reif:resource'];
-		//tags[tag['@id']]=tag;
-		addTag(annotation.body[0]['mp:argues']['mp:qualifiedBy'][j]['reif:resource']);
-	}
-	if(annotation.body[0]['mp:argues']['mp:supportedBy']) {
-		for(var j=0; j<annotation.body[0]['mp:argues']['mp:supportedBy'].length;j++) {
-			if(annotation.body[0]['mp:argues']['mp:supportedBy'][j]['reif:resource']) {
-				var ref = annotation.body[0]['mp:argues']['mp:supportedBy'][j]['reif:resource'];
-				if(ref['@type'].contains('PublicationArticleReference')) {
-					references[ref['@id']]=ref;
-				}
-			}
+
+	if(annotation.body[0]["domeo:protocol"] && annotation.body[0]["domeo:protocol"].length>0) {
+		for(var i=0; i<annotation.body[0]["domeo:protocol"].length; i++) {
+			addTag(annotation.body[0]["domeo:protocol"][i]);
 		}
 	}
-	if(annotation.body[0]['mp:argues']['mp:challengedBy']) {
-		for(var j=0; j<annotation.body[0]['mp:argues']['mp:challengedBy'].length;j++) {
-			alert('challengedBy');
-		}
-	}	
-	*/
+
+	if(annotation.body[0]["domeo:model"]) 
+		addTag(annotation.body[0]["domeo:model"]);
 }
 
 function getAnnotationAntibodiesView(index, annotation, indentation, annotationOnAnnotation) {
@@ -72,7 +59,7 @@ function getAnnotationAntibodiesView(index, annotation, indentation, annotationO
 
 	var comment = '';
 	if(annotation.body[0]["dct:description"])
-		comment == 'Comment: ' + annotation.body[0]["dct:description"];
+		comment = 'Note: ' + annotation.body[0]["dct:description"];
 		
 	return '<div style="padding-left: ' + indentation + 'px; padding-right: ' + indentation + 'px;padding-bottom: 10px;">' + 
 		'<div style="border: 1px solid #ddd;">' +
