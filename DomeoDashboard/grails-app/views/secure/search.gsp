@@ -367,7 +367,13 @@
 	  	  	context: $("#resultsList"),
 	  	  	data: JSON.stringify(dataToSend),
 	  	  	success: function(data){
+				var summ = "<span style='font-size:18px; padding-right: 5px;'>" + data.length + "</span> " + (data.length==1?'Item':'Items') + " of interest";
+		
+		  	  	
 		  	  	$("#items-"+setId).html('');
+		  	    $("#items-summary-"+setId).html('');
+		  	  	$("#items-summary-"+setId).append('<div style="padding-bottom: 5px;">' + summ+ '</div>');
+		  	  	
 		  	  	$.each(data, function(i,item){
 		  	  		//$("#items-"+setId).append("<br/>");
 			  	  	if(item._source["@type"]=='ao:Highlight') {
@@ -719,7 +725,8 @@
 		  			'<div id="citation-'+item.annotationSetIndex.id+'"><img id=\"groupsSpinner\" src=\"${resource(dir:'images',file:'spinner.gif',plugin:'users-module')}\" /> Retrieving Citation</div>' +
 		  			
   					'</td></tr><tr><td style="height:5px;"> </td></tr></table><br/>' +
-  					 '<div id="items-'+item.annotationSetIndex.id+'" style="padding-left:12px; margin-left: 7px;border-left: 2px #999 solid;"><img id=\"groupsSpinner\" src=\"${resource(dir:'images',file:'spinner.gif',plugin:'users-module')}\" /> Retrieving Items</div>' 
+  					'<div id="items-summary-'+item.annotationSetIndex.id+'" style="padding-left:0px; margin-left: 7px;"><img id=\"groupsSpinner\" src=\"${resource(dir:'images',file:'spinner.gif',plugin:'users-module')}\" /> Retrieving Items Summary</div>' +
+  					'<div id="items-'+item.annotationSetIndex.id+'" style="padding-left:12px; margin-left: 7px;border-left: 2px #999 solid;"><img id=\"groupsSpinner\" src=\"${resource(dir:'images',file:'spinner.gif',plugin:'users-module')}\" /> Retrieving Items</div>' 
   					);
   				retrieveCitation(item);
   				retrieveItems(item.annotationSetIndex.id, item.annotationSetIndex.individualUri, $('#queryField').val());
