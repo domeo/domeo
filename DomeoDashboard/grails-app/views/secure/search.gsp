@@ -576,7 +576,20 @@
 
 	$(document).ready(function() {
 		hideBasicInfoComponents();
+		
+		$('#queryField').bind("enterKey",function(e){
+		   searchAnnotation();
+		});
+		$('#queryField').keyup(function(e){
+		    if(e.keyCode == 13)
+		    {
+		        searchAnnotation();
+		    }
+		});
+		
 		try {
+			
+		
 			$("#domeoSearch form").submit(function(e) {
 				search();
 				
