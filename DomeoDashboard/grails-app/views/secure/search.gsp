@@ -291,12 +291,16 @@
 		}
 	}
 
+	function edit(annotationId, url) {
+		document.location = '${appBaseUrl}/web/domeo?url=' + encodeURIComponent(url) + '&setId=' + encodeURIComponent(annotationId);
+	}
+
 	function isLocked(lock) {
 		return lock=='true';
 	}
 
 	function getModifyLink(i, item) {
-		return "<a onclick=\"javascript:edit('" + item.annotationSetIndex.individualUri + "')\" style=\"text-decoration: none; cursor: pointer;\"><img id=\"groupsSpinner\" src=\"${resource(dir:'images/secure',file:'black_edit.gif',plugin:'users-module')}\" /> Document</a><br/>";
+		return "<a onclick=\"javascript:edit('" + item.annotationSetIndex.individualUri + "','" + item.annotationSetIndex.annotatesUrl + "')\" style=\"text-decoration: none; cursor: pointer;\"><img id=\"groupsSpinner\" src=\"${resource(dir:'images/secure',file:'black_edit.gif',plugin:'users-module')}\" /> Document</a><br/>";
 	}
 
 	function getExploreLink(item) {
@@ -312,7 +316,7 @@
 	}
 
 	function displaySet(annotationUri) {
-		document.location = '${appBaseUrl}/secure/set/' + annotationUri;
+		document.location = '${appBaseUrl}/secure/annset/' + annotationUri;
 	}
 
 	function displayUser(userId) {

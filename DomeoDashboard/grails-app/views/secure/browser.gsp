@@ -312,8 +312,12 @@
 			  			if(data.annotationListItemWrappers.length == 0) {
 			  				$("#resultsSummary").html("No set meeting the filtering criteria");
 			  			} else if(data.annotationListItemWrappers.length == 1) {
-							$("#resultsSummary").html("Set <span style='font-weight: bold;font-size:16px;'>1</span> out of <span style='font-weight: bold;font-size:16px;'>" + 
-									(data.totalResponses>-1?data.totalResponses:0) + '</span> meeting the filtering criteria');
+			  				if(data.totalResponses==1)
+								$("#resultsSummary").html("Set <span style='font-weight: bold;font-size:16px;'>1</span> out of <span style='font-weight: bold;font-size:16px;'>" + 
+										(data.totalResponses>-1?data.totalResponses:0) + '</span> meeting the filtering criteria');
+			  				else
+								$("#resultsSummary").html("Set <span style='font-weight: bold;font-size:16px;'>" + (data.paginationOffset+1) + "</span> out of <span style='font-weight: bold;font-size:16px;'>" + 
+										(data.totalResponses>-1?data.totalResponses:0) + '</span> meeting the filtering criteria');
 						} else {	  			
 				  			$("#resultsSummary").html(label + " <span style='font-weight: bold;font-size:16px;'>" + 
 						  			(data.paginationOffset!=0?data.paginationOffset+1:1) + " - " + 
