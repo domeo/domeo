@@ -40,9 +40,9 @@ import org.xml.sax.SAXParseException;
 /**
 * @author Paolo Ciccarese <paolo.ciccarese@gmail.com>
 */
-public class ParseXMLFile {
+public class ParseXMLTermsFile {
     
-    private static Logger log = Logger.getLogger(ParseXMLFile.class.getName());
+    private static Logger log = Logger.getLogger(ParseXMLTermsFile.class.getName());
     
 	/**
 	 * @param uri RESTful Search URI for BioPortal web services

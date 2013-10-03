@@ -22,7 +22,7 @@ package org.mindinformatics.services.connector.bioportal.search
 
 import org.codehaus.groovy.grails.web.json.JSONObject
 import org.mindinformatics.domeo.grails.plugins.utils.MiscUtils
-import org.mindinformatics.services.connector.bioportal.terms.ParseXMLFile
+import org.mindinformatics.services.connector.bioportal.terms.ParseXMLTermsFile
 
 
 /**
@@ -51,9 +51,9 @@ class JsonBioPortalTermsRetrievalService {
         log.info("Search term with URI: " + uri);
         if(domeoConfigAccessService.isProxyDefined()) {
             log.info("proxy: " + domeoConfigAccessService.getProxyIp() + "-" + domeoConfigAccessService.getProxyPort());
-            return ParseXMLFile.parseXMLFile(uri, domeoConfigAccessService.getProxy());
+            return ParseXMLTermsFile.parseXMLFile(uri, domeoConfigAccessService.getProxy());
         } else {
-            return ParseXMLFile.parseXMLFile(uri, null);
+            return ParseXMLTermsFile.parseXMLFile(uri, null);
         }
 	}
 	
@@ -73,9 +73,9 @@ class JsonBioPortalTermsRetrievalService {
         log.info("Search term with URI: " + uri);
 		if(domeoConfigAccessService.isProxyDefined()) {
 			log.info("proxy: " + domeoConfigAccessService.getProxyIp() + "-" + domeoConfigAccessService.getProxyPort());
-            return ParseXMLFile.parseXMLFile(uri, domeoConfigAccessService.getProxy());
+            return ParseXMLTermsFile.parseXMLFile(uri, domeoConfigAccessService.getProxy());
 		} else {
-		    return ParseXMLFile.parseXMLFile(uri, null);
+		    return ParseXMLTermsFile.parseXMLFile(uri, null);
 		}
 	}
     
