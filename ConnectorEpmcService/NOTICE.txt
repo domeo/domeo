@@ -1,0 +1,4 @@
+
+	Domeo Web Annotation Tool - Nif Connector Service
+	Copyright 2013 Massachusetts General Hospital
+	Originally developed by Dr. Paolo Ciccarese
