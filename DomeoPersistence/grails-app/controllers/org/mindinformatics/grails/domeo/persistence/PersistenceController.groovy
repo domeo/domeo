@@ -263,7 +263,7 @@ class PersistenceController {
 						set = new AnnotationSetIndex(type: SET_TYPE, individualUri:SET_URN,
 							lineageUri:lineageUri, size:  annotationSetSize, createdBy: creator,
 							previousVersion: previousVersion, versionNumber: versionNumber,
-							annotatesUrl: SET_TARGET_URL, label:SET_LABEL, description: SET_DESCRIPTION, isDeleted: SET_DELETED);
+							annotatesUrl: SET_TARGET_URL, label:SET_LABEL, description: SET_DESCRIPTION, isDeleted: SET_DELETED=='true');
 						set.createdOn = dateFormat.parse(SET_CREATED_ON);
 						set.lastSavedOn = dateFormat.parse(dateFormat.format(lastSavedOnDate));
 						
@@ -287,7 +287,7 @@ class PersistenceController {
 					if(!annotationSetExistenceFlag) {
 						lastVersion = new LastAnnotationSetIndex(
 							lineageUri: lineageUri, lastVersionUri: set.individualUri,
-							lastVersion:set, annotatesUrl: SET_TARGET_URL, isDeleted: SET_DELETED);
+							lastVersion:set, annotatesUrl: SET_TARGET_URL, isDeleted: SET_DELETED=='true');
 						try {
 							transactionalPersistenceService.saveLastAnnotationSetIndex(lastVersion);
 							logInfo(userId, "SUCCESS: Last version index saved " + lastVersion.id);
@@ -304,7 +304,7 @@ class PersistenceController {
 							lastVersion = LastAnnotationSetIndex.findByLineageUri(lineageUri);
 							lastVersion.lastVersionUri = SET_URN;
 							lastVersion.lastVersion = set;
-							lastVersion.isDeleted = SET_DELETED;
+							lastVersion.isDeleted = SET_DELETED=='true';
 						} catch(RuntimeException e) {
 							rollback(userId, set, set.individualUri, "Annotation Set");
 							trackException(userId, textContent, "FAILURE: Could not save the last version index "+ e.getMessage());
