@@ -96,7 +96,7 @@ class AjaxPersistenceController {
 		boolean privateData = (params.privateData?Boolean.parseBoolean(params.privateData):true);
 		def groupsIds = params.groupsIds;
 		
-		println '-0-- ' + documentUrl;
+//		println '-0-- ' + documentUrl;
 //		println '-1-- ' + permissionPublic;
 //		println '-2-- ' + permissionPrivate;
 //		println '-3-- ' + paginationOffset;
@@ -113,9 +113,11 @@ class AjaxPersistenceController {
 			ArrayList<AnnotationListItemWrapper> annotationListItemWrappers = new ArrayList<AnnotationListItemWrapper>();
 			List<LastAnnotationSetIndex> lastAnnotationSetIndexes;
             
-            if(!documentUrl) lastAnnotationSetIndexes = LastAnnotationSetIndex.findAll('from LastAnnotationSetIndex as b order by b.lastUpdated desc')
+            if(!documentUrl) lastAnnotationSetIndexes = LastAnnotationSetIndex.findAll('from LastAnnotationSetIndex as b where b.isDeleted=0 order by b.lastUpdated desc')
             else lastAnnotationSetIndexes = LastAnnotationSetIndex.findAll('from LastAnnotationSetIndex as b where b.annotatesUrl=\'' + documentUrl + '\' order by b.lastUpdated desc')
             
+			
+			
 			int globalCounter = 0;
 			int allowedCounter = 0;
 //			println 'total: ' + lastAnnotationSetIndexes.size(); 

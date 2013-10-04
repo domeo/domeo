@@ -26,6 +26,8 @@ class AnnotationSetIndex {
 	Date createdOn;
 	Date lastSavedOn;
 	
+	boolean isDeleted;
+	
 	static mapping = { 
 		id generator:'uuid' 
 	}

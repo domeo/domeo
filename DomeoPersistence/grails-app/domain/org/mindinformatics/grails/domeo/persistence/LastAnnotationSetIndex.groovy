@@ -9,6 +9,8 @@ class LastAnnotationSetIndex {
 	String lineageUri; 
 	String lastVersionUri;
 	
+	boolean isDeleted;
+	
 	// TODO abstract for pages with multiple URLs
 	String annotatesUrl;
 	

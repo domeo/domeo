@@ -203,6 +203,7 @@ class PersistenceController {
 					def SET_DESCRIPTION = JSON_SET.get("dct:description");
 					def SET_TARGET_URL = JSON_SET.get("ao:annotatesResource");
 					def SET_CREATED_ON = JSON_SET.get("pav:createdOn");
+					def SET_DELETED = JSON_SET.get("domeo:deleted");
 					
 					// Creator
 					def creator = findCreator(userId, JSON_SET.get("pav:createdBy")); //.get("@id")); 
@@ -262,7 +263,7 @@ class PersistenceController {
 						set = new AnnotationSetIndex(type: SET_TYPE, individualUri:SET_URN,
 							lineageUri:lineageUri, size:  annotationSetSize, createdBy: creator,
 							previousVersion: previousVersion, versionNumber: versionNumber,
-							annotatesUrl: SET_TARGET_URL, label:SET_LABEL, description: SET_DESCRIPTION);
+							annotatesUrl: SET_TARGET_URL, label:SET_LABEL, description: SET_DESCRIPTION, isDeleted: SET_DELETED);
 						set.createdOn = dateFormat.parse(SET_CREATED_ON);
 						set.lastSavedOn = dateFormat.parse(dateFormat.format(lastSavedOnDate));
 						
@@ -286,7 +287,7 @@ class PersistenceController {
 					if(!annotationSetExistenceFlag) {
 						lastVersion = new LastAnnotationSetIndex(
 							lineageUri: lineageUri, lastVersionUri: set.individualUri,
-							lastVersion:set, annotatesUrl: SET_TARGET_URL);
+							lastVersion:set, annotatesUrl: SET_TARGET_URL, isDeleted: SET_DELETED);
 						try {
 							transactionalPersistenceService.saveLastAnnotationSetIndex(lastVersion);
 							logInfo(userId, "SUCCESS: Last version index saved " + lastVersion.id);
@@ -303,6 +304,7 @@ class PersistenceController {
 							lastVersion = LastAnnotationSetIndex.findByLineageUri(lineageUri);
 							lastVersion.lastVersionUri = SET_URN;
 							lastVersion.lastVersion = set;
+							lastVersion.isDeleted = SET_DELETED;
 						} catch(RuntimeException e) {
 							rollback(userId, set, set.individualUri, "Annotation Set");
 							trackException(userId, textContent, "FAILURE: Could not save the last version index "+ e.getMessage());
@@ -534,7 +536,7 @@ class PersistenceController {
                     else set.mongoUuid = mongoJsonResponse.oids.$oid;
                     
 					logInfo(userId, 'SUCCESS: Saving annotation set process completed!');
-					render (responseToSets as JSON);
+					
 				} else {
 					trackException(userId, textContent, "FAILURE: Set type not recognized (skipped): " + SET_TYPE);
 					return;
@@ -544,6 +546,8 @@ class PersistenceController {
 				return;
 			}
 		}
+		
+		render (responseToSets as JSON);
 		
 		ElasticSearchWrapper esWrapper = new ElasticSearchWrapper(grailsApplication.config.elastico.database, grailsApplication.config.elastico.collection, grailsApplication.config.elastico.ip, grailsApplication.config.elastico.port);
 		String esResponse = esWrapper.refreshIndex();
@@ -1040,7 +1044,7 @@ class PersistenceController {
 			
 			// Query for all the annotation sets available for the URL
 			// and crossing them with those available to the user
-			def existingAnnotationSets = LastAnnotationSetIndex.findAllByAnnotatesUrl(JSON_REQUEST.get(0).url, [sort:"dateCreated", order:"desc"]);
+			def existingAnnotationSets = LastAnnotationSetIndex.findAllByAnnotatesUrlAndIsDeleted(JSON_REQUEST.get(0).url, false, [sort:"dateCreated", order:"desc"]);
 			existingAnnotationSets.each { annotationSet ->
 				privateLineageIdentifiers.each { lineageUri ->
 					if(annotationSet.lineageUri.equals(lineageUri))
