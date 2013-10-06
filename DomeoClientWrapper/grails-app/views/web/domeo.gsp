@@ -27,7 +27,9 @@
     <!--                                           -->
     <!-- Title and default user                    -->
     <!--                                           -->
-    <title>Domeo (Development Mode)</title>
+    <title>Domeo (Development Mode ++)</title>
+    
+    
     
     <script>
 	   var username = "current";
@@ -36,6 +38,7 @@
 	   var standalone = "false";
 	   var jsonformat = "true";
 	   var testFiles = "true";
+	   var defaultSetPrivacy = "${grailsApplication.config.domeo.default.annotationset.privacy} ";
 	</script> 
     
     <!--                                           -->
