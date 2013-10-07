@@ -27,7 +27,7 @@
     <!--                                           -->
     <!-- Title and default user                    -->
     <!--                                           -->
-    <title>Domeo (Development Mode ++)</title>
+    <title>Domeo Annotation Tool</title>
     
     
     
@@ -37,8 +37,10 @@
 	   var serverversion = "b5";
 	   var standalone = "false";
 	   var jsonformat = "true";
+	   
 	   var testFiles = "true";
-	   var defaultSetPrivacy = "${grailsApplication.config.domeo.default.annotationset.privacy} ";
+	   var provideExamplesUrls = "${grailsApplication.config.domeo.test.example.urls}";
+	   var defaultSetPrivacy = "${grailsApplication.config.domeo.default.annotationset.privacy}";
 	</script> 
     
     <!--                                           -->
