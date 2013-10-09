@@ -345,6 +345,12 @@
 		open_in_new_tab('${appBaseUrl}/share/set/' + annotationId);
 	}
 
+	function open_in_new_tab(url)
+	{
+	  var win=window.open(url, '_blank');
+	  win.focus();
+	}
+
 	function getHistoryLink(item) {
 		return "<a onclick=\"javascript:displayHistory('" + item.set.id+ "')\" style=\"text-decoration: none; cursor: pointer;\"><img id=\"groupsSpinner\" src=\"${resource(dir:'images/secure',file:'history.png',plugin:'users-module')}\" /> History</a>";
 	}
