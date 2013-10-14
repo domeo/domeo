@@ -639,7 +639,11 @@ class AjaxPersistenceController {
 				JSONObject jsonSet = new JSONObject();
 				jsonSet.put("id", set[IOntology.generalId]);
 				jsonSet.put("type", set[IOntology.generalType]);
-				jsonSet.put("label", set[IOntology.generalLabel]);
+				if(set[IOntology.generalType]==IOntology.discussionSet) 
+					jsonSet.put("label", "<img src='" + createLinkTo(dir:"images/secure", file:"commentsIcon_24.png") + "'> " + set[IOntology.generalLabel]);
+				else
+					jsonSet.put("label", set[IOntology.generalLabel]);
+					
 				jsonSet.put("description", set[IOntology.generalDescription]);
 				jsonSet.put("target", set[IOntology.target]);
 				jsonSet.put("createdOn", set[IOntology.pavCreatedOn]);
@@ -683,7 +687,7 @@ class AjaxPersistenceController {
 						typesSet.add(annotations[i][IOntology.generalType]);
 					}
 					
-					if(typesSet.contains(IOntology.annotationComment)) {
+					if(typesSet.contains(IOntology.annotationComment) || typesSet.contains(IOntology.annotationLinearComment)) {
 						// General
 						annotation.put("createdOn", annotations[i][IOntology.pavCreatedOn]);
 						//annotation.put("createdBy", agentsCache.get(annotations[i][IOntology.pavCreatedBy]['@id']));
@@ -763,12 +767,14 @@ class AjaxPersistenceController {
 						annotation.put("content", contentTerms);
 						annotation.put("body", annotations[i]["ao:hasTopic"]);
 					} else if(typesSet.contains(IOntology.annotationPostIt)) {
-						annotation.put("content", annotations[i][IOntology.content]['cnt:chars']);
+						annotation.put("content", annotations[i][IOntology.content][0]['cnt:chars']);
 					} else if(typesSet.contains(IOntology.annotationAntibody)) {
 						annotation.put("content", annotations[i][IOntology.content][0]['domeo:antibody'][0]['rdfs:label']);
 						annotation.put("body", annotations[i]["ao:body"]);
 					} else if(typesSet.contains(IOntology.annotationComment)) {
 						//annotation.put("content", annotations[i][IOntology.content]);
+					} else if(typesSet.contains(IOntology.annotationLinearComment)) {
+						annotation.put("content", annotations[i][IOntology.content][0]['cnt:chars']);
 					} else if(typesSet.contains(IOntology.annotationMicroPublication)) {
 						def typo = annotations[i][IOntology.content][0]["mp:argues"]['@type'].indexOf("Hypo")>0? "Hypothesis" : "Claim";
 						def content = "<span style='font-weight: bold;'>" +typo + "</span>: " + annotations[i][IOntology.content][0]["mp:argues"]["mp:hasContent"];
@@ -832,9 +838,9 @@ class AjaxPersistenceController {
 						//commentsMap.put(annotations[i][IOntology.generalId], null);
 						annotationsMap.put(annotations[i][IOntology.generalId], annotation);
 					} else if(annotations[i][IOntology.hasTarget][0][IOntology.selector]!=null && annotations[i][IOntology.hasTarget][0][IOntology.selector][IOntology.generalType] == IOntology.selectorAnnotation) {
-						// println 'Comment on ' + annotations[i][IOntology.hasTarget][0][IOntology.selector]['ao:annotation']
+						//println 'Comment on ' + annotations[i][IOntology.hasTarget][0][IOntology.selector]['ao:annotation']
 						//commentsMap.put(annotations[i][IOntology.generalId], annotations[i][IOntology.hasTarget][0][IOntology.selector]['ao:annotation']);
-						//annotationsMap.put(annotations[i][IOntology.generalId], annotation);
+						annotationsMap.put(annotations[i][IOntology.generalId], annotation);
 					} else if(annotations[i][IOntology.hasTarget][0][IOntology.selector]!=null && annotations[i][IOntology.hasTarget][0][IOntology.selector][IOntology.generalType] == IOntology.selectorImage) {
 						annotation.put("imageInDocumentSelector", annotations[i][IOntology.hasTarget][0][IOntology.selector][IOntology.generalType]);
 						annotation.put("image", annotations[i][IOntology.hasTarget][0][IOntology.source]);
@@ -985,7 +991,10 @@ class AjaxPersistenceController {
 			}
 		} else {
 			jsonAnnotation.put("type", originalAnnotation[IOntology.generalType]);
-			jsonAnnotation.put("label", originalAnnotation[IOntology.generalLabel]);
+			if(originalAnnotation[IOntology.generalType]==IOntology.annotationLinearComment) 
+				jsonAnnotation.put("label", "<img src='" + createLinkTo(dir:"images/secure", file:"commentIcon_16.png") + "'> " + originalAnnotation[IOntology.generalLabel]);
+			else
+				jsonAnnotation.put("label", originalAnnotation[IOntology.generalLabel]);
 			typesSet.add(originalAnnotation[IOntology.generalType]);
 		}
 		

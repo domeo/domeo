@@ -105,10 +105,11 @@ function getAnnotationContext(annotation) {
        		'<span class="contextSuffix">' + annotation.suffix + '</span>' +
        		'...' +
        	'</blockquote>';
-    else return '<div class="contextTitle">Annotating: </div>' + 
+    else if(annotation.display)  return '<div class="contextTitle">Annotating: </div>' + 
     	'<blockquote class="quote">' +
        		'<img src="' + annotation.display+ '" style="max-width:500px">' +
        	'</blockquote>';
+    else return '';
 }
 
 function getAnnotationView(index, annotation, indentation, annotationOnAnnotation) {
