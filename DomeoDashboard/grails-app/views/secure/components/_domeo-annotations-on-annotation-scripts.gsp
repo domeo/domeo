@@ -40,7 +40,7 @@ function getAnnotationComments(annotation) {
 function getAnnotationCommentsCounter(annotation) {
 	if (annotation.commentsCounter)
 		return '<span>' +
-			'<img src="${resource(dir:'images/secure',file:'commentIcon_16.png',plugin:'users-module')}"/> <span>' + annotation.commentsCounter + '</span> ' + (annotation.commentsCounter==1?'Comment':'Comments') +
+			'<img src="${resource(dir:'images/secure',file:'commentIcon_16_toRight.png',plugin:'users-module')}"/> <span>' + annotation.commentsCounter + '</span> ' + (annotation.commentsCounter==1?'Comment':'Comments') +
 		'</span>';
 	else return '';
 } 

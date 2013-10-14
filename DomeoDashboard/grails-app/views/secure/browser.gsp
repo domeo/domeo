@@ -359,7 +359,8 @@
 				  		
 			  			$.each(data.annotationListItemWrappers, function(i,item){
 			  				$('#resultsList').append('<div style="border: 1px solid #eee; padding: 3px; margin-bottom:10px;">' +
-					  			'<table width="100%"><tr><td class="topBar">' +
+					  			'<table width="100%"><tr><td class="topBar">' + 
+					  			(item.lastAnnotationSetIndex.lastVersion.type=='domeo:DiscussionSet'?"<img id=\"groupsSpinner\" src=\"${resource(dir:'images/secure',file:'commentsIcon_24.png')}\" /> ":'') +
 			  					'<span style="font-weight: bold;">'+item.lastAnnotationSetIndex.lastVersion.label + '</span> ' + getProvenanceCreator(item)  + '<br/>' +
 			  					getProvenanceDate(item)  +
 			  					
