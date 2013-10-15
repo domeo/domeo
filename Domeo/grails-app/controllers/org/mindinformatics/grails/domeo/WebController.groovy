@@ -32,6 +32,14 @@ class WebController {
 		render(view:'domeo');
 	}
 	
+	// http://localhost:3333/Domeo/web/pdf?pdf=http://www.uscis.gov/files/form/i-9.pdf
+	def pdf = {
+		def url = params.pdf;
+		if(!url) url = 'http://localhost:3333/proxy/http://www.uscis.gov/files/form/i-9.pdf';
+		else url='http://localhost:3333/proxy/'+url;
+		render(view:'pdf', model:[documentUrl: url]);
+	}
+	
 	private def injectUserProfile() {
 		def principal = springSecurityService.principal
 		if(principal.equals("anonymousUser")) {
