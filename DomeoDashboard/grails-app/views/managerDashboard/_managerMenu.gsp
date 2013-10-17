@@ -4,7 +4,9 @@
 <li id="active"><g:link controller="managerDashboard" action="listUsers">List Users</g:link></li>
 <li id="active"><g:link controller="managerDashboard" action="listRoles">List Roles</g:link></li>
 <li><g:link controller="managerDashboard" action="searchUser">Search Users</g:link></li>
-<li><g:link controller="managerDashboard" action="createUser">Create User</g:link></li>
+<g:if test="${grailsApplication.config.domeo.dashboard.management.users.disable!='true'}">
+	<li><g:link controller="managerDashboard" action="createUser">Create User</g:link></li>
+</g:if>
 </ul>
 <br/>
 <h3>Groups Management</h3>
@@ -25,12 +27,14 @@
 <li><a href="#">Create Communities</a></li>
 </ul>
 --%>
-
-<br/>
-<h3>Moderation Queue</h3>
-<ul id="navlist">
-<li><g:link action="pastAccountsRequests">Past Account Requests</g:link></li>
-<li><g:link action="moderateAccountsRequests">Moderate Account Requests</g:link></li>
+<g:if test="${grailsApplication.config.domeo.dashboard.management.users.disable!='true'}">
+	<br/>
+	<h3>Moderation Queue</h3>
+	<ul id="navlist">
+	<li><g:link action="pastAccountsRequests">Past Account Requests</g:link></li>
+	<li><g:link action="moderateAccountsRequests">Moderate Account Requests</g:link></li>
+	</ul>
+</g:if>
 <%--<li><g:link action="activateUser">Groups Requests</g:link></li>--%>
 <%-- 
 <li><a href="#">Users Network</a></li>

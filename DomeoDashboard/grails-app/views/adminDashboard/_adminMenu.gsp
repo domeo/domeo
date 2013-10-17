@@ -4,7 +4,9 @@
 <li id="active"><g:link controller="adminDashboard" action="listUsers">List Users</g:link></li>
 <li id="active"><g:link controller="adminDashboard" action="listRoles">List Roles</g:link></li>
 <li><g:link controller="adminDashboard" action="searchUser">Search Users</g:link></li>
-<li><g:link controller="adminDashboard" action="createUser">Create User</g:link></li>
+<g:if test="${grailsApplication.config.domeo.dashboard.management.users.disable!='true'}">
+	<li><g:link controller="adminDashboard" action="createUser">Create User</g:link></li>
+</g:if>
 <%-- 
 <li><a href="#">Users Network</a></li>
 --%>
@@ -34,7 +36,7 @@
 
 </ul>
 --%>
-
+<g:if test="${grailsApplication.config.domeo.dashboard.management.users.disable!='true'}">
 <h3>Moderation Queue</h3>
 <ul id="navlist">
 <li><g:link controller="adminDashboard" action="pastAccountsRequests">Past Account Requests</g:link></li>
@@ -46,6 +48,7 @@
 --%>
 
 </ul>
+</g:if>
 
 <h3>Data dump</h3>
 <ul id="navlist">
