@@ -113,13 +113,15 @@ Stylesheet
 				<tr class="sprop">
 					<td colspan="2">
 						<div class="buttons">
-							<g:form>
-								<g:hiddenField name="id" value="${item?.id}" /> 
-								<g:hiddenField name="redirect" value="listUsers" />
-								<span class="button">
-									<g:actionSubmit class="edit" action="editUser" value="${message(code: 'default.button.edit.account.label', default: 'Edit user information')}" />
-								</span>
-							</g:form>
+							<g:if test="${grailsApplication.config.domeo.dashboard.management.users.disable!='true'}">
+								<g:form>
+									<g:hiddenField name="id" value="${item?.id}" /> 
+									<g:hiddenField name="redirect" value="listUsers" />
+									<span class="button">
+										<g:actionSubmit class="edit" action="editUser" value="${message(code: 'default.button.edit.account.label', default: 'Edit user information')}" />
+									</span>
+								</g:form>
+							</g:if>
 						</div>
 					</td>
 				</tr>
