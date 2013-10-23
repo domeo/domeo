@@ -192,7 +192,9 @@ h1 small {
 			</g:link>
 		</li>
 		 --%>
-          <li><g:link controller="public" action="signup"><span>Sign Up</span></g:link></li>
+		  <g:if test="${grailsApplication.config.domeo.dashboard.management.users.disable!='true'}">
+         	 <li><g:link controller="public" action="signup"><span>Sign Up</span></g:link></li>
+         	</g:if>
           <%-- 
           <li><g:link controller="openId" action="linkAccount"><span>Open ID</span></g:link></li>
           --%>

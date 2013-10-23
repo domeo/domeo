@@ -9,8 +9,10 @@
         <li><g:link controller="public" action="search"><span>Search</span></g:link></li>
          --%>
         <%-- Signup --%> 
-        <g:if test="${menuitem=='signup'}"><li class="active"><g:link controller="openid" action="auth"><span>Sign Up</span></g:link></li></g:if>
-        <g:else><li><g:link controller="public" action="signup"><span>Sign Up</span></g:link></li></g:else>
+        <g:if test="${grailsApplication.config.domeo.dashboard.management.users.disable!='true'}">
+	        <g:if test="${menuitem=='signup'}"><li class="active"><g:link controller="openid" action="auth"><span>Sign Up</span></g:link></li></g:if>
+	        <g:else><li><g:link controller="public" action="signup"><span>Sign Up</span></g:link></li></g:else>
+        </g:if>
         <%-- Node info --%> 
         <g:if test="${menuitem=='nodeinfo'}"><li class="active"><g:link controller="public" action="nodeinfo"><span>Node</span></g:link></li></g:if>
         <g:else><li><g:link controller="public" action="nodeinfo"><span>Node</span></g:link></li></g:else>
