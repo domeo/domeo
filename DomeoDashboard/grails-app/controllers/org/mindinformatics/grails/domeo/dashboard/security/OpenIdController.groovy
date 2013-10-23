@@ -1,10 +1,13 @@
 package org.mindinformatics.grails.domeo.dashboard.security
-import org.codehaus.groovy.grails.plugins.springsecurity.SpringSecurityUtils
-import org.codehaus.groovy.grails.plugins.springsecurity.openid.OpenIdAuthenticationFailureHandler as OIAFH
+
+import grails.plugin.springsecurity.SpringSecurityUtils
 
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken
 import org.springframework.security.core.AuthenticationException
 import org.springframework.security.web.savedrequest.DefaultSavedRequest
+
+
+//import org.codehaus.groovy.grails.plugins.springsecurity.openid.OpenIdAuthenticationFailureHandler as OIAFH
 
 /**
  * Manages associating OpenIDs with application users, both by creating a new local user

@@ -1,15 +1,13 @@
 package org.mindinformatics.grails.domeo.dashboard
 
-import org.codehaus.groovy.grails.plugins.springsecurity.GrailsUser
-import org.codehaus.groovy.grails.plugins.springsecurity.SpringSecurityUtils
-import org.codehaus.groovy.grails.plugins.springsecurity.openid.OpenIdAuthenticationFailureHandler as OIAFH
+import grails.plugin.springsecurity.SpringSecurityUtils
+import grails.plugin.springsecurity.userdetails.GrailsUser
+
 import org.mindinformatics.grails.domeo.dashboard.security.DefaultRoles
 import org.mindinformatics.grails.domeo.dashboard.security.RoleType
-import org.mindinformatics.grails.domeo.dashboard.security.User
 import org.mindinformatics.grails.domeo.dashboard.security.UserRole
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken
 import org.springframework.security.core.authority.GrantedAuthorityImpl
-import org.springframework.security.core.context.SecurityContextHolder as SCH
 import org.springframework.security.web.savedrequest.DefaultSavedRequest
 
 class PublicController {

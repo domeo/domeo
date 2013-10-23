@@ -159,24 +159,33 @@ environments {
 
 
 // Added by the Spring Security Core plugin:
-grails.plugins.springsecurity.userLookup.userDomainClassName = 'org.mindinformatics.grails.domeo.dashboard.security.User'
-grails.plugins.springsecurity.userLookup.authorityJoinClassName = 'org.mindinformatics.grails.domeo.dashboard.security.UserRole'
-grails.plugins.springsecurity.authority.className = 'org.mindinformatics.grails.domeo.dashboard.security.Role'
-grails.plugins.springsecurity.rememberMe.persistent = true
-grails.plugins.springsecurity.rememberMe.persistentToken.domainClassName = 'org.mindinformatics.grails.domeo.dashboard.security.PersistentLogin'
-grails.plugins.springsecurity.securityConfigType = "Annotation"
+grails.plugin.springsecurity.userLookup.userDomainClassName = 'org.mindinformatics.grails.domeo.dashboard.security.User'
+grails.plugin.springsecurity.userLookup.authorityJoinClassName = 'org.mindinformatics.grails.domeo.dashboard.security.UserRole'
+grails.plugin.springsecurity.authority.className = 'org.mindinformatics.grails.domeo.dashboard.security.Role'
+grails.plugin.springsecurity.rememberMe.persistent = true
+grails.plugin.springsecurity.rememberMe.persistentToken.domainClassName = 'org.mindinformatics.grails.domeo.dashboard.security.PersistentLogin'
+grails.plugin.springsecurity.securityConfigType = "Annotation"
 
 // http://www.redtoad.ca/ataylor/2011/05/logging-spring-security-events-in-grails/
-grails.plugins.springsecurity.useSecurityEventListener = true
-grails.plugins.springsecurity.logout.handlerNames = ['rememberMeServices', 'securityContextLogoutHandler', 'securityEventListener']
+grails.plugin.springsecurity.useSecurityEventListener = true
+grails.plugin.springsecurity.logout.handlerNames = ['rememberMeServices', 'securityContextLogoutHandler', 'securityEventListener']
 
-grails.plugins.springsecurity.openid.domainClass = 'org.mindinformatics.grails.domeo.dashboard.security.OpenID'
+grails.plugin.springsecurity.openid.domainClass = 'org.mindinformatics.grails.domeo.dashboard.security.OpenID'
 
 // grails.plugins.springsecurity.providerNames = ['daoAuthenticationProvider', 'ldapAuthProvider', 'rememberMeAuthenticationProvider']
-grails.plugins.springsecurity.controllerAnnotations.staticRules = [
+grails.plugin.springsecurity.controllerAnnotations.staticRules = [
 	'/secure/**': ['ROLE_ADMIN', 'ROLE_MANAGER', 'ROLE_USER'],
 	'/web/domeo': ['ROLE_ADMIN', 'ROLE_MANAGER', 'ROLE_USER'],
+	'/ajaxPersistence/**': ['ROLE_ADMIN', 'ROLE_MANAGER', 'ROLE_USER'],
+	'/ajaxBibliographic/**': ['ROLE_ADMIN', 'ROLE_MANAGER', 'ROLE_USER'],
+	'/plugins/**': ['ROLE_ADMIN', 'ROLE_MANAGER', 'ROLE_USER'],
 	'/dashboard/**': ['ROLE_ADMIN', 'ROLE_MANAGER', 'ROLE_USER'],
+	'/agents/**': ['ROLE_ADMIN', 'ROLE_MANAGER', 'ROLE_USER'],
+	'/users/**': ['ROLE_ADMIN', 'ROLE_MANAGER', 'ROLE_USER'],
+	'/logout/**': ['ROLE_ADMIN', 'ROLE_MANAGER', 'ROLE_USER'],
+	'/profiles/**': ['ROLE_ADMIN', 'ROLE_MANAGER', 'ROLE_USER'],
+	'/persistence/**': ['ROLE_ADMIN', 'ROLE_MANAGER', 'ROLE_USER'],
 	'/managerDashboard/**': ['ROLE_MANAGER'],
-	'/adminDashboard/**': ['ROLE_ADMIN']
+	'/adminDashboard/**': ['ROLE_ADMIN'],
+	'/pubmed/**': ['permitAll']
 ]
