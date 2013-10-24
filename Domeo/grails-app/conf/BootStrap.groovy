@@ -1,8 +1,8 @@
 import org.codehaus.groovy.grails.commons.ApplicationAttributes
 import org.mindinformatics.grails.domeo.client.profiles.model.DomeoClientProfile
 import org.mindinformatics.grails.domeo.client.profiles.model.DomeoClientProfileEntry
-import org.mindinformatics.grails.domeo.client.profiles.model.UserCurrentDomeoClientProfile
 import org.mindinformatics.grails.domeo.client.profiles.model.UserAvailableDomeoClientProfile
+import org.mindinformatics.grails.domeo.client.profiles.model.UserCurrentDomeoClientProfile
 import org.mindinformatics.grails.domeo.dashboard.circles.Circle
 import org.mindinformatics.grails.domeo.dashboard.circles.UserCircle
 import org.mindinformatics.grails.domeo.dashboard.groups.DefaultGroupPrivacy
@@ -19,7 +19,6 @@ import org.mindinformatics.grails.domeo.dashboard.security.DefaultRoles
 import org.mindinformatics.grails.domeo.dashboard.security.Role
 import org.mindinformatics.grails.domeo.dashboard.security.User
 import org.mindinformatics.grails.domeo.dashboard.security.UserRole
-
  
 class BootStrap {
 	
@@ -309,7 +308,13 @@ class BootStrap {
 		separator();
 		log.info   '** Initializing profiles'
 		separator();
+		
+		// -------------------
+		//  COMPLETE PROFILES
+		// -------------------
 		log.info   'Initializing complete biomedical profile'
+		
+		// Plugins
 		def completeProfile = DomeoClientProfile.findByName("Complete Biomedical Profile")?: new DomeoClientProfile(
 			name: 'Complete Biomedical Profile',
 			description: 'All the tools that Domeo has to offer for biomedicine',
@@ -364,6 +369,38 @@ class BootStrap {
 			status: "enabled"
 		).save(failOnError: true, flash: true)
 		
+		// Features
+		DomeoClientProfileEntry.findByProfileAndPlugin(completeProfile, "org.mindinformatics.gwt.domeo.feature.branding")?: new DomeoClientProfileEntry(
+			profile: completeProfile,
+			plugin: "org.mindinformatics.gwt.domeo.feature.branding",
+			status: "disabled",
+			type: "feature"
+		).save(failOnError: true, flash: true)
+		
+		DomeoClientProfileEntry.findByProfileAndPlugin(completeProfile, "org.mindinformatics.gwt.domeo.feature.analyze")?: new DomeoClientProfileEntry(
+			profile: completeProfile,
+			plugin: "org.mindinformatics.gwt.domeo.feature.analyze",
+			status: "enabled",
+			type: "feature"
+		).save(failOnError: true, flash: true)
+		
+		DomeoClientProfileEntry.findByProfileAndPlugin(completeProfile, "org.mindinformatics.gwt.domeo.feature.preferences")?: new DomeoClientProfileEntry(
+			profile: completeProfile,
+			plugin: "org.mindinformatics.gwt.domeo.feature.preferences",
+			status: "enabled",
+			type: "feature"
+		).save(failOnError: true, flash: true)
+		
+		DomeoClientProfileEntry.findByProfileAndPlugin(completeProfile, "org.mindinformatics.gwt.domeo.feature.help")?: new DomeoClientProfileEntry(
+			profile: completeProfile,
+			plugin: "org.mindinformatics.gwt.domeo.feature.help",
+			status: "enabled",
+			type: "feature"
+		).save(failOnError: true, flash: true)
+		
+		// ----------------
+		//  BASIC PROFILES
+		// ----------------
 		separator();
 		log.info   'Initializing basic profiles'
 		def simpleProfile = DomeoClientProfile.findByName("Simple profile")?: new DomeoClientProfile(

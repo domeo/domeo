@@ -77,6 +77,10 @@ class ProfilesService {
 		DomeoClientProfileEntry.findAllByProfile(profile);
 	}
 	
+	public def getProfileEntries(def profile, def type) {
+		DomeoClientProfileEntry.findAllByProfileAndType(profile,type);
+	}
+	
 	public UserCurrentDomeoClientProfile getCurrentUserProfile(def user) {
 		return UserCurrentDomeoClientProfile.findByUser(user);
 	}

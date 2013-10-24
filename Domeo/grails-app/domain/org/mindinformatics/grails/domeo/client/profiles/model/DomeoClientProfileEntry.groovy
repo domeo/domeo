@@ -28,4 +28,5 @@ class DomeoClientProfileEntry {
 	DomeoClientProfile profile
 	String plugin
 	String status
+	String type = 'plugin';
 }

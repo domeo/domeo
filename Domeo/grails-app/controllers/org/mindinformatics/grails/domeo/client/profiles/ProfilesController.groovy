@@ -67,14 +67,17 @@ class ProfilesController extends DomeoControllerUtils {
 	def getCurrentUserProfile = {
 		def user = loggedUser();
 		def current = profilesService.getCurrentUserProfileOrDefault(user);
-		def plugins = profilesService.getProfileEntries(current);
+		//def plugins = profilesService.getProfileEntries(current);
+		
+		def plugins = profilesService.getProfileEntries(current, 'plugin');
+		def features = profilesService.getProfileEntries(current, 'feature');
 		
 		JSONArray profiles = new JSONArray();
-		profiles.add(serializeDomeoClientProfile(current, plugins));
+		profiles.add(serializeDomeoClientProfile(current, plugins, features));
 		render (profiles as JSON)
 	}
 	
-	private JSONObject serializeDomeoClientProfile(def profile, def plugins) {
+	private JSONObject serializeDomeoClientProfile(def profile, def plugins, def features) {
 		JSONObject p = new JSONObject();
 		p.put("uuid", profile.id);
 		p.put("name", profile.name);
@@ -89,14 +92,22 @@ class ProfilesController extends DomeoControllerUtils {
 		creators.add(createdBy)
 		p.put("createdBy", creators);
 		
-		JSONArray status = new JSONArray();
+		JSONArray featureStatus = new JSONArray();
+		features.each { feature ->
+			JSONObject pg = new JSONObject();
+			pg.put("name", feature.plugin);
+			pg.put("status", feature.status);
+			featureStatus.add(pg);
+		}
+		p.put("features", featureStatus);
+		JSONArray pluginStatus = new JSONArray();
 		plugins.each { plugin ->
 			JSONObject pg = new JSONObject();
 			pg.put("name", plugin.plugin);
 			pg.put("status", plugin.status);
-			status.add(pg);
+			pluginStatus.add(pg);
 		}
-		p.put("plugins", status);
+		p.put("plugins", pluginStatus);
 		return p;
 	}
 	
@@ -106,8 +117,10 @@ class ProfilesController extends DomeoControllerUtils {
 		
 		JSONArray ps = new JSONArray();
 		profiles.each {
-			def plugins = profilesService.getProfileEntries(it.profile);
-			ps.add(serializeDomeoClientProfile(it.profile, plugins));
+			def plugins = profilesService.getProfileEntries(it.profile, 'plugin');
+			def features = profilesService.getProfileEntries(it.profile, 'feature');
+			
+			ps.add(serializeDomeoClientProfile(it.profile, plugins, features));
 		}
 		render (ps as JSON)
 	}
