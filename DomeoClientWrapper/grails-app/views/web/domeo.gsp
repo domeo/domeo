@@ -41,6 +41,8 @@
 	   var testFiles = "true";
 	   var provideExamplesUrls = "${grailsApplication.config.domeo.test.example.urls}";
 	   var defaultSetPrivacy = "${grailsApplication.config.domeo.default.annotationset.privacy}";
+
+	   var proxyProtocol = "${grailsApplication.config.domeo.proxy.protocol}";
 	</script> 
     
     <!--                                           -->
