@@ -176,6 +176,7 @@ grails.plugin.springsecurity.openid.domainClass = 'org.mindinformatics.grails.do
 grails.plugin.springsecurity.controllerAnnotations.staticRules = [
 	'/secure/**': ['ROLE_ADMIN', 'ROLE_MANAGER', 'ROLE_USER'],
 	'/web/domeo': ['ROLE_ADMIN', 'ROLE_MANAGER', 'ROLE_USER'],
+	'/web/pdf': ['ROLE_ADMIN', 'ROLE_MANAGER', 'ROLE_USER'],
 	'/ajaxPersistence/**': ['ROLE_ADMIN', 'ROLE_MANAGER', 'ROLE_USER'],
 	'/ajaxBibliographic/**': ['ROLE_ADMIN', 'ROLE_MANAGER', 'ROLE_USER'],
 	'/plugins/**': ['ROLE_ADMIN', 'ROLE_MANAGER', 'ROLE_USER'],
