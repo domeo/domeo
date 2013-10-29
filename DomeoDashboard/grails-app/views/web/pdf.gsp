@@ -109,7 +109,10 @@
 					pdf.then(renderPdf);
 				}
 			
+				var pages = 0;
+				var counter = 0;
 				function renderPdf(pdf) {
+					pages =  pdf.numPages;
 					for (var i = 1; i <= pdf.numPages; i++) { 
 						pdf.getPage(i).then(renderPage);
 					}
@@ -177,7 +180,11 @@
 							textLayer: textLayer
 						};
 			
-						page.render(renderContext);
+						var pageRendering = page.render(renderContext);
+						pageRendering.callbacks[0] = function (error) {
+							counter = counter + 1;
+							if(pages==counter) window.pdfLoaded();
+						}
 					});
 				}
 		
