@@ -183,6 +183,8 @@ grails.plugin.springsecurity.controllerAnnotations.staticRules = [
 	'/dashboard/**': ['ROLE_ADMIN', 'ROLE_MANAGER', 'ROLE_USER'],
 	'/agents/**': ['ROLE_ADMIN', 'ROLE_MANAGER', 'ROLE_USER'],
 	'/users/**': ['ROLE_ADMIN', 'ROLE_MANAGER', 'ROLE_USER'],
+	'/nif/**': ['ROLE_ADMIN', 'ROLE_MANAGER', 'ROLE_USER'],
+	'/bioPortal/**': ['ROLE_ADMIN', 'ROLE_MANAGER', 'ROLE_USER'],
 	'/logout/**': ['permitAll'],
 	'/profiles/**': ['ROLE_ADMIN', 'ROLE_MANAGER', 'ROLE_USER'],
 	'/persistence/**': ['ROLE_ADMIN', 'ROLE_MANAGER', 'ROLE_USER'],
