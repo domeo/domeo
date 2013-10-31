@@ -16,7 +16,7 @@ Stylesheet
 							<g:sortableColumn property="username" title="${message(code: 'agentPerson.id.label', default: 'Username')}" />
 							<g:sortableColumn property="roles" title="${message(code: 'agentPerson.id.label', default: 'Roles')}" />
 							<g:sortableColumn property="status" title="${message(code: 'agentPerson.id.label', default: 'Status')}" />
-							<th>${message(code: 'agentPerson.id.label', default: 'Mamber Since')}</th>
+							<th>${message(code: 'agentPerson.id.label', default: 'Member Since')}</th>
 						</tr>
 					</thead>
 					<tbody id="usersContent">

@@ -190,6 +190,7 @@ grails.plugin.springsecurity.controllerAnnotations.staticRules = [
 	'/persistence/**': ['ROLE_ADMIN', 'ROLE_MANAGER', 'ROLE_USER'],
 	'/managerDashboard/**': ['ROLE_MANAGER'],
 	'/adminDashboard/**': ['ROLE_ADMIN'],
+	'/ajaxDashboard/**': ['ROLE_ADMIN', 'ROLE_MANAGER', 'ROLE_USER'],
 	'/pubmed/**': ['permitAll'],
 	'/public/**': ['permitAll']
 ]
