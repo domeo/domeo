@@ -107,7 +107,7 @@
 			  			var label = data.length == 1 ? data.length + ' User' : data.length + ' Users';
 			  			$("#usersTitle").html("<b>"+label+"</b>");
 			  			$.each(data, function(i,item){
-			  				$('#usersTable').append('<tr><td><a href="http://tochange.org/' + 
+			  				$('#usersTable').append('<tr><td><a href="../showUser/' + 
 					  				item.user.id + '">' + item.user.displayName + '</a></td><td>' + 
 					  				item.user.email + '</td><td>'+ item.dateCreated + '</td></tr>');
 			  		    });

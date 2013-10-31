@@ -165,6 +165,8 @@ grails.plugin.springsecurity.authority.className = 'org.mindinformatics.grails.d
 grails.plugin.springsecurity.rememberMe.persistent = true
 grails.plugin.springsecurity.rememberMe.persistentToken.domainClassName = 'org.mindinformatics.grails.domeo.dashboard.security.PersistentLogin'
 grails.plugin.springsecurity.securityConfigType = "Annotation"
+// http://grails-plugins.github.io/grails-spring-security-core/docs/manual/guide/newInV2.html
+grails.plugin.springsecurity.logout.postOnly = false
 
 // http://www.redtoad.ca/ataylor/2011/05/logging-spring-security-events-in-grails/
 grails.plugin.springsecurity.useSecurityEventListener = true
@@ -185,12 +187,12 @@ grails.plugin.springsecurity.controllerAnnotations.staticRules = [
 	'/users/**': ['ROLE_ADMIN', 'ROLE_MANAGER', 'ROLE_USER'],
 	'/nif/**': ['ROLE_ADMIN', 'ROLE_MANAGER', 'ROLE_USER'],
 	'/bioPortal/**': ['ROLE_ADMIN', 'ROLE_MANAGER', 'ROLE_USER'],
-	'/logout/**': ['permitAll'],
 	'/profiles/**': ['ROLE_ADMIN', 'ROLE_MANAGER', 'ROLE_USER'],
 	'/persistence/**': ['ROLE_ADMIN', 'ROLE_MANAGER', 'ROLE_USER'],
 	'/managerDashboard/**': ['ROLE_MANAGER'],
 	'/adminDashboard/**': ['ROLE_ADMIN'],
 	'/ajaxDashboard/**': ['ROLE_ADMIN', 'ROLE_MANAGER', 'ROLE_USER'],
 	'/pubmed/**': ['permitAll'],
-	'/public/**': ['permitAll']
+	'/public/**': ['permitAll'],
+	'/index': ['ROLE_ADMIN']
 ]
