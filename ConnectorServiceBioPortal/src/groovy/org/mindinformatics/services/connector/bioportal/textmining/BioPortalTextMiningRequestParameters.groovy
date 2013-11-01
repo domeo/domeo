@@ -30,7 +30,7 @@ class BioPortalTextMiningRequestParameters {
 	String textToAnnotate =''
 	Boolean longestOnly = false
 	Boolean wholeWordOnly = true
-	Boolean filterNumber = true
+	Boolean filterNumbers = true
 	Set<String> stopWords = []as Set
 	Boolean withDefaultStopWords = false
 	Boolean isStopWordsCaseSensitive = false

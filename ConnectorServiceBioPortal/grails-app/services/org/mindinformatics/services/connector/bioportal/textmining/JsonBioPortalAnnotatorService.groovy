@@ -32,11 +32,19 @@ class JsonBioPortalAnnotatorService {
 	AnnotatorExternalClientService annotatorExternalClientService;
 
 	
-	public JSONObject textMine(String url, String apikey, int[] ontologies, String documentText) throws AnnotatorException {
+	public JSONObject textMine(String url, String apikey, int[] ontologies, String documentText, def parametrization) throws AnnotatorException {
 		BioPortalTextMiningRequestParameters params = defaultParams();
         params.apikey = apikey
 		params.textToAnnotate = documentText;		
 		params.ontologiesToKeepInResult = ontologies
+		params.longestOnly = new Boolean(parametrization.getAt("longestOnly"));
+		params.wholeWordOnly = new Boolean(parametrization.getAt("wholeWordOnly"));
+		params.filterNumbers = new Boolean(parametrization.getAt("filterNumbers"));
+		params.withDefaultStopWords = new Boolean(parametrization.getAt("withDefaultStopWords"));
+		params.isStopWordsCaseSensitive = new Boolean(parametrization.getAt("isStopWordsCaseSensitive"));
+		params.scored = new Boolean(parametrization.getAt("scored"));
+		params.withSynonyms = new Boolean(parametrization.getAt("withSynonyms"));
+		
 		BioPortalAnnotatorResults ncboResults = annotatorExternalClientService.textmineDocument(params)
 		annotatorResultsConversionService.convert(url, ncboResults, params)
 	}

@@ -98,9 +98,19 @@ class BioPortalController {
 		String apikey = grailsApplication.config.domeo.plugins.connector.bioportal.apikey;
 		String textContent = params.textContent;
 		String ontologies = params.ontologies;
+		
+		def parametrization = [:];
+		
+		if(params.longestOnly) parametrization.put("longestOnly", params.longestOnly); else parametrization.put("longestOnly", "false");
+		if(params.wholeWordOnly) parametrization.put("wholeWordOnly", params.wholeWordOnly); else parametrization.put("wholeWordOnly", "true");
+		if(params.filterNumbers) parametrization.put("filterNumbers", params.filterNumbers); else parametrization.put("filterNumbers", "true");
+		if(params.withDefaultStopWords) parametrization.put("withDefaultStopWords", params.withDefaultStopWords); else parametrization.put("withDefaultStopWords", "false");
+		if(params.isStopWordsCaseSensitive) parametrization.put("isStopWordsCaseSensitive", params.isStopWordsCaseSensitive); else parametrization.put("isStopWordsCaseSensitive", "false");
+		if(params.scored) parametrization.put("scored", params.scored); else parametrization.put("scored", "true");
+		if(params.withSynonyms) parametrization.put("withSynonyms", params.withSynonyms); else parametrization.put("withSynonyms", "true");
         
         try {
-    		JSONObject jsonResult = jsonBioPortalAnnotatorService.textMine(url, apikey, DEFAULT_ANNOTATOR_ONTOLOGIES, textContent);
+    		JSONObject jsonResult = jsonBioPortalAnnotatorService.textMine(url, apikey, DEFAULT_ANNOTATOR_ONTOLOGIES, textContent, parametrization);
     		render(contentType:'text/json', encoding:MiscUtils.DEFAULT_ENCODING,  text: jsonResult.toString());
         } catch(Exception e) {
             mailingService.notifyProblemByEmail("BioPortal Annotator", "[apikey:"+ apikey + ", url:"+ url + 
