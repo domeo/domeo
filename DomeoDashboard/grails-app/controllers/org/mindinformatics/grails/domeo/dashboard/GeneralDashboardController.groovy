@@ -369,7 +369,7 @@ class GeneralDashboardController {
 	def saveGroup = {GroupCreateCommand groupCreateCmd->
 		if(groupCreateCmd.hasErrors()) {
 			groupCreateCmd.errors.allErrors.each { println it }
-			render(view:'createUser', model:[item:groupCreateCmd, roles: Role.list(),
+			render(view:'/shared/createGroup', model:[item:groupCreateCmd, roles: Role.list(),
 						defaultRole: Role.findByAuthority("ROLE_USER")])
 		} else {
 			def group = groupCreateCmd.createGroup()
