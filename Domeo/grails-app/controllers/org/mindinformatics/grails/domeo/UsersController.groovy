@@ -48,7 +48,7 @@ class UsersController {
 		
 		if(params.format.equals("json")) {
 			render('[');
-			
+			int counter = 0;
 			userGroups.each { userGroup->
 				
 				// TODO groups
@@ -108,6 +108,8 @@ class UsersController {
 				}
 				render(          "\"");
 				render("  }");
+				
+				if(counter++<userGroups.size()-1) render(",");
 			}
 			
 			render(']');
