@@ -742,6 +742,7 @@ public class ElasticSearchWrapper {
 	String phraseQuery(String field, String val, int from, int size,
 			boolean isSubdoc, DomeoPermissions permissions3) {
 		String query = buildPhraseQuery(field, val, from, size, permissions3);
+		System.out.println("phraseQuery " + query);
 		String searchUrl = isSubdoc ? esSearchSubdocUrl : esSearchUrl;
 		@SuppressWarnings("unused")
 		int resCode = doHttpOperation(searchUrl, HTTP_POST, query);
@@ -811,7 +812,7 @@ public class ElasticSearchWrapper {
 			boolean isSubdoc, DomeoPermissions permissions3) {
 		String query = buildGenericBooleanQuery(fields, vals, parsed, operator,
 				from, size, permissions3);
-		System.out.println(query);
+		System.out.println("booleanQueryMultipleFields " + query);
 		String searchUrl = isSubdoc ? esSearchSubdocUrl : esSearchUrl;
 		@SuppressWarnings("unused")
 		int resCode = doHttpOperation(searchUrl, HTTP_POST, query);

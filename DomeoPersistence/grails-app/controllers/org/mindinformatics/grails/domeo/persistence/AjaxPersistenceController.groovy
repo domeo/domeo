@@ -2,6 +2,9 @@ package org.mindinformatics.grails.domeo.persistence
 
 import grails.converters.JSON
 
+import java.util.regex.Matcher
+import java.util.regex.Pattern
+
 import org.codehaus.groovy.grails.web.json.JSONArray
 import org.codehaus.groovy.grails.web.json.JSONObject
 import org.mindinformatics.domeo.persistence.ElasticSearchWrapper
@@ -1073,15 +1076,67 @@ class AjaxPersistenceController {
 	def searchSet = {
 		def user = userProfile();
 
+		println '-------------------------------------'
+		println ' search on: ' +  request.JSON.query
+		println '-------------------------------------'
+		def strings = [];
+		Matcher matcher = Pattern.compile(/"[^\\"]*(\\"[^\\"]*)*"/).matcher(request.JSON.query)
+		matcher.each {
+			def hit = it;
+			println 'match: ' + it
+			strings.add(it[0]);
+		}
+		def queryterms = []
+		def querystring = request.JSON.query;
+		strings.each { hit ->
+			println 'hit: ' + hit
+			queryterms.add(hit.replaceAll("\"",""));
+			println 'before query ' + querystring;
+			querystring = querystring.replaceAll(hit, "");
+			println 'after query ' + querystring
+		}
+		def ress = querystring.split();
+		ress.each { res ->
+			println 'more ' + res;
+			queryterms.add(res);
+		}
+		
+		// "[^\\"]*(\\"[^\\"]*)*"
+		
+		//Pattern pattern = ~/"[^\\"]*(\\"[^\\"]*)*"/;
+
+		
+		
 		JSONArray results = new JSONArray();
 		if(request.JSON) {
 			def res;
 			
+			String[] newvalues = new String[queryterms.size()+1];
+			String[] newparsed = new String[queryterms.size()+1];
+			
+			for(i in 0..queryterms.size()-1) {
+				newvalues[i] = queryterms[i]
+				newparsed[i] = 'match'
+			}
+			newvalues[newvalues.length-1] =  request.JSON.setId;
+			newparsed[newvalues.length-1] = 'term'
+			
+			String[] newfields  = new String[queryterms.size()+1];
+			for(i in 0..queryterms.size()-1) {
+				newfields[i] = '_all'
+			}
+			newfields[newfields.length-1] =  'domeo_!DOMEO_NS!_belongsToSet';
+			
+			println newfields.size() + ' - ' + newfields;
+			println newvalues.size() + ' - ' + newvalues;
+			println newparsed.size() + ' - ' + newparsed;
+			
 			if(request.JSON.setId && request.JSON.query) {
-				String[] fields = ['_all', 'domeo_!DOMEO_NS!_belongsToSet']
-				String[] values = [request.JSON.query, request.JSON.setId]
+				//String[] fields = ['_all', 'domeo_!DOMEO_NS!_belongsToSet']
+				//String[] values = [request.JSON.query.replaceAll("\"","\\\\\""), request.JSON.setId]
 				
-				res = annotationSearchService.searchItems(fields , values, false, null)
+				res = annotationSearchService.searchItems(newfields , newvalues, newparsed, false, null)
+				println 'items ' + JSON.parse(res).hits.hits;;
 				ElasticSearchWrapper esWrapper = new ElasticSearchWrapper(grailsApplication.config.elastico.database, grailsApplication.config.elastico.collection, grailsApplication.config.elastico.ip, grailsApplication.config.elastico.port);
 
 				JSONObject r = JSON.parse(res);
@@ -1104,6 +1159,33 @@ class AjaxPersistenceController {
 	def search = {		
 		def user = userProfile();
 		
+		println '-------------------------------------'
+		println ' search on: ' +  request.JSON.query
+		println '-------------------------------------'
+		def strings = [];
+		Matcher matcher = Pattern.compile(/"[^\\"]*(\\"[^\\"]*)*"/).matcher(request.JSON.query)
+		matcher.each {
+			def hit = it;
+			println 'match: ' + it
+			strings.add(it[0]);
+		}
+		def queryterms = []
+		def querystring = request.JSON.query;
+		strings.each { hit ->
+			println 'hit: ' + hit
+			queryterms.add(hit.replaceAll("\"",""));
+			println 'before query ' + querystring;
+			querystring = querystring.replaceAll(hit, "");
+			println 'after query ' + querystring
+		}
+		def ress = querystring.split();
+		ress.each { res ->
+			println 'more ' + res; 
+			queryterms.add(res);
+		}
+		
+		println 'queryterms ' + queryterms
+		
 		int paginationOffset = (request.JSON.paginationOffset?request.JSON.paginationOffset:0);
 		int paginationRange = (request.JSON.paginationRange?request.JSON.paginationRange:2);
 		
@@ -1113,12 +1195,12 @@ class AjaxPersistenceController {
 			int allowedCounter = 0;
 			
 			def res;
-			println "Query " + request.JSON.query
-			println "Public " + request.JSON.permissionsPublic
-			println "Private " + request.JSON.permissionsPrivate
+			//println "Query " + request.JSON.query
+			//println "Public " + request.JSON.permissionsPublic
+			//println "Private " + request.JSON.permissionsPrivate
 			
-			println "Human " + request.JSON.agentHuman
-			println "Software " + request.JSON.agentSoftware
+			//println "Human " + request.JSON.agentHuman
+			//println "Software " + request.JSON.agentSoftware
 			
 			def agent;
 			if(request.JSON.agentHuman==true && request.JSON.agentSoftware != true) 
@@ -1126,26 +1208,76 @@ class AjaxPersistenceController {
 			else if(request.JSON.agentHuman!=true && request.JSON.agentSoftware == true) 
 				agent = 'foafx:Software'
 				
-
+			String[] newparsed = null;
+			if(agent==null) newparsed = new String[queryterms.size()];
+			else newparsed = new String[queryterms.size()+1];
+				
+			String[] newvalues = null;
+			if(agent==null) newvalues = new String[queryterms.size()];
+			else newvalues = new String[queryterms.size()+1];
+			
+			for(i in 0..queryterms.size()-1) {
+				newvalues[i] = queryterms[i]
+			}
+			if(!agent==null) newvalues[newvalues.length-1] =  agent;
+			
+			String[] newfields = null
+			if(agent==null) newfields = new String[queryterms.size()];
+			else newfields = new String[queryterms.size()+1];
+			for(i in 0..queryterms.size()-1) {
+				newfields[i] = '_all'
+				newparsed[i] = 'match_phrase'
+			}
+			if(!agent==null) {
+				newvalues[newfields.length-1] =  'pav_!DOMEO_NS!_createdBy.@type';
+				newparsed[newfields.length-1] = 'term'
+			}
+			
+			println newfields;
+			println newvalues;
+			println newparsed;
+			
+			
+				
+				
 			if(request.JSON.query) {
+				/*
 				if(agent!=null) {
 					String[] fields = ['_all', 'pav_!DOMEO_NS!_createdBy.@type']
 					String[] values = [request.JSON.query, agent]
-					
+					//println '-- searchMultiple'
 					res = annotationSearchService.searchMultiple(fields , values,
 						 	request.JSON.permissionsPublic, (request.JSON.permissionsPrivate==true)?"urn:person:uuid:"+userProfileId():null);
 				} else {
-					res = annotationSearchService.search("_all" , request.JSON.query,
+					//println '-- search ' +  request.JSON.query + " -- " +  request.JSON.query.replaceAll("\"","\\\\\"");
+					res = annotationSearchService.search("_all" , request.JSON.query.replaceAll("\"","\\\\\""),
 							request.JSON.permissionsPublic==true, (request.JSON.permissionsPrivate==true)?"urn:person:uuid:"+userProfileId():null);
 				}
-				
+				*/
+				res = annotationSearchService.searchMultiple(newfields, newvalues, newparsed,
+					request.JSON.permissionsPublic==true, (request.JSON.permissionsPrivate==true)?"urn:person:uuid:"+userProfileId():null);
+				println "1- " + JSON.parse(res)
+				println "1- " + JSON.parse(res).hits.hits;
+				/*
+				res = annotationSearchService.searchItems(newfields , newvalues,
+					request.JSON.permissionsPublic==true, (request.JSON.permissionsPrivate==true)?"urn:person:uuid:"+userProfileId():null);
+				println "2- " + JSON.parse(res).hits.hits;
+				*/
+				/*
+				res = annotationSearchService.search("_all" , newvalues[0],
+					request.JSON.permissionsPublic==true, (request.JSON.permissionsPrivate==true)?"urn:person:uuid:"+userProfileId():null);
+				println "3- " + JSON.parse(res).hits.hits;
+				*/
 				
 				JSONObject r = JSON.parse(res);
 				def hits = r.hits.hits;
 				hits.each { hit ->
-					def annotationSetIndex = AnnotationSetIndex.findByMongoUuid(hit._id);
+					println 'hit: ' + hit._id
+					def annotationSetIndex = AnnotationSetIndex.findByMongoUuid(hit._id);				
 					if(annotationSetIndex!=null) {
+						println 'checking: ' + annotationSetIndex.individualUri
 						if(annotationPermissionService.isPermissionGranted(user, annotationSetIndex)) {
+							println 'granted: ' + annotationSetIndex.individualUri
 							AnnotationSetItemWrapper annotationListItemWrapper = new AnnotationSetItemWrapper(annotationSetIndex: annotationSetIndex);
 							
 							if(globalCounter>=paginationOffset && globalCounter<(paginationOffset+paginationRange)) {
@@ -1165,11 +1297,8 @@ class AjaxPersistenceController {
 							
 							globalCounter++
 						}
-						
-						
 					}
-				}
-			
+				}			
 			}
 			AnnotationListResponse theResponse = new AnnotationListResponse(
 				paginationOffset: paginationOffset, paginationRange: paginationRange,
