@@ -117,7 +117,7 @@
 			  				$('#groupsTable').append('<tr><td><a href="../showGroup/' + 
 					  				item.group.id + '">' + item.group.name + '</a></td><td>' + 
 					  				item.dateCreated + '</td><td>'+ roles +
-					  				'</td><td> '+ item.status.label + '</td></tr>'');
+					  				'</td><td> '+ item.status.label + '</td></tr>');
 			  		    });
 			  					  			
 				  	}

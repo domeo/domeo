@@ -60,7 +60,7 @@
 			eTr.appendChild(eCnt);
 
 			var eLink = document.createElement('a');
-			eLink.href =  '/DomeoDashboard/managerDashboard/enrollUserInGroup?group=' +response.groups[i].id + '&user=' + '${user.id}';
+			eLink.href =  '/Domeo/managerDashboard/enrollUserInGroup?group=' +response.groups[i].id + '&user=' + '${user.id}';
 			var eImg = document.createElement('img');
 			//eImg.src = '/DomeoDashboard/static/images/dashboard/add_user.png';
 			var eAct = document.createElement('td');

@@ -45,7 +45,8 @@ class ManagerDashboardController extends GeneralDashboardController {
 							userRoles: usersManagementService.getUserRoles(user),
 							userGroups: usersManagementService.getUserGroups(user),
 							userCircles: usersManagementService.getUserCircles(user),
-							userCommunities: usersManagementService.getUserCommunities(user)]);
+							userCommunities: usersManagementService.getUserCommunities(user),
+							appBaseUrl: request.getContextPath()]);
 			} else {
 				render (view:'error', model:[message: "User not found for id: "+params.id]);
 			}
