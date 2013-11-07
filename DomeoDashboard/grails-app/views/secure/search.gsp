@@ -796,11 +796,14 @@
 		 
  		<!-- Browsing Navigation -->
 	    <div style="background: #cc3300; color: #fff;">
+	    	&nbsp;
+	    	<!--  
 	   		<ul class="bar">
 				<li><g:link controller="secure" action="browser"><span>Annotation Sets</span></g:link></li>
 				<li><g:link controller="secure" action="documents"><span>Documents</span></g:link></li>
 				<li><a href="#">Bibliography</a></li>
-			</ul> 
+			</ul>
+			--> 
 	    </div>
 			    
 	    <table width="705px;">
