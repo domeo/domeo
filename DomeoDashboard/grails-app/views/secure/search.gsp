@@ -598,8 +598,6 @@
 		});
 		
 		try {
-			
-		
 			$("#domeoSearch form").submit(function(e) {
 				search();
 				
@@ -607,6 +605,14 @@
 			});
 		} catch(e) {
 			alert(e);
+		}
+		//alert('ready');
+
+		if('${query}') {
+			$('#queryField').val(decodeURI('${query}'));
+			var offset = ('${offset}'.length>0?'${offset}':0);
+			if($('#queryField').val() && ${offset}>0) searchAnnotation(${offset});
+			else searchAnnotation();
 		}
 	});
 
@@ -620,9 +626,15 @@
 	function searchAnnotation(paginationOffset, paginationRange) {
 		var query = $('#queryField').val();
 		if(!query) {
-			alert('empty');
+			alert('No search criteria defined!');
 			return
 		}
+		
+		// Modify the url
+		var url = "search?query="+encodeURI(query);
+		if(paginationOffset) url = url + "&offset=" + paginationOffset;
+		if(paginationRange) url = url + "&range=" + paginationRange;
+		window.history.pushState("", "", encodeURI(url));
 	
 		var groups = '';
 		$(".groupCheckbox").each(function(i) {
@@ -813,11 +825,9 @@
 	    		<div id="resultsStats" style="padding: 5px; "></div>
 	    	</td></tr>
 	    </table>
-	    <div id="searchArea" align="center" style="padding: 5px; padding-top: 15px ;padding-left: 10px; width: 715px;">
-	    	
-	    		<g:textField id="queryField" name="query" size="70" />
+	    <div id="searchArea" align="center" style="padding: 5px; padding-top: 15px ;padding-left: 10px; width: 715px;">	    	
+	    		<g:textField id="queryField" name="query" size="70"/>
 	    		<input value="Search" title="Search" name="lucky" type="submit" id="btn_i" onclick="searchAnnotation()">
-	    	
 	    </div>
 		
 		<div id="progressIcon" align="center" style="padding: 5px; padding-left: 10px; display: none;"><img id="groupsSpinner" src="${resource(dir:'images',file:'progress-bar-2.gif',plugin:'users-module')}" /></div>

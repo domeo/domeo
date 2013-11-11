@@ -2,6 +2,7 @@ package org.mindinformatics.grails.domeo.dashboard.security
 
 import grails.plugin.springsecurity.SpringSecurityUtils
 
+
 class LogoutController {
 
 	/**
