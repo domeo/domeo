@@ -156,7 +156,11 @@ class UsersManagementService {
 	}
 	
 	def listGroupUsers(def group, def _max, def _offset, def sort, def _order) {
-		def users = User.list();
+		def groupUsers = UserGroup.findAllByGroup(group)
+		def users = []
+		groupUsers.each {
+			users.add it.user
+		}
 		users
 	}
 	

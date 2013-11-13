@@ -41,7 +41,7 @@
 		     				<g:if test="${groupCount.key == group.id}">
 		     					
 		     					<g:if test="${groupCount.value>0}">
-			     					<g:link controller="dashboard" action="listGroupUsers" id="${group.id}">
+			     					<g:link controller="adminDashboard" action="listGroupUsers" id="${group.id}">
 			     						${groupCount.value}
 			     					</g:link>
 		     					</g:if>
