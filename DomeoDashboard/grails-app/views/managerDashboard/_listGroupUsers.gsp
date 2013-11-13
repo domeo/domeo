@@ -93,9 +93,11 @@
 			</g:each>
 		</tbody>
 	</table>
+	<%--
 	<div class="paginateButtons">
    		<g:paginate total="${usersTotal}" params="[groupId: groupId]"/>
 	</div>
+	 --%>
 	
 </div>
 </div>
