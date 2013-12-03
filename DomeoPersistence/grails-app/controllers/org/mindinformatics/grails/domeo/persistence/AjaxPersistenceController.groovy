@@ -1077,7 +1077,7 @@ class AjaxPersistenceController {
 		def user = userProfile();
 
 		println '-------------------------------------'
-		println ' search on: ' +  request.JSON.query
+		println ' search (1) on: ' +  request.JSON.query
 		println '-------------------------------------'
 		def strings = [];
 		Matcher matcher = Pattern.compile(/"[^\\"]*(\\"[^\\"]*)*"/).matcher(request.JSON.query)
@@ -1160,7 +1160,7 @@ class AjaxPersistenceController {
 		def user = userProfile();
 		
 		println '-------------------------------------'
-		println ' search on: ' +  request.JSON.query
+		println ' search (0) on: ' +  request.JSON.query
 		println '-------------------------------------'
 		def strings = [];
 		Matcher matcher = Pattern.compile(/"[^\\"]*(\\"[^\\"]*)*"/).matcher(request.JSON.query)
@@ -1233,41 +1233,19 @@ class AjaxPersistenceController {
 				newparsed[newfields.length-1] = 'term'
 			}
 			
-			println newfields;
-			println newvalues;
-			println newparsed;
+			println '------------- ' + request.JSON.groupsIds;
+			boolean publicData = request.JSON.permissionsPublic; // (request.JSON.permissionsPublic?request.JSON.permissionsPublic:true);
+			boolean groupsData = request.JSON.permissionsGroups; // (request.JSON.permissionsGroups?request.JSON.permissionsGroups:true);
+			boolean privateData = request.JSON.permissionsPrivate // (request.JSON.permissionsPrivate?request.JSON.permissionsPrivate:true);
+			def groupsIds = request.JSON.groupsIds;
 			
-			
-				
 				
 			if(request.JSON.query) {
-				/*
-				if(agent!=null) {
-					String[] fields = ['_all', 'pav_!DOMEO_NS!_createdBy.@type']
-					String[] values = [request.JSON.query, agent]
-					//println '-- searchMultiple'
-					res = annotationSearchService.searchMultiple(fields , values,
-						 	request.JSON.permissionsPublic, (request.JSON.permissionsPrivate==true)?"urn:person:uuid:"+userProfileId():null);
-				} else {
-					//println '-- search ' +  request.JSON.query + " -- " +  request.JSON.query.replaceAll("\"","\\\\\"");
-					res = annotationSearchService.search("_all" , request.JSON.query.replaceAll("\"","\\\\\""),
-							request.JSON.permissionsPublic==true, (request.JSON.permissionsPrivate==true)?"urn:person:uuid:"+userProfileId():null);
-				}
-				*/
 				res = annotationSearchService.searchMultiple(newfields, newvalues, newparsed,
-					request.JSON.permissionsPublic==true, (request.JSON.permissionsPrivate==true)?"urn:person:uuid:"+userProfileId():null);
+					request.JSON.permissionsPublic==true, (request.JSON.permissionsPrivate==true)?"urn:person:uuid:"+userProfileId():null, groupsIds);
+				
 				println "1- " + JSON.parse(res)
 				println "1- " + JSON.parse(res).hits.hits;
-				/*
-				res = annotationSearchService.searchItems(newfields , newvalues,
-					request.JSON.permissionsPublic==true, (request.JSON.permissionsPrivate==true)?"urn:person:uuid:"+userProfileId():null);
-				println "2- " + JSON.parse(res).hits.hits;
-				*/
-				/*
-				res = annotationSearchService.search("_all" , newvalues[0],
-					request.JSON.permissionsPublic==true, (request.JSON.permissionsPrivate==true)?"urn:person:uuid:"+userProfileId():null);
-				println "3- " + JSON.parse(res).hits.hits;
-				*/
 				
 				JSONObject r = JSON.parse(res);
 				def hits = r.hits.hits;
@@ -1276,7 +1254,7 @@ class AjaxPersistenceController {
 					def annotationSetIndex = AnnotationSetIndex.findByMongoUuid(hit._id);				
 					if(annotationSetIndex!=null) {
 						println 'checking: ' + annotationSetIndex.individualUri
-						if(annotationPermissionService.isPermissionGranted(user, annotationSetIndex)) {
+						if(annotationPermissionService.isPermissionGranted(user, annotationSetIndex, privateData, groupsData, groupsIds, publicData)) {
 							println 'granted: ' + annotationSetIndex.individualUri
 							AnnotationSetItemWrapper annotationListItemWrapper = new AnnotationSetItemWrapper(annotationSetIndex: annotationSetIndex);
 							

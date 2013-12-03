@@ -377,6 +377,17 @@ class BootStrap {
 			type: "feature"
 		).save(failOnError: true, flash: true)
 		
+		if(DomeoClientProfileEntry.findByProfileAndPlugin(completeProfile, "org.mindinformatics.gwt.domeo.feature.addressbar")) {
+			DomeoClientProfileEntry.findByProfileAndPlugin(completeProfile, "org.mindinformatics.gwt.domeo.feature.addressbar").status = "enabled"
+		} else {
+			new DomeoClientProfileEntry(
+				profile: completeProfile,
+				plugin: "org.mindinformatics.gwt.domeo.feature.addressbar",
+				status: "enabled",
+				type: "feature"
+			).save(failOnError: true, flash: true)
+		}
+		
 		DomeoClientProfileEntry.findByProfileAndPlugin(completeProfile, "org.mindinformatics.gwt.domeo.feature.analyze")?: new DomeoClientProfileEntry(
 			profile: completeProfile,
 			plugin: "org.mindinformatics.gwt.domeo.feature.analyze",
@@ -391,12 +402,45 @@ class BootStrap {
 			type: "feature"
 		).save(failOnError: true, flash: true)
 		
+		if(DomeoClientProfileEntry.findByProfileAndPlugin(completeProfile, "org.mindinformatics.gwt.domeo.feature.sharing")) {
+			DomeoClientProfileEntry.findByProfileAndPlugin(completeProfile, "org.mindinformatics.gwt.domeo.feature.sharing").status = "enabled"
+		} else {
+			new DomeoClientProfileEntry(
+				profile: completeProfile,
+				plugin: "org.mindinformatics.gwt.domeo.feature.sharing",
+				status: "enabled",
+				type: "feature"
+			).save(failOnError: true, flash: true)
+		}
+		
 		DomeoClientProfileEntry.findByProfileAndPlugin(completeProfile, "org.mindinformatics.gwt.domeo.feature.help")?: new DomeoClientProfileEntry(
 			profile: completeProfile,
 			plugin: "org.mindinformatics.gwt.domeo.feature.help",
 			status: "enabled",
 			type: "feature"
 		).save(failOnError: true, flash: true)
+		
+		if(DomeoClientProfileEntry.findByProfileAndPlugin(completeProfile, "org.mindinformatics.gwt.domeo.feature.document.general.reference.self")) {
+			DomeoClientProfileEntry.findByProfileAndPlugin(completeProfile, "org.mindinformatics.gwt.domeo.feature.document.general.reference.self").status = "disabled"
+		} else {
+			new DomeoClientProfileEntry(
+				profile: completeProfile,
+				plugin: "org.mindinformatics.gwt.domeo.feature.document.general.reference.self",
+				status: "disabled",
+				type: "feature"
+			).save(failOnError: true, flash: true)
+		}
+		
+		if(DomeoClientProfileEntry.findByProfileAndPlugin(completeProfile, "org.mindinformatics.gwt.domeo.feature.document.general.qualifiers.self")) {
+			DomeoClientProfileEntry.findByProfileAndPlugin(completeProfile, "org.mindinformatics.gwt.domeo.feature.document.general.qualifiers.self").status = "disabled"
+		} else {
+			new DomeoClientProfileEntry(
+				profile: completeProfile,
+				plugin: "org.mindinformatics.gwt.domeo.feature.document.general.reference.self",
+				status: "disabled",
+				type: "feature"
+			).save(failOnError: true, flash: true)
+		}
 		
 		// ----------------
 		//  BASIC PROFILES
