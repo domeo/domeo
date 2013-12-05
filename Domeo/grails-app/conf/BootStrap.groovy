@@ -421,12 +421,12 @@ class BootStrap {
 		).save(failOnError: true, flash: true)
 		
 		if(DomeoClientProfileEntry.findByProfileAndPlugin(completeProfile, "org.mindinformatics.gwt.domeo.feature.document.general.reference.self")) {
-			DomeoClientProfileEntry.findByProfileAndPlugin(completeProfile, "org.mindinformatics.gwt.domeo.feature.document.general.reference.self").status = "disabled"
+			DomeoClientProfileEntry.findByProfileAndPlugin(completeProfile, "org.mindinformatics.gwt.domeo.feature.document.general.reference.self").status = "enabled"
 		} else {
 			new DomeoClientProfileEntry(
 				profile: completeProfile,
 				plugin: "org.mindinformatics.gwt.domeo.feature.document.general.reference.self",
-				status: "disabled",
+				status: "enabled",
 				type: "feature"
 			).save(failOnError: true, flash: true)
 		}
@@ -436,7 +436,29 @@ class BootStrap {
 		} else {
 			new DomeoClientProfileEntry(
 				profile: completeProfile,
-				plugin: "org.mindinformatics.gwt.domeo.feature.document.general.reference.self",
+				plugin: "org.mindinformatics.gwt.domeo.feature.document.general.qualifiers.self",
+				status: "disabled",
+				type: "feature"
+			).save(failOnError: true, flash: true)
+		}
+		
+		if(DomeoClientProfileEntry.findByProfileAndPlugin(completeProfile, "org.mindinformatics.gwt.domeo.feature.document.general.bibliography")) {
+			DomeoClientProfileEntry.findByProfileAndPlugin(completeProfile, "org.mindinformatics.gwt.domeo.feature.document.general.bibliography").status = "disabled"
+		} else {
+			new DomeoClientProfileEntry(
+				profile: completeProfile,
+				plugin: "org.mindinformatics.gwt.domeo.feature.document.general.bibliography",
+				status: "disabled",
+				type: "feature"
+			).save(failOnError: true, flash: true)
+		}
+		
+		if(DomeoClientProfileEntry.findByProfileAndPlugin(completeProfile, "org.mindinformatics.gwt.domeo.feature.document.general.recommendations")) {
+			DomeoClientProfileEntry.findByProfileAndPlugin(completeProfile, "org.mindinformatics.gwt.domeo.feature.document.general.recommendations").status = "disabled"
+		} else {
+			new DomeoClientProfileEntry(
+				profile: completeProfile,
+				plugin: "org.mindinformatics.gwt.domeo.feature.document.general.recommendations",
 				status: "disabled",
 				type: "feature"
 			).save(failOnError: true, flash: true)
