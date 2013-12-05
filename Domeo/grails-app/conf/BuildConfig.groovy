@@ -9,6 +9,7 @@ grails.project.source.level = 1.6
 grails.plugin.location.'af-shared' = '../AfShared'
 grails.plugin.location.'domeo-dashboard' = '../DomeoDashboard'
 grails.plugin.location.'domeo-persistence' = '../DomeoPersistence'
+grails.plugin.location.'domeo-bibliography' = '../DomeoBibliography'
 grails.plugin.location.'domeo-client-wrapper' = '../DomeoClientWrapper'
 grails.plugin.location.'domeo-grails-plugins-utils' = '../DomeoGrailsPluginsUtils'
 grails.plugin.location.'connector-nif-service' = '../ConnectorNifService'

@@ -109,7 +109,8 @@ environments {
 				   'org.codehaus.groovy.grails.orm.hibernate', // hibernate integration
 				   'org.springframework',
 				   'org.hibernate',
-				   'net.sf.ehcache.hibernate'
+				   'net.sf.ehcache.hibernate',
+					'grails.app.controllers.org.mindinformatics.grails.domeo.ErrorsController'
 		}
     }
     production {
@@ -180,6 +181,7 @@ grails.plugin.springsecurity.controllerAnnotations.staticRules = [
 	'/web/domeo': ['ROLE_ADMIN', 'ROLE_MANAGER', 'ROLE_USER'],
 	'/web/pdf': ['ROLE_ADMIN', 'ROLE_MANAGER', 'ROLE_USER'],
 	'/persistence/**': ['ROLE_ADMIN', 'ROLE_MANAGER', 'ROLE_USER'],
+	'/bibliography/**': ['ROLE_ADMIN', 'ROLE_MANAGER', 'ROLE_USER'],
 	'/ajaxPersistence/**': ['ROLE_ADMIN', 'ROLE_MANAGER', 'ROLE_USER'],
 	'/ajaxBibliographic/**': ['ROLE_ADMIN', 'ROLE_MANAGER', 'ROLE_USER'],
 	'/plugins/**': ['ROLE_ADMIN', 'ROLE_MANAGER', 'ROLE_USER'],
@@ -193,7 +195,9 @@ grails.plugin.springsecurity.controllerAnnotations.staticRules = [
 	'/managerDashboard/**': ['ROLE_MANAGER'],
 	'/adminDashboard/**': ['ROLE_ADMIN'],
 	'/ajaxDashboard/**': ['ROLE_ADMIN', 'ROLE_MANAGER', 'ROLE_USER'],
+	'/retrievePmcImagesData/**': ['ROLE_ADMIN', 'ROLE_MANAGER', 'ROLE_USER'],
 	'/pubmed/**': ['permitAll'],
 	'/public/**': ['permitAll'],
-	'/index': ['ROLE_ADMIN']
+	'/index': ['ROLE_ADMIN'],
+	'/errors/**': ['ROLE_ADMIN', 'ROLE_MANAGER', 'ROLE_USER']
 ]
