@@ -27,3 +27,9 @@ history48x48.png - http://www.iconlet.com/info/30411_history_48x48
 downarrow16x16.png - http://www.iconlet.com/info/34436_1downarrow_16x16
 mycomputer.png - http://iconlet.com/icon/11020/mycomputer
 cursor_arrow.png - http://iconlet.com/icon/94416/cursor-arrow
+home22x22.png - http://iconlet.com/icon/80337/kfm-home
+search32x32.png - http://iconlet.com/icon/82583/Search
+
+
+--
+refresh16x16.png - http://iconlet.com/icon/33964/amarok-refresh

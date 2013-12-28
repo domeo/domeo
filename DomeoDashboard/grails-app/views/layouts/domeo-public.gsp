@@ -10,7 +10,7 @@
 	
 	<link rel="stylesheet" href="${resource(dir: 'css/shared', file: 'reset.css', plugin: 'af-shared')}" type="text/css">
 	<link rel="stylesheet" href="${resource(dir: 'css/public', file: 'public.css')}" type="text/css"></link>
-	<link rel="stylesheet" href="${resource(dir: 'css/public', file: 'logo.css')}" type="text/css"></link>
+	<link rel="stylesheet" href="${resource(dir: 'css/dashboard', file: 'dashboard-main.css')}" type="text/css"></link>
 	
 	<g:render template="/public/shared/scripts" />
     

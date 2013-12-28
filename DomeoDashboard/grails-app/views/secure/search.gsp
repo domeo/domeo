@@ -780,30 +780,22 @@
 	
   <div class="content">
 	<div class="content_resize">
-		<div id="sidebar" class="viewerSidebar" style="padding-top: 30px;padding-bottom: 30px; padding-right:2px;">
-			<%--
+		<div id="sidebar" class="viewerSidebar" style="display:none; padding-top: 30px;padding-bottom: 30px; padding-right:2px;">
+		
 	    	<div id='contributorsTitle'>Filtering by Access</div>
 			<div id="contributors" style="border-top: 3px solid #ddd; padding-bottom: 2px;"></div>
 	    	<div style="background: #fff; padding: 5px; padding-top: 10px; ">
-			    <input id="publicFilter" type="checkbox" name="vehicle" checked="checked">Public<br>
-			    <input id="groupsFilter" type="checkbox" name="vehicle" >Groups<br>			    
+			    <input id="publicFilter" type="checkbox" name="public" checked="checked">Public<br>
+			    <input id="groupsFilter" type="checkbox" name="groups" checked="checked">Groups<br>			    
 			  	<div id="groupsList">
 			  		<g:each in="${userGroups}" status="i" var="usergroup">
-			  			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<input type="checkbox" name="${usergroup.group.name}" class="groupCheckbox" value="${usergroup.group.id}">${usergroup.group.name}<br/>
+			  			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<input type="checkbox" name="${usergroup.group.name}" checked="checked" class="groupCheckbox" value="${usergroup.group.id}">${usergroup.group.name}<br/>
 			  		</g:each>
 			  	</div>
-				<input id="privateFilter" type="checkbox" name="vehicle" checked="checked">Private<br/><br/>
+				<input id="privateFilter" type="checkbox" name="private" checked="checked">Private<br/><br/>
+				<div align="center"><input value="Refresh" title="Search" name="lucky" type="submit" id="btn_i" onclick="loadAnnotationSets('', 0, '')"></div>
 			</div>
-			
-			<div id='contributorsTitle'>Filtering by Agent</div>
-			<div id="contributors" style="border-top: 3px solid #ddd; padding-bottom: 2px;"></div>
-			<div style="background: #fff; padding: 5px; padding-top: 10px; ">
-				<g:checkBox id="agentHuman" name="agentHuman"  checked="${true}"/> Human<br/>
-				<g:checkBox id="agentSoftware" name="agentSoftware"  checked="${true}"/> Software<br/>
-			</div>
-			<br/>
-			<div align="center"><input value="Refresh" title="Search" name="lucky" type="submit" id="btn_i" onclick="searchAnnotation()"></div>
-			--%>
+
 	  	</div>
 		 
  		<!-- Browsing Navigation -->

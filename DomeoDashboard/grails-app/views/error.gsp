@@ -1,8 +1,8 @@
 <!doctype html>
 <html>
 	<head>
-		<title>Grails Runtime Exception</title>
-		<meta name="layout" content="main">
+		<title>Domeo Runtime Exception</title>
+		<meta name="layout" content="domeo-public">
 		<link rel="stylesheet" href="${resource(dir: 'css', file: 'errors.css')}" type="text/css">
 	</head>
 	<body>

@@ -30,7 +30,8 @@ class AdminDashboardController extends GeneralDashboardController {
 
 		def users = usersGroupsManagementService.listUsers(user, params.max, params.offset, params.sort, params.order);
 
-		render (view:'listUsers', model:[user: user, "users" : users, "usersTotal": User.count(), "usersroles": UserRole.list(), "roles" : Role.list(), "menuitem" : "listUsers"])
+		render (view:'listUsers', model:[user: user, "users" : users, "usersTotal": User.count(), "usersroles": UserRole.list(), 
+			"roles" : Role.list(), "menuitem" : "listUsers"])
 	}
 	
 	def createUser = {

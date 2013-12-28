@@ -3,10 +3,10 @@
 <div class="menu_nav">
 	<ul>
 		<g:if test="${menuitem=='home'}">
-			<li class="active"><g:link controller="secure" action="home"><span>Home</span></g:link></li>
+			<li class="active"><g:link controller="secure" action="home"><img src="${resource(dir:'images/secure',file:'home22x22.png')}" title="Home" /><%--<span>Home</span> --%></g:link></li>
 		</g:if>
 		<g:else>
-			<li><g:link controller="secure" action="home"><span>Home</span></g:link></li>
+			<li><g:link controller="secure" action="home"><img src="${resource(dir:'images/secure',file:'home22x22.png')}" title="Home" /><%--<span>Home</span> --%></g:link></li>
 		</g:else>
 		<!-- <li><g:link controller="logout" action="index">Feeds</g:link></li>  -->
 		<li><g:link controller="secure" action="annotator"><span>Annotator</span></g:link></li>

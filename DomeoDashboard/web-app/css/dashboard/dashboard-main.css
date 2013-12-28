@@ -107,6 +107,7 @@ a.skip {
 	-webkit-box-shadow: 0 0 3px 1px #AAAAAA;
 	        box-shadow: 0 0 3px 1px #AAAAAA;
 	background-color: #EFEFEF;
+	text-align: left;
 }
 
 .pagination a,
