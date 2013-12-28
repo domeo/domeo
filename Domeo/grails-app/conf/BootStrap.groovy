@@ -432,23 +432,23 @@ class BootStrap {
 		}
 		
 		if(DomeoClientProfileEntry.findByProfileAndPlugin(completeProfile, "org.mindinformatics.gwt.domeo.feature.document.general.qualifiers.self")) {
-			DomeoClientProfileEntry.findByProfileAndPlugin(completeProfile, "org.mindinformatics.gwt.domeo.feature.document.general.qualifiers.self").status = "disabled"
+			DomeoClientProfileEntry.findByProfileAndPlugin(completeProfile, "org.mindinformatics.gwt.domeo.feature.document.general.qualifiers.self").status = "enabled"
 		} else {
 			new DomeoClientProfileEntry(
 				profile: completeProfile,
 				plugin: "org.mindinformatics.gwt.domeo.feature.document.general.qualifiers.self",
-				status: "disabled",
+				status: "enabled",
 				type: "feature"
 			).save(failOnError: true, flash: true)
 		}
 		
 		if(DomeoClientProfileEntry.findByProfileAndPlugin(completeProfile, "org.mindinformatics.gwt.domeo.feature.document.general.bibliography")) {
-			DomeoClientProfileEntry.findByProfileAndPlugin(completeProfile, "org.mindinformatics.gwt.domeo.feature.document.general.bibliography").status = "disabled"
+			DomeoClientProfileEntry.findByProfileAndPlugin(completeProfile, "org.mindinformatics.gwt.domeo.feature.document.general.bibliography").status = "enabled"
 		} else {
 			new DomeoClientProfileEntry(
 				profile: completeProfile,
 				plugin: "org.mindinformatics.gwt.domeo.feature.document.general.bibliography",
-				status: "disabled",
+				status: "enabled",
 				type: "feature"
 			).save(failOnError: true, flash: true)
 		}
@@ -460,6 +460,18 @@ class BootStrap {
 				profile: completeProfile,
 				plugin: "org.mindinformatics.gwt.domeo.feature.document.general.recommendations",
 				status: "disabled",
+				type: "feature"
+			).save(failOnError: true, flash: true)
+		}
+		
+		// If not present the text mining summary panel will display
+		if(DomeoClientProfileEntry.findByProfileAndPlugin(completeProfile, "org.mindinformatics.gwt.domeo.feature.textmining.summary")) {
+			DomeoClientProfileEntry.findByProfileAndPlugin(completeProfile, "org.mindinformatics.gwt.domeo.feature.textmining.summary").status = "enabled"
+		} else {
+			new DomeoClientProfileEntry(
+				profile: completeProfile,
+				plugin: "org.mindinformatics.gwt.domeo.feature.textmining.summary",
+				status: "enabled",
 				type: "feature"
 			).save(failOnError: true, flash: true)
 		}

@@ -15,6 +15,7 @@ grails.plugin.location.'domeo-grails-plugins-utils' = '../DomeoGrailsPluginsUtil
 grails.plugin.location.'connector-nif-service' = '../ConnectorNifService'
 grails.plugin.location.'connector-pubmed-service' = '../ConnectorPubmedService'
 grails.plugin.location.'connector-service-bioportal' = '../ConnectorServiceBioPortal'
+grails.plugin.location.'connector-yale-image-finder' = '../ConnectorYaleImageFinder'
 
 grails.project.dependency.resolution = {
     // inherit Grails' default dependencies
@@ -47,6 +48,13 @@ grails.project.dependency.resolution = {
 		provided 'mysql:mysql-connector-java:5.1.13'
 		runtime 'mysql:mysql-connector-java:5.1.13'
         compile 'com.googlecode.json-simple:json-simple:1.1'
+		
+		compile ("org.apache.jena:jena-core:2.11.0") {
+			excludes 'slf4j-api', 'xercesImpl'
+		}
+		compile ("org.apache.jena:jena-arq:2.9.4") {
+			excludes 'slf4j-api', 'xercesImpl'
+		}
 		
     }
 

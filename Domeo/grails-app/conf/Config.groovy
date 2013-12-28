@@ -92,12 +92,14 @@ environments {
 			
 			debug   "server.RealmVerifier",
 					"consumer.ConsumerManager",
-					'grails.app.controllers.org.mindinformatics.grails.domeo.persistence.ExportController'
+					'grails.app.controllers.org.mindinformatics.grails.domeo.persistence.ExportController',
+					'grails.app.controllers.org.mindinformatics.services.connector.yaleimagefinder.YaleImageFinderController'
             
             info    'grails.app', // Necessary for Bootstrap logging
                     'org.mindinformatics.grails.domeo.dashboard.security',
                     'org.mindinformatics.services.connector.pubmed.dataaccess',
-                    'org.mindinformatics.services.connector.pubmed'
+                    'org.mindinformatics.services.connector.pubmed',
+					'grails.app.controllers.org.mindinformatics.grails.domeo.plugin.bibliography.BibliographyController'
 		
 			error  'org.codehaus.groovy.grails.web.servlet',  //  controllers
 				   'org.codehaus.groovy.grails.web.pages', //  GSP
@@ -178,6 +180,7 @@ grails.plugin.springsecurity.openid.domainClass = 'org.mindinformatics.grails.do
 // grails.plugins.springsecurity.providerNames = ['daoAuthenticationProvider', 'ldapAuthProvider', 'rememberMeAuthenticationProvider']
 grails.plugin.springsecurity.controllerAnnotations.staticRules = [
 	'/secure/**': ['ROLE_ADMIN', 'ROLE_MANAGER', 'ROLE_USER'],
+	'/secured/**': ['ROLE_ADMIN', 'ROLE_MANAGER', 'ROLE_USER'],
 	'/web/domeo': ['ROLE_ADMIN', 'ROLE_MANAGER', 'ROLE_USER'],
 	'/web/pdf': ['ROLE_ADMIN', 'ROLE_MANAGER', 'ROLE_USER'],
 	'/persistence/**': ['ROLE_ADMIN', 'ROLE_MANAGER', 'ROLE_USER'],
@@ -199,5 +202,6 @@ grails.plugin.springsecurity.controllerAnnotations.staticRules = [
 	'/pubmed/**': ['permitAll'],
 	'/public/**': ['permitAll'],
 	'/index': ['ROLE_ADMIN'],
-	'/errors/**': ['ROLE_ADMIN', 'ROLE_MANAGER', 'ROLE_USER']
+	'/errors/**': ['ROLE_ADMIN', 'ROLE_MANAGER', 'ROLE_USER'],
+	'/yaleImageFinder/**': ['ROLE_ADMIN', 'ROLE_MANAGER', 'ROLE_USER'],
 ]

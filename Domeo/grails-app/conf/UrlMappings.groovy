@@ -43,18 +43,19 @@ class UrlMappings {
 		}
 		*/
 		
-		"/" {
-			controller = 'secure'
-			action = 'index'
-		}
+		
 		"/secure/" {
 			controller = 'secure'
 			action = 'index'
 		}
 		"/specs" (view:"/index")
  
+		"/" {
+			controller = 'secure'
+			action = 'index'
+		}
 		"500"(view:'/error')
-        "403"(view:'/forbidden')
+        "403"(controller:"errors", action:"forbidden")
         "404"(controller:"errors", action:"notFound")
 	}
 }
