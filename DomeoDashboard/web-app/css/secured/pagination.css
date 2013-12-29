@@ -1,0 +1,60 @@
+.pagination {
+    background: none repeat scroll 0 0 #F2F2F2;
+    margin-bottom: 20px;
+    padding: 20px;
+}
+.page {
+    background: none repeat scroll 0 0 #E9E9E9;
+    border: 1px solid #C0C0C0;
+    border-radius: 3px 3px 3px 3px;
+    box-shadow: 0 1px 0 rgba(255, 255, 255, 0.8) inset, 0 1px 3px rgba(0, 0, 0, 0.1);
+    color: #717171;
+    display: inline-block;
+    font-size: 0.875em;
+    font-weight: bold;
+    margin-right: 4px;
+    padding: 0 9px;
+    text-decoration: none;
+    text-shadow: 0 1px 0 #FFFFFF;
+}
+.page:hover, .page.gradient:hover {
+    background: -moz-linear-gradient(0% 0 270deg, #FEFEFE, #F0F0F0) repeat scroll 0 0 rgba(0, 0, 0, 0);
+}
+.page.active {
+    background: none repeat scroll 0 0 #616161;
+    border: medium none;
+    box-shadow: 0 0 8px rgba(0, 0, 0, 0.5) inset, 0 1px 0 rgba(255, 255, 255, 0.8);
+    color: #F0F0F0;
+    text-shadow: 0 0 3px rgba(0, 0, 0, 0.5);
+}
+.page.gradient {
+    background: -moz-linear-gradient(0% 0 270deg, #F8F8F8, #E9E9E9) repeat scroll 0 0 rgba(0, 0, 0, 0);
+}
+.pagination.dark {
+    background: none repeat scroll 0 0 #414449;
+    color: #FEFFFF;
+}
+.page.dark {
+    background: none repeat scroll 0 0 #3E4347;
+    border: 1px solid #32373B;
+    box-shadow: 0 1px 1px rgba(255, 255, 255, 0.1) inset, 0 1px 3px rgba(0, 0, 0, 0.1);
+    color: #FEFFFF;
+    text-shadow: 0 1px 0 rgba(0, 0, 0, 0.5);
+}
+.page.dark:hover, .page.dark.gradient:hover {
+    background: -moz-linear-gradient(0% 0 270deg, #547085, #3D4F5D) repeat scroll 0 0 rgba(0, 0, 0, 0);
+}
+.page.dark.active {
+    background: none repeat scroll 0 0 #2F3237;
+    border: medium none;
+    box-shadow: 0 0 8px rgba(0, 0, 0, 0.5) inset, 0 1px 0 rgba(255, 255, 255, 0.1);
+}
+.page.dark.gradient {
+    background: -moz-linear-gradient(0% 0 270deg, #565B5F, #3E4347) repeat scroll 0 0 rgba(0, 0, 0, 0);
+}
+.resultsPaginationTop {
+    padding: 5px 5px 5px 10px;
+}
+.resultsPaginationBottom {
+    padding: 5px 5px 5px 10px;
+}
