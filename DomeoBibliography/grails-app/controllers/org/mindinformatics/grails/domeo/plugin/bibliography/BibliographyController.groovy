@@ -20,6 +20,7 @@ class BibliographyController {
 	def mailService;
 	def grailsApplication;
 	def springSecurityService;
+	def usersManagementService;
 	
 	def isStarred = {
 		def user = userProfile();
@@ -168,7 +169,10 @@ class BibliographyController {
 
 		UserBibliography ub = UserBibliography.findByUser(user);
 		if(ub!=null) {
-			render (view:'bibliography', model:[user: user, bibliographicItems: ub.entries, starred: starred, withReference: withReference, bibliographicItemsCount: ub.entries.size()]);
+			render (view:'bibliography', model:[user: user, bibliographicItems: ub.entries, 
+				starred: starred, withReference: withReference,
+				loggedUserRoles: usersManagementService.getUserRoles(user),,
+				bibliographicItemsCount: ub.entries.size()]);
 			return;
 		}	
 		render 'No results'		

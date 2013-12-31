@@ -47,6 +47,7 @@ class SecuredController {
 		// -> permission facets?
 		def loggedUser = injectUserProfile();
 		render(view:'browser', model:[loggedUser: loggedUser, appBaseUrl: request.getContextPath(),
+			loggedUserRoles: usersManagementService.getUserRoles(loggedUser),
 			userGroups: usersManagementService.getUserGroups(loggedUser),
 			menuitem: 'browser', navitem: 'annotationSets']);
 	}
@@ -60,6 +61,7 @@ class SecuredController {
 		}
 		
 		render(view:'search', model:[menuitem: 'home', loggedUser: loggedUser, appBaseUrl: request.getContextPath(),
+			loggedUserRoles: usersManagementService.getUserRoles(loggedUser),
 			userGroups: usersManagementService.getUserGroups(loggedUser),
 			query: params.query, offset: offset, params: params]);
 	}
