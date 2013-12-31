@@ -273,6 +273,8 @@
 			if($(this).attr('checked')!=undefined) 
 				groups += $(this).attr('value') + " ";
 		});
+
+	
 		
 		try {
 			var dataToSend = { 
@@ -286,7 +288,7 @@
 				privateData:$("#privateFilter").attr('checked')!==undefined
 			};
 			$.ajax({
-		  	  	url: "${appBaseUrl}/ajaxPersistence/annotationSets",
+		  	  	url: "${appBaseUrl}/ajaxPersistence/browseAnnotationSets",
 		  	  	context: $("#resultsList"),
 		  	  	data: dataToSend,
 		  	  	success: function(data){
@@ -360,7 +362,7 @@
 			  					displayAccessType(item.permissionType) + 
 			  					
 			  					'</td>' +
-			  					'<td width="90px" rowspan="2" style="padding-left:4px; border-left: 0px solid #eee;">' +
+			  					'<td width="100px" rowspan="2" style="padding-left:10px; border-left: 0px solid #eee; vertical-align: top;">' +
 			  					
 			  					getModifyLink(item) +
 			  					getExploreLink(item) +
@@ -521,9 +523,6 @@
 <body>
   <div class="content">
     <div class="content_resize">
-    
-	    
- 
  		 <div class="container">
  		 	<!-- Browsing Navigation -->
 		    <div style="background: #616161; color: #fff; line-height: 10px; padding-top:10px; font-weight: bold; padding-bottom: 10px; margin-bottom: 10px; height: 30px;">
@@ -551,7 +550,9 @@
  		 
 
 	      
-		    <div id="progressIcon" align="center" style="padding: 5px; padding-left: 10px; display: none;"><img id="groupsSpinner" src="${resource(dir:'images',file:'progress-bar-2.gif',plugin:'users-module')}" /></div>
+		    <div id="progressIcon" align="center" style="padding: 5px; padding-left: 10px; display: none;">
+		    	<img id="groupsSpinner" src="${resource(dir:'images/secured',file:'ajax-loader-4CAE4C.gif',plugin:'users-module')}" />
+		    </div>
 		    <table width="790px;">
 		    	<tr><td>
 		    		<div id="resultsSummary" style="padding:5px; padding-left: 10px;"></div>
@@ -567,7 +568,5 @@
 	     </div>
     </div>
   </div>
-  <br/>
-  <g:render template="/secured/footer" />
 </body>
 </html>

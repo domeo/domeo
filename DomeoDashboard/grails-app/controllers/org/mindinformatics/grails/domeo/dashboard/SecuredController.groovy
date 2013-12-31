@@ -64,4 +64,31 @@ class SecuredController {
 			query: params.query, offset: offset, params: params]);
 	}
 	
+	/**
+	 * Displays the user profile.
+	 * Pushes:
+	 * - loggedUser: used for passing the current user in a uniform way
+	 * - item: user to display
+	 */
+	def userAccount = {
+		def loggedUser = injectUserProfile()
+		if(loggedUser!=null) {			
+			render (view:'/secured/userAccount',
+				model:[menuitem: 'showProfile',
+					loggedUser:loggedUser, loggedUserRoles: usersManagementService.getUserRoles(loggedUser),
+					user: loggedUser,
+					userRoles: usersManagementService.getUserRoles(loggedUser),
+					userGroups: usersManagementService.getUserGroups(loggedUser),
+					userCircles: usersManagementService.getUserCircles(loggedUser),
+					userCommunities: usersManagementService.getUserCommunities(loggedUser),
+					appBaseUrl: request.getContextPath()
+					]);
+		} else {
+			render (view:'/error', model:[message: "User not found for id: "+params.id]);
+		}
+	}
+	
+	def userSettings = {
+		
+	}	
 }
