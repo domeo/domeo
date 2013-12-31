@@ -1,0 +1,123 @@
+a {
+	text-decoration: none;
+	color: black;
+}
+
+table {
+	border-collapse: collapse;
+	font-size: 13px;
+	width: 100%;
+}
+
+table.tablelist {
+	
+}
+
+tr {
+	border: 0 none;
+}
+
+tr>td:first-child,tr>th:first-child {
+	padding-left: 1.25em;
+}
+
+tr>td:last-child,tr>th:last-child {
+	padding-right: 1.25em;
+}
+
+td,th {
+	line-height: 1.5em;
+	padding: 0.5em 0.6em;
+	text-align: left;
+	vertical-align: top;
+}
+
+th {
+	background-color: #EFEFEF;
+	background-image: -moz-linear-gradient(center top, #FFFFFF, #EAEAEA);
+	color: #666666;
+	font-weight: bold;
+	line-height: 1.7em;
+	padding: 0.2em 0.6em;
+}
+
+thead th {
+	white-space: nowrap;
+}
+
+th a {
+	display: block;
+	text-decoration: none;
+}
+
+th a:link,th a:visited {
+	color: #666666;
+}
+
+th a:hover,th a:focus {
+	color: #333333;
+}
+
+th.sortable a {
+	background-position: right center;
+	background-repeat: no-repeat;
+	padding-right: 1.1em;
+}
+
+th.asc a {
+	background-image: url("../../images/skin/sorted_asc.gif");
+}
+
+th.desc a {
+	background-image: url("../../images/skin/sorted_desc.gif");
+}
+
+.odd {
+	background: none repeat scroll 0 0 #F7F7F7;
+}
+
+.even {
+	background: none repeat scroll 0 0 #FFFFFF;
+}
+
+/* PAGINATION */
+
+.pagination {
+	border-top: 0;
+	margin: 0;
+	padding: 0.3em 0.2em;
+	text-align: left;
+	border-top: 1px #eee solid;
+	border-bottom: 1px #eee solid;
+	//   -moz-box-shadow: 0 0 3px 1px #AAAAAA;
+	//-webkit-box-shadow: 0 0 3px 1px #AAAAAA;
+	//       box-shadow: 0 0 3px 1px #AAAAAA;
+	// background-color: #EFEFEF;
+}
+
+.pagination a,
+.pagination .currentStep {
+	color: #666666;
+	display: inline-block;
+	margin: 0 0.1em;
+	padding: 0.25em 0.7em;
+	text-decoration: none;
+	   -moz-border-radius: 0.3em;
+	-webkit-border-radius: 0.3em;
+	        border-radius: 0.3em;
+}
+
+.pagination a:hover, .pagination a:focus,
+.pagination .currentStep {
+	background-color: #999999;
+	color: #ffffff;
+	outline: none;
+	text-shadow: 1px 1px 1px rgba(0, 0, 0, 0.8);
+}
+
+.no-borderradius .pagination a:hover, .no-borderradius .pagination a:focus,
+.no-borderradius .pagination .currentStep {
+	background-color: transparent;
+	color: #444444;
+	text-decoration: underline;
+}
