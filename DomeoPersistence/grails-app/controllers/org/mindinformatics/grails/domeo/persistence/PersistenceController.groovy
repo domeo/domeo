@@ -203,7 +203,11 @@ class PersistenceController {
 					def SET_DESCRIPTION = JSON_SET.get("dct:description");
 					def SET_TARGET_URL = JSON_SET.get("ao:annotatesResource");
 					def SET_CREATED_ON = JSON_SET.get("pav:createdOn");
-					def SET_DELETED = JSON_SET.get("domeo:deleted");
+					
+					def SET_DELETED = 'false'
+					if(JSON_SET.containsKey("domeo:deleted")) {
+						JSON_SET.get("domeo:deleted");
+					}
 					
 					// Creator
 					def creator = findCreator(userId, JSON_SET.get("pav:createdBy")); //.get("@id")); 
