@@ -108,8 +108,8 @@
 
 	function getModifyLink(i, item, url) {
 		if(i==0) return "<a onclick=\"javascript:edit('" + item.annotationSetIndex.individualUri + "','" + url + "')\" style=\"text-decoration: none; cursor: pointer;\"><img id=\"groupsSpinner\" src=\"${resource(dir:'images/secure',file:'black_edit.gif',plugin:'users-module')}\" /> Document</a><br/>";
-		else return "<a onclick=\"javascript:branch('" + item.annotationSetIndex.individualUri + "','" + url + "')\" style=\"text-decoration: none; cursor: pointer;\"><img id=\"groupsSpinner\" src=\"${resource(dir:'images/secure',file:'arrow_split16x16.png',plugin:'users-module')}\" /> Branch</a><br/>";
-		//else return "";
+		// else return "<a onclick=\"javascript:branch('" + item.annotationSetIndex.individualUri + "','" + url + "')\" style=\"text-decoration: none; cursor: pointer;\"><img id=\"groupsSpinner\" src=\"${resource(dir:'images/secure',file:'arrow_split16x16.png',plugin:'users-module')}\" /> Branch</a><br/>";
+		else return "";
 	}
 
 	function getExploreLink(item) {
@@ -137,7 +137,7 @@
 		if(temp.length>60) {
 			u = temp.substring(0, 30) + '...' + temp.substring(temp.length-25);
 		}
-		return "On  <a href='#' onclick='javascript:browseAnnotationSetsByUrl(\""+item.annotationSetIndex.annotatesUrl+"\")'>"+ u + " <img id=\"groupsSpinner\" src=\"${resource(dir:'images/secure',file:'show.gif',plugin:'users-module')}\" /></a> ";
+		return "On  <a href='#' onclick='javascript:browseAnnotationSetsByUrl(\""+item.annotationSetIndex.annotatesUrl+"\")'>"+ u +  "</a> ";
 	}
 
 	function browseAnnotationSetsByUrl(url) {
