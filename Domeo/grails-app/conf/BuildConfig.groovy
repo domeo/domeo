@@ -32,7 +32,7 @@ grails.project.dependency.resolution = {
         grailsHome()
         grailsCentral()
         mavenCentral()
-
+        mavenRepo 'http://repo.spring.io/milestone'
         // uncomment these to enable remote dependency resolution from public Maven repositories
         //mavenCentral()
         //mavenLocal()
