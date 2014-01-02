@@ -318,11 +318,11 @@
 	function displayAccessType(accessType) {
 		if(accessType=='urn:domeo:access:public') {
 			return ", <img id=\"groupsSpinner\" src=\"${resource(dir:'images/secure',file:'world16x16.png',plugin:'users-module')}\" /> Public"
-		} else if(accessType=='urn:domeo:access:private') {
-			return ", <img id=\"groupsSpinner\" src=\"${resource(dir:'images/secure',file:'personal16x16.png',plugin:'users-module')}\" /> Private"
 		} else if(accessType=='urn:domeo:access:groups') {
 			return ", <img id=\"groupsSpinner\" src=\"${resource(dir:'images/secure',file:'group16x16.png',plugin:'users-module')}\" /> Restricted"
-		}
+		} else  {
+			return ", <img id=\"groupsSpinner\" src=\"${resource(dir:'images/secure',file:'personal16x16.png',plugin:'users-module')}\" /> Private"
+		} 
 	}
 
 	function displayLock(lock) {
@@ -403,7 +403,7 @@
 		    		<div id="resultsStats" style="padding: 5px; "></div>
 		    	</td></tr>
 		    </table>
-	    	<div id="resultsIntro" style="padding: 10px; padding-left: 10px; width: 1140px; background: #ddd;"></div>
+	    	<div id="resultsIntro" style="padding: 10px; padding-left: 10px; width: 100%; background: #ddd;"></div>
 	    	
 	    	
 			<div id='sidebar' class="viewerSidebar" style="padding-top: 5px;padding-bottom: 30px; padding-right:2px;">		
@@ -414,8 +414,8 @@
 				<g:render template="/secure/components/domeo-agents-elements" />
 			</div>
 		  	
-		  	<div id="resultsListTitle" style="padding-top: 5px; padding-left: 10px; width: 615px;"></div>
-		  	<div id="resultsList" style="padding-left: 10px; width: 780px;">
+		  	<div id="resultsListTitle" style="padding-top: 5px; padding-left: 10px; max-width: 780px; min-width: 615px;"></div>
+		  	<div id="resultsList" style="padding-left: 10px; max-width: 780px; min-width: 615px;">
 		  		
 		  	</div>
 	    	
