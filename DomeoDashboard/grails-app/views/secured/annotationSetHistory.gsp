@@ -86,11 +86,11 @@
 
 	function displayAccessType(accessType) {
 		if(accessType=='urn:domeo:access:public') {
-			return ", <img id=\"groupsSpinner\" src=\"${resource(dir:'images/secure',file:'world16x16.png',plugin:'users-module')}\" /> Public"
+			return "<img id=\"groupsSpinner\" src=\"${resource(dir:'images/secure',file:'world16x16.png',plugin:'users-module')}\" /> Public"
 		} else if(accessType=='urn:domeo:access:private') {
-			return ", <img id=\"groupsSpinner\" src=\"${resource(dir:'images/secure',file:'personal16x16.png',plugin:'users-module')}\" /> Private"
+			return "<img id=\"groupsSpinner\" src=\"${resource(dir:'images/secure',file:'personal16x16.png',plugin:'users-module')}\" /> Private"
 		} else if(accessType=='urn:domeo:access:groups') {
-			return ", <img id=\"groupsSpinner\" src=\"${resource(dir:'images/secure',file:'group16x16.png',plugin:'users-module')}\" /> Restricted"
+			return "<img id=\"groupsSpinner\" src=\"${resource(dir:'images/secure',file:'group16x16.png',plugin:'users-module')}\" /> Restricted"
 		}
 	}
 
@@ -158,7 +158,8 @@
 	}
 
 	function getStats(item) {
-		return '# annotation items: '+item.annotationSetIndex.size + displayAccessType(item.permissionType) + displayLock(item.isLocked);
+		return "<span style='font-size:18px; padding-right: 5px;'>" + item.annotationSetIndex.size + "</span>" + (item.annotationSetIndex.size!=1?'items':'item') + "<br/>" +
+			displayAccessType(item.permissionType) + displayLock(item.isLocked);
 	}
 
 	function getDescription(item) {
@@ -218,48 +219,40 @@
 
 			  		var users = new Array();
 		  			$.each(data.annotationListItemWrappers, function(i,item){
-		  				$('#resultsList').append('<div style="border: 1px solid #eee; padding: 3px;"><table width="100%"><tr><td>' +
+		  				$('#resultsList').append('<div style="border: 1px solid #eee; padding: 3px;">' +
+		  					'<table width="100%"><tr><td class="topBar">' + 
 		  					'<span style="font-weight: bold;">'+item.annotationSetIndex.label + '</span>' + getDescription(item) +
 		  					'<br/>' +
 		  					getProvenance(item) +
-		  					'<br/>' +
+		  					'</td>' +
+		  					'<td width="140" class="topBar" align="right">' +
 		  					getStats(item) + 
-		  					'<br/>' +
-		  					getTarget(item)  +
 		  					//'<div id="citation-'+item..id+'"><img id=\"groupsSpinner\" src=\"${resource(dir:'images',file:'spinner.gif',plugin:'users-module')}\" /> Retrieving Citation</div>' +
 		  					'</div>' +
 		  					'</td>' +
-		  					'<td width="90px">' +
+		  					'<td width="100px" rowspan="2" style="padding-left:10px; border-left: 0px solid #eee; vertical-align: top;">' +
 		  					getModifyLink(i, item, item.annotationSetIndex.annotatesUrl) +
 		  					getExploreLink(item) +
 		  					getShareLink(i, item) +
 		  					getHistoryLink(item) + 
 				  			'</td>' + 
+				  			'</tr><tr><td>' + 
+				  			getTarget(item)  +
 		  					'</tr></table>'
-		  					
-		  					//getTarget(item)  +
-		  					//'<div id="citation-'+item.id+'"><img id=\"groupsSpinner\" src=\"${resource(dir:'images',file:'spinner.gif',plugin:'users-module')}\" /> Retrieving Citation</div>' +
-		  					//'</div>' +
-		  					
-		  					//'<br/>'
-							
-		  					);
+		  				);
 		  				retrieveCitation(item);
 
 		  				$('#resultsList').append(getConnector(i, data.annotationListItemWrappers.length));
 		  				
 						users[i] = item.annotationSetIndex.createdBy;
-		  				//alert(item.lastAnnotationSetIndex.lastVersion.createdBy.displayName);
-		  				//$('#resultsList').append('<input type="checkbox" name="vehicle" value="Bike">' 
-		  		  		//		+ item.group.name + '<br/>'); 
-		  		  				 
-				  				//item.dateCreated + '</td><td>'+ roles +
-				  				//'</td><td> '+ item.status.label + '</td></tr>');
-		  				 
-		  		    });	
-		  		}  			
-		  	}
+		  			});	
+		  		}
+	  	  	}
 	  	});
+	}
+
+	function getProvenanceCreator(item) {
+		return 'by <a onclick=\"javascript:displayUser(\'' + item.annotationSetIndex.createdBy.id + '\')\" style=\"cursor: pointer;\">' + item.annotationSetIndex.lastVersion.createdBy.displayName + '</a>';
 	}
 
 	$(document).ready(function() {
@@ -280,7 +273,7 @@
 	    
 	    <div id="progressIcon" align="center" style="padding: 5px; padding-left: 10px; display: none;"><img id="groupsSpinner" src="${resource(dir:'images',file:'progress-bar-2.gif',plugin:'users-module')}" /></div>
 	   
-	    <table width="730px;">
+	    <table width="100%">
 	    	<tr><td>
 	    		<img id="groupsSpinner" src="${resource(dir:'images/secure',file:'history48x48.png',plugin:'users-module')}" />  Annotation Set History 		
 	    	</td><td style="text-align:right">
@@ -289,7 +282,7 @@
 	    </table>
 	    
 	    
-	    <div id="resultsList" style="padding: 5px; padding-left: 10px; width: 715px;"></div>
+	    <div id="resultsList" style="padding: 5px; padding-left: 10px; width: 100%;"></div>
 	    <div class="resultsPagination"></div>
       	<div class="clr"></div>
     </div>
