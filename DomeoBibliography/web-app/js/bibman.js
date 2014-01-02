@@ -183,9 +183,6 @@ function BibmanCtrl($scope, $sce, $http) {
 		    });
 		
 		console.log("search [term:" + $scope.searchText + ", page:" + (page?page:0) + ", max:" + $scope.paginationMax + "]")
-		
-				
-		
 	};
 	
 	$scope.urlOptions = function(provider, id, url) {

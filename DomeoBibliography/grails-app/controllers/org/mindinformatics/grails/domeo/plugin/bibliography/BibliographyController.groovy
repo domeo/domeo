@@ -21,6 +21,7 @@ class BibliographyController {
 	def grailsApplication;
 	def springSecurityService;
 	def usersManagementService;
+	def bibliographyService;
 	
 	def isStarred = {
 		def user = userProfile();
@@ -69,6 +70,9 @@ class BibliographyController {
 			return;
 		}
 		
+		bibliographyService.createEntry(user, jsonRequest, true);
+		
+		/*
 		UserBibliography ub = UserBibliography.findByUser(user);
 		if(ub==null) {
 			log.info("Creating bibliogrphy for user " + user.username);
@@ -129,7 +133,7 @@ class BibliographyController {
 		} else {
 			be.starred = true;
 		}
-			
+			*/
 		
 		render 'yo'
 		

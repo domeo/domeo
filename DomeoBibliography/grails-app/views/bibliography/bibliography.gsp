@@ -191,7 +191,8 @@ th.desc a {
 								</td>
 								--%>
 								<td>
-									<a href="${item.url}" target="_blank">${item.title}</a>
+									<g:link controller="secured" action="annotationSetsByUrl" params="[url: item.url]">${item.title}</g:link>
+									<%--<a href="${item.url}" target="_blank">${item.title}</a>  --%>
 								</td>
 								<td>
 									<g:if test="${item.reference}">

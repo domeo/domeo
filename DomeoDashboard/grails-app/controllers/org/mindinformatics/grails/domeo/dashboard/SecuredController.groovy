@@ -51,6 +51,22 @@ class SecuredController {
 			userGroups: usersManagementService.getUserGroups(loggedUser),
 			menuitem: 'browser', navitem: 'annotationSets']);
 	}
+	
+	def annotationSetsByUrl = {
+		
+		def error = '';
+		def url = params.url;
+		if(!url) error = "!! No URL defined !!" 
+		
+		// Query the lineages the user can access (newst to oldest)
+		// -> pagination?
+		// -> permission facets?
+		def loggedUser = injectUserProfile();
+		render(view:'annotationSetsByUrl', model:[loggedUser: loggedUser, appBaseUrl: request.getContextPath(),
+			loggedUserRoles: usersManagementService.getUserRoles(loggedUser),
+			userGroups: usersManagementService.getUserGroups(loggedUser), url: url, error: error,
+			menuitem: 'browser', navitem: 'annotationSets']);
+	}
 
 	def search = {
 		def loggedUser = injectUserProfile();

@@ -72,7 +72,7 @@ function searchAnnotation(paginationOffset, paginationRange) {
 		paginationOffset: paginationOffset, 
 		paginationRange: paginationRange, 
 		permissionsPublic: $("#publicFilter").is(':checked'), 
-		permissionsGroups: $("#groupsFilter").is(':checked'), 
+		permissionsGroups: (groups.length>0?true:false), 
 		groupsIds: groups,
 		permissionsPrivate: $("#privateFilter").is(':checked'),
 		agentHuman: $("#agentHuman").attr('checked')!==undefined, 
@@ -485,14 +485,19 @@ function retrieveItems(setId, setIndividualUri, query) {
 			<div id="contributors" style="border-top: 3px solid #ddd; padding-bottom: 2px;"></div>
 	    	<div style="padding: 5px; padding-top: 10px; ">
 			    <input id="publicFilter" type="checkbox" name="public"> Public<br>
-			    <input id="groupsFilter" type="checkbox" name="groups"> Groups<br>			    
-			  	<div id="groupsList">
-			  		<g:each in="${userGroups}" status="i" var="usergroup">
-			  			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<input type="checkbox" name="${usergroup.group.name}" class="groupCheckbox" value="${usergroup.group.id}"> ${usergroup.group.name}<br/>
-			  		</g:each>
-			  	</div>
-				<input id="privateFilter" type="checkbox" name="private"> Private<br/><br/>
-				<div align="center"><input value="Refresh" title="Search" name="lucky" type="submit" id="btn_i" onclick="loadAnnotationSets('', 0, '')" class="btn btn-success"></div>
+			    <input id="privateFilter" type="checkbox" name="private"> Private<br/>
+			    <%--<input id="groupsFilter" type="checkbox" name="groups"> Groups<br>		--%>
+			  
+			  	<g:if test="${userGroups.size()>0}">
+				  	<div id="groupsList">
+				  	 	<br/>Groups<br/>	    
+				  		<g:each in="${userGroups}" status="i" var="usergroup">
+				  			<input type="checkbox" name="${usergroup.group.name}" class="groupCheckbox" value="${usergroup.group.id}"> ${usergroup.group.name}<br/>
+				  		</g:each>
+				  	</div>
+			  	</g:if>
+				<br/>
+				<div align="center"><input value="Refresh" title="Search" name="lucky" type="submit" id="btn_i" onclick="searchAnnotation()" class="btn btn-success"></div>
 			</div>
 	  	</div>
 	  	<div id="progressIcon" align="center" style="padding: 5px; padding-left: 10px; display: none;">
