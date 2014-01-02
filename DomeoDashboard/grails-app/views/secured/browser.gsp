@@ -216,7 +216,11 @@
 		if(temp.length>60) {
 			u = temp.substring(0, 30) + '...' + temp.substring(temp.length-25);
 		}
-		return "On  <a href='#' onclick='javascript:loadData(\""+item.lastAnnotationSetIndex.lastVersion.annotatesUrl+"\")'>"+ u + "</a> ";
+		return "On  <a href='#' onclick='javascript:browseAnnotationSetsByUrl(\""+item.lastAnnotationSetIndex.lastVersion.annotatesUrl+"\")'>"+ u + "</a> ";
+	}
+
+	function browseAnnotationSetsByUrl(url) {
+		document.location = '${appBaseUrl}/secured/annotationSetsByUrl?url=' + encodeURIComponent(url);
 	}
 
 	function getTargetOut(item) {
@@ -263,7 +267,8 @@
 
 	function loadAnnotationSets(url, paginationOffset, paginationRange) {
 		
-		
+		//
+
 		$("#resultsList").empty();
 		$('.resultsPaginationTop').empty();
 		$('.resultsPaginationBottom').empty(); 

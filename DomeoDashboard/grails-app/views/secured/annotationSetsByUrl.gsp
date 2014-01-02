@@ -216,7 +216,7 @@
 		if(temp.length>60) {
 			u = temp.substring(0, 30) + '...' + temp.substring(temp.length-25);
 		}
-		return "On  <a href='#' onclick='javascript:loadData(\""+item.lastAnnotationSetIndex.lastVersion.annotatesUrl+"\")'>"+ u + "</a> ";
+		return "On  <a href='#' onclick='javascript:loadAnnotationSets(\""+item.lastAnnotationSetIndex.lastVersion.annotatesUrl+"\")'>"+ u + "</a> ";
 	}
 
 	function getTargetOut(item) {
