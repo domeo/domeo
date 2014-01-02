@@ -21,6 +21,11 @@ $(document).ready(function() {
 	        searchAnnotation();
 	    }
 	});
+
+	//$("#publicFilter").attr('checked', true);
+	//$("#privateFilter").attr('checked', true);
+
+	
 	
 	try {
 		$("#domeoSearch form").submit(function(e) {
@@ -46,6 +51,8 @@ function searchAnnotation(paginationOffset, paginationRange) {
 		alert('No search criteria defined!');
 		return
 	}
+
+	//alert($("#publicFilter").val());
 	
 	// Modify the url
 	var url = "home?query="+encodeURI(query);
@@ -55,7 +62,7 @@ function searchAnnotation(paginationOffset, paginationRange) {
 
 	var groups = '';
 	$(".groupCheckbox").each(function(i) {
-		if($(this).attr('checked')!=undefined) 
+		if($(this).is(':checked')) 
 			groups += $(this).attr('value') + " ";
 	});
 
@@ -64,27 +71,32 @@ function searchAnnotation(paginationOffset, paginationRange) {
 		query: query,
 		paginationOffset: paginationOffset, 
 		paginationRange: paginationRange, 
-		permissionsPublic: $("#publicFilter").attr('checked')!==undefined, 
-		permissionsGroups: $("#groupsFilter").attr('checked')!==undefined, 
+		permissionsPublic: $("#publicFilter").is(':checked'), 
+		permissionsGroups: (groups.length>0?true:false), 
 		groupsIds: groups,
-		permissionsPrivate: $("#privateFilter").attr('checked')!==undefined,
+		permissionsPrivate: $("#privateFilter").is(':checked'),
 		agentHuman: $("#agentHuman").attr('checked')!==undefined, 
 		agentSoftware: $("#agentSoftware").attr('checked')!==undefined, 
 	};
 	
 	$("#progressIcon").show();
+	$("#resultsList").html("");
+	$('.resultsPaginationTop').empty();
+	$('.resultsPaginationBottom').empty(); 
+	
 	var savingRequest = $.ajax({
 		type: "POST",
 		contentType : "text/plain",
         dataType: 'json', 
-		url: "${request.getContextPath()}/ajaxPersistence/search",
+		url: "${request.getContextPath()}/ajaxPersistence/searchAnnotationSets",
 		data: JSON.stringify(dataToSend)
 	}).done(function( data ) {
 		$("#progressIcon").hide();
+		
 		$("#resultsList").html("");
-
 		$('.resultsPaginationTop').empty();
 		$('.resultsPaginationBottom').empty(); 
+		
 
 		if(data.annotationListItemWrappers.length==0) {
 			$('#resultsList').append("No results<br/>");
@@ -472,24 +484,32 @@ function retrieveItems(setId, setIndividualUri, query) {
 	    	<div id='contributorsTitle'>Filtering by permissions</div>
 			<div id="contributors" style="border-top: 3px solid #ddd; padding-bottom: 2px;"></div>
 	    	<div style="padding: 5px; padding-top: 10px; ">
-			    <input id="publicFilter" type="checkbox" name="public" checked="checked"> Public<br>
-			    <input id="groupsFilter" type="checkbox" name="groups" checked="checked"> Groups<br>			    
-			  	<div id="groupsList">
-			  		<g:each in="${userGroups}" status="i" var="usergroup">
-			  			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<input type="checkbox" name="${usergroup.group.name}" checked="checked" class="groupCheckbox" value="${usergroup.group.id}"> ${usergroup.group.name}<br/>
-			  		</g:each>
-			  	</div>
-				<input id="privateFilter" type="checkbox" name="private" checked="checked"> Private<br/><br/>
-				<div align="center"><input value="Refresh" title="Search" name="lucky" type="submit" id="btn_i" onclick="loadAnnotationSets('', 0, '')" class="btn btn-success"></div>
+			    <input id="publicFilter" type="checkbox" name="public"> Public<br>
+			    <input id="privateFilter" type="checkbox" name="private"> Private<br/>
+			    <%--<input id="groupsFilter" type="checkbox" name="groups"> Groups<br>		--%>
+			  
+			  	<g:if test="${userGroups.size()>0}">
+				  	<div id="groupsList">
+				  	 	<br/>Groups<br/>	    
+				  		<g:each in="${userGroups}" status="i" var="usergroup">
+				  			<input type="checkbox" name="${usergroup.group.name}" class="groupCheckbox" value="${usergroup.group.id}"> ${usergroup.group.name}<br/>
+				  		</g:each>
+				  	</div>
+			  	</g:if>
+				<br/>
+				<div align="center"><input value="Refresh" title="Search" name="lucky" type="submit" id="btn_i" onclick="searchAnnotation()" class="btn btn-success"></div>
 			</div>
 	  	</div>
+	  	<div id="progressIcon" align="center" style="padding: 5px; padding-left: 10px; display: none;">
+	    	<img id="groupsSpinner" src="${resource(dir:'images/secured',file:'ajax-loader-4CAE4C.gif',plugin:'users-module')}" />
+	    </div>
 	  	<div class="resultsPaginationTop"></div>
 		<div id="resultsList" style="width: 790px;">
-	    Most recent anntation sets
+	    <%-- Most recent anntation sets --%>
 	    </div>
 	    <div class="resultsPaginationBottom"></div>
 	</div>
-	<br/>
-	<g:render template="/secured/footer" />
+	
+	
 </body>
 </html>

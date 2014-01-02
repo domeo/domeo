@@ -1,0 +1,9 @@
+security-level16x16.gif - http://iconlet.com/icon/18279/securityrole-obj
+export16x16.gif - http://iconlet.com/icon/19756/export-wiz
+clip16x16.png - http://iconlet.com/icon/94583/clip
+
+database-plus16x16.png - http://iconlet.com/icon/87818/database--plus
+database-minus16x16.png - http://iconlet.com/icon/88746/database--minus
+database16x16.png - http://iconlet.com/icon/88469/database
+search16x16.png - http://iconlet.com/icon/33787/amarok-search
+database-share16x16.png - http://iconlet.com/icon/90307/database-share

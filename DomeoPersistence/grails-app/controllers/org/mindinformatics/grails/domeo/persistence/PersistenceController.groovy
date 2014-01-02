@@ -25,13 +25,25 @@ class PersistenceController {
 	def usersManagementService;
 	def usersGroupsManagementService
 	def transactionalPersistenceService;
-    
+    def bibliographyService;
+	
     def readOnlyService;
     
 	
 	def index = {
 		log.info('index');
 		render 'persistence controller home'
+	}
+	
+	private def userProfile() {
+		def user;
+		def principal = springSecurityService.principal
+		if(!principal.equals("anonymousUser")) {
+			String username = principal.username
+			user = User.findByUsername(username);
+			return user
+		}
+		"<unknown>"
 	}
 	
 	private def userProfileId() {
@@ -170,7 +182,8 @@ class PersistenceController {
 	}
 	
 	def saveAnnotation = {
-		def userId = userProfileId();
+		def user = userProfile();
+		def userId = user.id;
 		
 		String textContent = request.getReader().text;
 		logInfo(userId, "Saving annotation: " + textContent);
@@ -203,7 +216,11 @@ class PersistenceController {
 					def SET_DESCRIPTION = JSON_SET.get("dct:description");
 					def SET_TARGET_URL = JSON_SET.get("ao:annotatesResource");
 					def SET_CREATED_ON = JSON_SET.get("pav:createdOn");
-					def SET_DELETED = JSON_SET.get("domeo:deleted");
+					
+					def SET_DELETED = 'false'
+					if(JSON_SET.containsKey("domeo:deleted")) {
+						JSON_SET.get("domeo:deleted");
+					}
 					
 					// Creator
 					def creator = findCreator(userId, JSON_SET.get("pav:createdBy")); //.get("@id")); 
@@ -537,6 +554,19 @@ class PersistenceController {
                     
 					logInfo(userId, 'SUCCESS: Saving annotation set process completed!');
 					
+					// Bibliography
+					if(grailsApplication.config.domeo.bibliography.management.enabled) {
+						println '##################################bibliography enabled'
+						def resources = JSON_SET['domeo:resources'];
+						resources.each { resource ->
+							if(resource.url==SET_TARGET_URL) {
+								println resource;
+								bibliographyService.createEntry(user, resource, false);
+							}
+							
+						}
+					}
+			
 				} else {
 					trackException(userId, textContent, "FAILURE: Set type not recognized (skipped): " + SET_TYPE);
 					return;

@@ -143,7 +143,7 @@
 	}
 
 	function displaySet(annotationUri) {
-		document.location = '${appBaseUrl}/secure/annset/' + encodeURIComponent(annotationUri);
+		document.location = '${appBaseUrl}/secured/annotationSet/' + encodeURIComponent(annotationUri);
 	}
 
 	function displayHistory(annotationSetUri) {
@@ -216,7 +216,11 @@
 		if(temp.length>60) {
 			u = temp.substring(0, 30) + '...' + temp.substring(temp.length-25);
 		}
-		return "On  <a href='#' onclick='javascript:loadData(\""+item.lastAnnotationSetIndex.lastVersion.annotatesUrl+"\")'>"+ u + "</a> ";
+		return "On  <a href='#' onclick='javascript:browseAnnotationSetsByUrl(\""+item.lastAnnotationSetIndex.lastVersion.annotatesUrl+"\")'>"+ u + "</a> ";
+	}
+
+	function browseAnnotationSetsByUrl(url) {
+		document.location = '${appBaseUrl}/secured/annotationSetsByUrl?url=' + encodeURIComponent(url);
 	}
 
 	function getTargetOut(item) {
@@ -263,7 +267,8 @@
 
 	function loadAnnotationSets(url, paginationOffset, paginationRange) {
 		
-		
+		//
+
 		$("#resultsList").empty();
 		$('.resultsPaginationTop').empty();
 		$('.resultsPaginationBottom').empty(); 
@@ -273,6 +278,8 @@
 			if($(this).attr('checked')!=undefined) 
 				groups += $(this).attr('value') + " ";
 		});
+
+	
 		
 		try {
 			var dataToSend = { 
@@ -286,7 +293,7 @@
 				privateData:$("#privateFilter").attr('checked')!==undefined
 			};
 			$.ajax({
-		  	  	url: "${appBaseUrl}/ajaxPersistence/annotationSets",
+		  	  	url: "${appBaseUrl}/ajaxPersistence/browseAnnotationSets",
 		  	  	context: $("#resultsList"),
 		  	  	data: dataToSend,
 		  	  	success: function(data){
@@ -360,7 +367,7 @@
 			  					displayAccessType(item.permissionType) + 
 			  					
 			  					'</td>' +
-			  					'<td width="90px" rowspan="2" style="padding-left:4px; border-left: 0px solid #eee;">' +
+			  					'<td width="100px" rowspan="2" style="padding-left:10px; border-left: 0px solid #eee; vertical-align: top;">' +
 			  					
 			  					getModifyLink(item) +
 			  					getExploreLink(item) +
@@ -521,9 +528,6 @@
 <body>
   <div class="content">
     <div class="content_resize">
-    
-	    
- 
  		 <div class="container">
  		 	<!-- Browsing Navigation -->
 		    <div style="background: #616161; color: #fff; line-height: 10px; padding-top:10px; font-weight: bold; padding-bottom: 10px; margin-bottom: 10px; height: 30px;">
@@ -536,22 +540,27 @@
 				<div id="contributors" style="border-top: 3px solid #ddd; padding-bottom: 2px;"></div>
 		    	<div style="padding: 5px; padding-top: 10px; ">
 				    <input id="publicFilter" type="checkbox" name="vehicle" checked="checked"> Public<br>
-				    <input id="groupsFilter" type="checkbox" name="vehicle" > Groups<br>
+				     <input id="privateFilter" type="checkbox" name="private"> Private<br/>
 				    
+				   <g:if test="${userGroups.size()>0}">
 				  	<div id="groupsList">
+				  	 	<br/>Groups<br/>	    
 				  		<g:each in="${userGroups}" status="i" var="usergroup">
-				  			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<input type="checkbox" name="${usergroup.group.name}" class="groupCheckbox" value="${usergroup.group.id}"> ${usergroup.group.name}<br/>
+				  			<input type="checkbox" name="${usergroup.group.name}" class="groupCheckbox" value="${usergroup.group.id}"> ${usergroup.group.name}<br/>
 				  		</g:each>
 				  	</div>
-				    
-					<input id="privateFilter" type="checkbox" name="vehicle" checked="checked"> Private<br/><br/>
-					<div align="center"><input value="Refresh" title="Search" name="lucky" type="submit" id="btn_i" onclick="loadAnnotationSets('', 0, '')" class="btn btn-success"></div>
+			  	</g:if>
+				<br/>					
+				
+				<div align="center"><input value="Refresh" title="Search" name="lucky" type="submit" id="btn_i" onclick="loadAnnotationSets('', 0, '')" class="btn btn-success"></div>
 				</div>
 		  	</div>
  		 
 
 	      
-		    <div id="progressIcon" align="center" style="padding: 5px; padding-left: 10px; display: none;"><img id="groupsSpinner" src="${resource(dir:'images',file:'progress-bar-2.gif',plugin:'users-module')}" /></div>
+		    <div id="progressIcon" align="center" style="padding: 5px; padding-left: 10px; display: none;">
+		    	<img id="groupsSpinner" src="${resource(dir:'images/secured',file:'ajax-loader-4CAE4C.gif',plugin:'users-module')}" />
+		    </div>
 		    <table width="790px;">
 		    	<tr><td>
 		    		<div id="resultsSummary" style="padding:5px; padding-left: 10px;"></div>
@@ -567,7 +576,5 @@
 	     </div>
     </div>
   </div>
-  <br/>
-  <g:render template="/secured/footer" />
 </body>
 </html>

@@ -27,5 +27,7 @@
 	<div style="top:60px;position: relative;">
 		<g:layoutBody/>
 	</div>
+	<br/><br/><br/><br/>
+	<g:render template="/secured/footer" />
 </body>
 </html>

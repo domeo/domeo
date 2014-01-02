@@ -47,7 +47,31 @@ class SecuredController {
 		// -> permission facets?
 		def loggedUser = injectUserProfile();
 		render(view:'browser', model:[loggedUser: loggedUser, appBaseUrl: request.getContextPath(),
+			loggedUserRoles: usersManagementService.getUserRoles(loggedUser),
 			userGroups: usersManagementService.getUserGroups(loggedUser),
+			menuitem: 'browser', navitem: 'annotationSets']);
+	}
+	
+	def annotationSet = {
+		def loggedUser = injectUserProfile();
+		render(view:'annotationSet', model:[loggedUser: loggedUser, appBaseUrl: request.getContextPath(),
+			userGroups: usersManagementService.getUserGroups(loggedUser), setUri: params.id,
+			menuitem: 'browser', navitem: 'annotationSet']);
+	}
+	
+	def annotationSetsByUrl = {
+		
+		def error = '';
+		def url = params.url;
+		if(!url) error = "!! No URL defined !!" 
+		
+		// Query the lineages the user can access (newst to oldest)
+		// -> pagination?
+		// -> permission facets?
+		def loggedUser = injectUserProfile();
+		render(view:'annotationSetsByUrl', model:[loggedUser: loggedUser, appBaseUrl: request.getContextPath(),
+			loggedUserRoles: usersManagementService.getUserRoles(loggedUser),
+			userGroups: usersManagementService.getUserGroups(loggedUser), url: url, error: error,
 			menuitem: 'browser', navitem: 'annotationSets']);
 	}
 
@@ -60,8 +84,36 @@ class SecuredController {
 		}
 		
 		render(view:'search', model:[menuitem: 'home', loggedUser: loggedUser, appBaseUrl: request.getContextPath(),
+			loggedUserRoles: usersManagementService.getUserRoles(loggedUser),
 			userGroups: usersManagementService.getUserGroups(loggedUser),
 			query: params.query, offset: offset, params: params]);
 	}
 	
+	/**
+	 * Displays the user profile.
+	 * Pushes:
+	 * - loggedUser: used for passing the current user in a uniform way
+	 * - item: user to display
+	 */
+	def userAccount = {
+		def loggedUser = injectUserProfile()
+		if(loggedUser!=null) {			
+			render (view:'/secured/userAccount',
+				model:[menuitem: 'showProfile',
+					loggedUser:loggedUser, loggedUserRoles: usersManagementService.getUserRoles(loggedUser),
+					user: loggedUser,
+					userRoles: usersManagementService.getUserRoles(loggedUser),
+					userGroups: usersManagementService.getUserGroups(loggedUser),
+					userCircles: usersManagementService.getUserCircles(loggedUser),
+					userCommunities: usersManagementService.getUserCommunities(loggedUser),
+					appBaseUrl: request.getContextPath()
+					]);
+		} else {
+			render (view:'/error', model:[message: "User not found for id: "+params.id]);
+		}
+	}
+	
+	def userSettings = {
+		
+	}	
 }

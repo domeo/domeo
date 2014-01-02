@@ -85,6 +85,80 @@ class AjaxPersistenceController {
 		return;
 	}
 	
+	def browseAnnotationSets = {
+		def user = userProfile();
+		
+		def documentUrl = params.documentUrl;
+		def permissionPublic = params.permissionPublic;
+		def permissionPrivate = params.permissionPrivate;
+		int paginationOffset = (params.paginationOffset?Integer.parseInt(params.paginationOffset):0);
+		int paginationRange = (params.paginationRange?Integer.parseInt(params.paginationRange):10);
+		boolean publicData = (params.publicData?Boolean.parseBoolean(params.publicData):true);
+		boolean groupsData = (params.groupsData?Boolean.parseBoolean(params.groupsData):true);
+		boolean privateData = (params.privateData?Boolean.parseBoolean(params.privateData):true);
+		def groupsIds = params.groupsIds;
+		
+//		println '-0-- ' + documentUrl;
+//		println '-1-- ' + permissionPublic;
+//		println '-2-- ' + permissionPrivate;
+//		println '-3-- ' + paginationOffset;
+//		println '-4-- ' + paginationRange;
+//		println '-5-- ' + publicData;
+//		println '-6-- ' + groupsData;
+//		println '-7-- ' + privateData;
+//		println '-8-- ' + groupsIds;
+		
+		try {
+			User latestContributor = null;
+			Date latestContribution = null;
+			
+			ArrayList<AnnotationListItemWrapper> annotationListItemWrappers = new ArrayList<AnnotationListItemWrapper>();
+			List<LastAnnotationSetIndex> lastAnnotationSetIndexes;
+			
+			if(!documentUrl) lastAnnotationSetIndexes = LastAnnotationSetIndex.findAll('from LastAnnotationSetIndex as b where b.isDeleted=0 order by b.lastUpdated desc')
+			else lastAnnotationSetIndexes = LastAnnotationSetIndex.findAll('from LastAnnotationSetIndex as b where b.annotatesUrl=\'' + documentUrl + '\' order by b.lastUpdated desc')
+						
+			int globalCounter = 0;
+			int allowedCounter = 0;
+//			println 'total: ' + lastAnnotationSetIndexes.size();
+			for(LastAnnotationSetIndex lastAnnotationSetIndex: lastAnnotationSetIndexes) {
+				if(latestContribution==null || lastAnnotationSetIndex.lastVersion.createdOn.after(latestContribution)) {
+					latestContribution = lastAnnotationSetIndex.lastVersion.createdOn;
+					latestContributor = lastAnnotationSetIndex.lastVersion.createdBy;
+				}
+				
+				if(annotationPermissionService.isPermissionGranted(user, lastAnnotationSetIndex.lastVersion, privateData, groupsData, groupsIds, publicData)) {
+//					println 'hello 1 ' + globalCounter;
+					AnnotationListItemWrapper annotationListItemWrapper = new AnnotationListItemWrapper(lastAnnotationSetIndex: lastAnnotationSetIndex);
+//					println 'hello 2';
+					List<String> permissions = annotationPermissionService.getAnnotationSetPermissions(user.id, lastAnnotationSetIndex.lastVersion);
+					if (permissions.get(0)==IPermissionTypes.publicAccess) {
+						annotationListItemWrapper.permissionType = IPermissionTypes.publicAccess;
+					} else if (permissions.get(0)==IPermissionTypes.groupsAccess) {
+						annotationListItemWrapper.permissionType = IPermissionTypes.groupsAccess;
+					} else {
+						annotationListItemWrapper.permissionType = IPermissionTypes.privateAccess;
+					}
+					annotationListItemWrapper.isLocked = annotationPermissionService.isLocked(lastAnnotationSetIndex.lastVersion);
+
+					if(globalCounter>=paginationOffset && globalCounter<(paginationOffset+paginationRange)) {
+						annotationListItemWrappers.add(annotationListItemWrapper);
+						allowedCounter++;
+					}
+
+					globalCounter++;
+				}
+			}
+			
+			AnnotationListResponse theResponse = new AnnotationListResponse(paginationOffset: paginationOffset, paginationRange: paginationRange, latestContributor: latestContributor,
+				latestContribution: latestContribution, annotationListItemWrappers: annotationListItemWrappers, totalResponses: globalCounter);
+			JSON.use("deep")
+			render (theResponse as JSON);
+		} catch(Exception e) {
+			trackException(user.id, "", "FAILURE: Retrieval of the list of existing annotation sets failed " + e.getMessage());
+		}
+	}
+	
 	def annotationSets = {
 		def user = userProfile();
 		
@@ -118,9 +192,7 @@ class AjaxPersistenceController {
             
             if(!documentUrl) lastAnnotationSetIndexes = LastAnnotationSetIndex.findAll('from LastAnnotationSetIndex as b where b.isDeleted=0 order by b.lastUpdated desc')
             else lastAnnotationSetIndexes = LastAnnotationSetIndex.findAll('from LastAnnotationSetIndex as b where b.annotatesUrl=\'' + documentUrl + '\' order by b.lastUpdated desc')
-            
-			
-			
+            			
 			int globalCounter = 0;
 			int allowedCounter = 0;
 //			println 'total: ' + lastAnnotationSetIndexes.size(); 
@@ -159,6 +231,136 @@ class AjaxPersistenceController {
 			render (theResponse as JSON);
 		} catch(Exception e) {
 			trackException(user.id, "", "FAILURE: Retrieval of the list of existing annotation sets failed " + e.getMessage());
+		}
+	}
+	
+	def searchAnnotationSets = {
+		def user = userProfile();
+		
+		println '-------------------------------------'
+		println ' search (0) on: ' +  request.JSON.query
+		println '-------------------------------------'
+		def strings = [];
+		Matcher matcher = Pattern.compile(/"[^\\"]*(\\"[^\\"]*)*"/).matcher(request.JSON.query)
+		matcher.each {
+			def hit = it;
+			println 'match: ' + it
+			strings.add(it[0]);
+		}
+		def queryterms = []
+		def querystring = request.JSON.query;
+		strings.each { hit ->
+			println 'hit: ' + hit
+			queryterms.add(hit.replaceAll("\"",""));
+			println 'before query ' + querystring;
+			querystring = querystring.replaceAll(hit, "");
+			println 'after query ' + querystring
+		}
+		def ress = querystring.split();
+		ress.each { res ->
+			println 'more ' + res; 
+			queryterms.add(res);
+		}
+		
+		println 'queryterms ' + queryterms
+		
+		int paginationOffset = (request.JSON.paginationOffset?request.JSON.paginationOffset:0);
+		int paginationRange = (request.JSON.paginationRange?request.JSON.paginationRange:2);
+		
+		List<AnnotationSetIndex> annotationListItemWrappers = new ArrayList<AnnotationSetIndex>();
+		if(request.JSON) {
+			int globalCounter = 0;
+			int allowedCounter = 0;
+			
+			def res;
+			//println "Query " + request.JSON.query
+			//println "Public " + request.JSON.permissionsPublic
+			//println "Private " + request.JSON.permissionsPrivate
+			
+			//println "Human " + request.JSON.agentHuman
+			//println "Software " + request.JSON.agentSoftware
+			
+			def agent;
+			if(request.JSON.agentHuman==true && request.JSON.agentSoftware != true) 
+				agent = 'foafx:Person'
+			else if(request.JSON.agentHuman!=true && request.JSON.agentSoftware == true) 
+				agent = 'foafx:Software'
+				
+			String[] newparsed = null;
+			if(agent==null) newparsed = new String[queryterms.size()];
+			else newparsed = new String[queryterms.size()+1];
+				
+			String[] newvalues = null;
+			if(agent==null) newvalues = new String[queryterms.size()];
+			else newvalues = new String[queryterms.size()+1];
+			
+			for(i in 0..queryterms.size()-1) {
+				newvalues[i] = queryterms[i]
+			}
+			if(!agent==null) newvalues[newvalues.length-1] =  agent;
+			
+			String[] newfields = null
+			if(agent==null) newfields = new String[queryterms.size()];
+			else newfields = new String[queryterms.size()+1];
+			for(i in 0..queryterms.size()-1) {
+				newfields[i] = '_all'
+				newparsed[i] = 'match_phrase'
+			}
+			if(!agent==null) {
+				newvalues[newfields.length-1] =  'pav_!DOMEO_NS!_createdBy.@type';
+				newparsed[newfields.length-1] = 'term'
+			}
+			
+			println '------------- ' + request.JSON.groupsIds;
+			boolean publicData = request.JSON.permissionsPublic; // (request.JSON.permissionsPublic?request.JSON.permissionsPublic:true);
+			boolean groupsData = request.JSON.permissionsGroups; // (request.JSON.permissionsGroups?request.JSON.permissionsGroups:true);
+			boolean privateData = request.JSON.permissionsPrivate // (request.JSON.permissionsPrivate?request.JSON.permissionsPrivate:true);
+			def groupsIds = request.JSON.groupsIds;
+			
+				
+			if(request.JSON.query) {
+				res = annotationSearchService.searchMultiple(newfields, newvalues, newparsed,
+					request.JSON.permissionsPublic==true, (request.JSON.permissionsPrivate==true)?"urn:person:uuid:"+userProfileId():null, groupsIds);
+				
+				println "1- " + JSON.parse(res)
+				println "1- " + JSON.parse(res).hits.hits;
+				
+				JSONObject r = JSON.parse(res);
+				def hits = r.hits.hits;
+				hits.each { hit ->
+					println 'hit: ' + hit._id
+					def annotationSetIndex = AnnotationSetIndex.findByMongoUuid(hit._id);				
+					if(annotationSetIndex!=null) {
+						println 'checking: ' + annotationSetIndex.individualUri
+						if(annotationPermissionService.isPermissionGranted(user, annotationSetIndex, privateData, groupsData, groupsIds, publicData)) {
+							println 'granted: ' + annotationSetIndex.individualUri
+							AnnotationSetItemWrapper annotationListItemWrapper = new AnnotationSetItemWrapper(annotationSetIndex: annotationSetIndex);
+							
+							if(globalCounter>=paginationOffset && globalCounter<(paginationOffset+paginationRange)) {
+								annotationListItemWrappers.add(annotationListItemWrapper);
+								allowedCounter++;
+							}
+						 
+							List<String> permissions = annotationPermissionService.getAnnotationSetPermissions(user.id, annotationSetIndex);
+							if (permissions.get(0)==IPermissionTypes.publicAccess) {
+								annotationListItemWrapper.permissionType = IPermissionTypes.publicAccess;
+							} else if (permissions.get(0)==IPermissionTypes.groupsAccess) {
+								annotationListItemWrapper.permissionType = IPermissionTypes.groupsAccess;
+							} else {
+								annotationListItemWrapper.permissionType = IPermissionTypes.privateAccess;
+							}
+							annotationListItemWrapper.isLocked = annotationPermissionService.isLocked(annotationSetIndex);
+							
+							globalCounter++
+						}
+					}
+				}			
+			}
+			AnnotationListResponse theResponse = new AnnotationListResponse(
+				paginationOffset: paginationOffset, paginationRange: paginationRange,
+				annotationListItemWrappers: annotationListItemWrappers, totalResponses: globalCounter);
+			JSON.use("deep")
+			render (theResponse as JSON);
 		}
 	}
 	
