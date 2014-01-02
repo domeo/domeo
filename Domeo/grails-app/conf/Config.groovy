@@ -168,6 +168,7 @@ grails.plugin.springsecurity.authority.className = 'org.mindinformatics.grails.d
 grails.plugin.springsecurity.rememberMe.persistent = true
 grails.plugin.springsecurity.rememberMe.persistentToken.domainClassName = 'org.mindinformatics.grails.domeo.dashboard.security.PersistentLogin'
 grails.plugin.springsecurity.securityConfigType = "Annotation"
+grails.plugin.springsecurity.password.algorithm = 'bcrypt' // Default since spring-security-core:2.0-RC2
 // http://grails-plugins.github.io/grails-spring-security-core/docs/manual/guide/newInV2.html
 grails.plugin.springsecurity.logout.postOnly = false
 
@@ -193,6 +194,7 @@ grails.plugin.springsecurity.controllerAnnotations.staticRules = [
 	'/users/**': ['ROLE_ADMIN', 'ROLE_MANAGER', 'ROLE_USER'],
 	'/nif/**': ['ROLE_ADMIN', 'ROLE_MANAGER', 'ROLE_USER'],
 	'/bioPortal/**': ['ROLE_ADMIN', 'ROLE_MANAGER', 'ROLE_USER'],
+	'/bioPortalConnector/**': ['ROLE_ADMIN', 'ROLE_MANAGER', 'ROLE_USER'],
 	'/profiles/**': ['ROLE_ADMIN', 'ROLE_MANAGER', 'ROLE_USER'],
 	'/persistence/**': ['ROLE_ADMIN', 'ROLE_MANAGER', 'ROLE_USER'],
 	'/managerDashboard/**': ['ROLE_MANAGER'],
