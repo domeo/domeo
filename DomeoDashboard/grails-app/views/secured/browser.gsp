@@ -143,7 +143,7 @@
 	}
 
 	function displaySet(annotationUri) {
-		document.location = '${appBaseUrl}/secure/annset/' + encodeURIComponent(annotationUri);
+		document.location = '${appBaseUrl}/secured/annotationSet/' + encodeURIComponent(annotationUri);
 	}
 
 	function displayHistory(annotationSetUri) {

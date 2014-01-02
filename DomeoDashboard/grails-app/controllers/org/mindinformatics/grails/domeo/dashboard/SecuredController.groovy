@@ -52,6 +52,13 @@ class SecuredController {
 			menuitem: 'browser', navitem: 'annotationSets']);
 	}
 	
+	def annotationSet = {
+		def loggedUser = injectUserProfile();
+		render(view:'annotationSet', model:[loggedUser: loggedUser, appBaseUrl: request.getContextPath(),
+			userGroups: usersManagementService.getUserGroups(loggedUser), setUri: params.id,
+			menuitem: 'browser', navitem: 'annotationSet']);
+	}
+	
 	def annotationSetsByUrl = {
 		
 		def error = '';
