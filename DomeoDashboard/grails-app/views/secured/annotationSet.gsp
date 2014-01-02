@@ -356,7 +356,7 @@
 	}
 
 	function displayHistory(annotationSetUri) {
-		document.location = '${appBaseUrl}/secure/setHistory/' + encodeURIComponent(annotationSetUri);
+		document.location = '${appBaseUrl}/secured/annotationSetHistory/' + encodeURIComponent(annotationSetUri);
 	}
 	
 	function getTarget(item) {
