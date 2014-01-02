@@ -535,15 +535,19 @@
 				<div id="contributors" style="border-top: 3px solid #ddd; padding-bottom: 2px;"></div>
 		    	<div style="padding: 5px; padding-top: 10px; ">
 				    <input id="publicFilter" type="checkbox" name="vehicle" checked="checked"> Public<br>
-				    <input id="groupsFilter" type="checkbox" name="vehicle" > Groups<br>
+				    <input id="privateFilter" type="checkbox" name="vehicle" checked="checked"> Private<br/>
 				    
-				  	<div id="groupsList">
-				  		<g:each in="${userGroups}" status="i" var="usergroup">
-				  			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<input type="checkbox" name="${usergroup.group.name}" class="groupCheckbox" value="${usergroup.group.id}"> ${usergroup.group.name}<br/>
-				  		</g:each>
-				  	</div>
+				  	<g:if test="${userGroups.size()>0}">
+					  	<div id="groupsList">
+					  	 	<br/>Groups<br/>	    
+					  		<g:each in="${userGroups}" status="i" var="usergroup">
+					  			<input type="checkbox" name="${usergroup.group.name}" class="groupCheckbox" value="${usergroup.group.id}"> ${usergroup.group.name}<br/>
+					  		</g:each>
+					  	</div>
+				  	</g:if>
+					<br/>
 				    
-					<input id="privateFilter" type="checkbox" name="vehicle" checked="checked"> Private<br/><br/>
+					
 					<div align="center"><input value="Refresh" title="Search" name="lucky" type="submit" id="btn_i" onclick="loadAnnotationSets('${url}', 0, '')" class="btn btn-success"></div>
 				</div>
 		  	</div>
