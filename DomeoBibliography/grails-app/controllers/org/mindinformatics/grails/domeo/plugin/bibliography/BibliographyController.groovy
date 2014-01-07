@@ -4,12 +4,11 @@ import grails.converters.JSON
 
 import org.codehaus.groovy.grails.web.json.JSONArray
 import org.codehaus.groovy.grails.web.json.JSONObject
+import org.hibernate.criterion.*
 import org.mindinformatics.grails.domeo.dashboard.security.User
 import org.mindinformatics.grails.domeo.plugin.bibliography.model.BibliographicEntry
 import org.mindinformatics.grails.domeo.plugin.bibliography.model.BibliographicReference
 import org.mindinformatics.grails.domeo.plugin.bibliography.model.UserBibliography
-
-import  org.hibernate.criterion.*
 
 
 /**
@@ -184,36 +183,110 @@ class BibliographyController {
 	
 	def searchBibliography = {
 		def user = userProfile();
-		def starred = (params.starred=='true')? true: false;
-		def withReference = (params.withReference=='true')? true: false;
+		//def starred = (params.starred=='true')? true: false;
+		//def withReference = (params.withReference=='true')? true: false;
 
+		if (!params.max) params.max = 2
+		if (!params.offset) params.offset = 0
+		if (!params.sort) params.sort = "dateCreated"
+		if (!params.order) params.order = "asc"
+		
+		int maxResults = params.max?Integer.parseInt(params.max):10;
+		
+		println("search------ " + maxResults + "-" + params.search);
 		UserBibliography ub = UserBibliography.findByUser(user);
-		if(ub!=null) {
-			JSONArray jsonentries = new JSONArray();
-			ub.entries.each { entry ->
-				JSONObject jsonentry = new JSONObject();
-				jsonentry.put("id", entry.id);
-				jsonentry.put("url", entry.url);
-				jsonentry.put("title", entry.title);
-				jsonentry.put("starred", entry.starred);
-				jsonentry.put("createdOn", entry.dateCreated);
-				if(entry.reference) {
-					JSONObject jsonreference = new JSONObject();
-					jsonreference.put("id", entry.reference.id);
-					jsonreference.put("title", entry.reference.title);
-					jsonreference.put("authors", entry.reference.authorNames);
-					jsonreference.put("info", entry.reference.publicationInfo);
-					jsonreference.put("doi", entry.reference.doi);
-					jsonreference.put("pmid", entry.reference.pubMedId);
-					jsonreference.put("pmcid", entry.reference.pubMedCentralId);
-					jsonentry.put("reference", jsonreference);
+		if(ub!=null) {	
+			if(params.search) {
+	
+				def c = BibliographicEntry.createCriteria()
+				def results = c.list {
+					and {
+						or {
+							and {
+								like("title", '%'+params.search+'%')
+								//isNull('reference')
+							}
+							and {
+								isNotNull('reference')
+								or {
+									createAlias("reference","ref", CriteriaSpecification.LEFT_JOIN)
+									like("title", '%'+params.search+'%')
+									like("ref.title", '%'+params.search+'%')
+									like("ref.authorNames", '%'+params.search+'%')
+								}
+							}
+						}
+						eq("userBibliography", ub)
+					}
+					projections {
+						property('id')
+						property('url')
+						property('title')
+						property('starred')
+						property('dateCreated')
+						property('ref.id')
+						property('ref.title')
+						property('ref.authorNames')
+					}
 				}
-				jsonentries.add(jsonentry);
+				println results.size();
+				
+				List references = results.collect{record -> [id : record[0], url:record[1], title:record[2], starred:record[3], dateCreated:record[4], reference: BibliographicReference.findById(record[5])]} //, "reference.title":record[5], authors:record[6]]}
+				
+				JSONArray jsonentries = new JSONArray();
+				references.each { entry ->
+					println entry.getClass().getName();
+					JSONObject jsonentry = new JSONObject();
+					jsonentry.put("id", entry.id);
+					jsonentry.put("url", entry.url);
+					jsonentry.put("title", entry.title);
+					jsonentry.put("starred", entry.starred);
+					jsonentry.put("createdOn", entry.dateCreated);
+					if(entry.reference) {
+						JSONObject jsonreference = new JSONObject();
+						jsonreference.put("id", entry.reference.id);
+						jsonreference.put("title", entry.reference.title);
+						jsonreference.put("authors", entry.reference.authorNames);
+						jsonreference.put("info", entry.reference.publicationInfo);
+						jsonreference.put("doi", entry.reference.doi);
+						jsonreference.put("pmid", entry.reference.pubMedId);
+						jsonreference.put("pmcid", entry.reference.pubMedCentralId);
+						jsonentry.put("reference", jsonreference);
+					}
+					jsonentries.add(jsonentry);
+				}
+				
+				render jsonentries as JSON
+			} else {
+				def entries = BibliographicEntry.findAllByUserBibliography(ub, [max: params.max])
+				JSONArray jsonentries = new JSONArray();
+				entries.each { entry ->
+					println entry.getClass().getName();
+					JSONObject jsonentry = new JSONObject();
+					jsonentry.put("id", entry.id);
+					jsonentry.put("url", entry.url);
+					jsonentry.put("title", entry.title);
+					jsonentry.put("starred", entry.starred);
+					jsonentry.put("createdOn", entry.dateCreated);
+					if(entry.reference) {
+						JSONObject jsonreference = new JSONObject();
+						jsonreference.put("id", entry.reference.id);
+						jsonreference.put("title", entry.reference.title);
+						jsonreference.put("authors", entry.reference.authorNames);
+						jsonreference.put("info", entry.reference.publicationInfo);
+						jsonreference.put("doi", entry.reference.doi);
+						jsonreference.put("pmid", entry.reference.pubMedId);
+						jsonreference.put("pmcid", entry.reference.pubMedCentralId);
+						jsonentry.put("reference", jsonreference);
+					}
+					jsonentries.add(jsonentry);
+				}
+				
+				render jsonentries as JSON
 			}
-			
-			render jsonentries as JSON
 		}
-			
+
+		render "";	
 	}
 
 	def bibs = {
@@ -240,6 +313,8 @@ class BibliographyController {
 		if (!params.offset) params.offset = 0
 		if (!params.sort) params.sort = "dateCreated"
 		if (!params.order) params.order = "asc"
+		
+		println("search------ " + maxResults + "-" + params.search);
 		
 		if(params.search) { 
 

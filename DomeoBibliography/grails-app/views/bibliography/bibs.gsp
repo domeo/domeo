@@ -2,30 +2,37 @@
 
 <html ng-app>
 <head>
-
-<script type="text/javascript" src="${resource(dir: 'js/angularjs', file: 'angular.min.js', plugin: 'domeo-bibliography')}"></script>
-<script type="text/javascript" src="${resource(dir: 'js/angularjs', file: 'angular-resource.min.js', plugin: 'domeo-bibliography')}"></script>
-<script type="text/javascript" src="${resource(dir: 'js', file: 'bibman.js', plugin: 'domeo-bibliography')}"></script>
-<script type="text/javascript" src="${resource(dir: 'js', file: 'alertify.js', plugin: 'domeo-bibliography')}"></script>
+<link rel="stylesheet" href="${resource(dir: 'css/navigation', file: 'bootstrap.css', plugin: 'domeo-dashboard')}" type="text/css">
+<link rel="stylesheet" href="${resource(dir: 'css/navigation', file: 'navigation-custom.css', plugin: 'domeo-dashboard')}" type="text/css">
 
 <link rel="stylesheet" href="${resource(dir: 'css', file: 'reset.css', plugin: 'domeo-bibliography')}" type="text/css">
 <link rel="stylesheet" href="${resource(dir: 'css', file: 'bibman.css', plugin: 'domeo-bibliography')}" type="text/css">
 <link rel="stylesheet" href="${resource(dir: 'css/alertify', file: 'alertify.core.css', plugin: 'domeo-bibliography')}" type="text/css">
 <link rel="stylesheet" href="${resource(dir: 'css/alertify', file: 'alertify.bootstrap.css', plugin: 'domeo-bibliography')}" type="text/css">
 
-<script>
+<script type="text/javascript" src="${resource(dir: 'js/jquery', file: 'jquery-1.10.2.min.js', plugin: 'domeo-dashboard')}"></script>
+<script type="text/javascript" src="${resource(dir: 'js/navigation', file: 'bootstrap.min.js', plugin: 'domeo-dashboard')}"></script>
 
-</script>
+<script type="text/javascript" src="${resource(dir: 'js/angularjs', file: 'angular.min.js', plugin: 'domeo-bibliography')}"></script>
+<script type="text/javascript" src="${resource(dir: 'js/angularjs', file: 'angular-resource.min.js', plugin: 'domeo-bibliography')}"></script>
+<script type="text/javascript" src="${resource(dir: 'js', file: 'bibman.js', plugin: 'domeo-bibliography')}"></script>
+<script type="text/javascript" src="${resource(dir: 'js', file: 'alertify.js', plugin: 'domeo-bibliography')}"></script>
+
+<style>
+.footer {
+    background-color: #333333;
+    color: #FFFFFF;
+    padding-bottom: 2em;
+    padding-top: 2em;
+}
+</style>
 
 </head>
 
-<body  style="font-family: helvetica; font-size: 14px; font-weight:400;">
-	<div ng-controller="BibmanCtrl" class="content" style="min-width: 600px;">
-		<div class="list" style="width: 100%; background: white;">
-			<div style="background: #333; color:#fff; padding: 5px;">
-				[Starred:, WithReference:] 
-			</div>
-		</div>
+<body style="">
+	<g:render template="/secured/navigation-bar" />
+
+	<div ng-controller="BibmanCtrl" class="content" style="min-width: 600px; top:60px;position: relative; font-family: helvetica; font-size: 14px; font-weight:400;">
 		<div style="background: #ddd; padding: 8px;">
 			Bibliography {{selectionInfo}}
 			<span style="float: right; padding-right: 10px;">
@@ -47,7 +54,7 @@
 		<div style="background: #fff; padding: 5px;">
 			 <form ng-submit="search()">
 				<input type="text" ng-model="searchText" size="30" placeholder="search bibliography">
-				<input class="btn-primary" type="submit" value="Search"> 
+				<input class="btn btn-primary" type="submit" value="Search"> 
 				<span ng-bind="paginationTotal"></span> Results
 				<span style="float: right; padding-right: 10px">Display: 
 				    <select data-ng-options="o.name for o in paginationSize" data-ng-model="paginationSizeSelection"></select>
@@ -61,7 +68,7 @@
 			</span>
 		</div>
 		 -->
-		<div style="padding:0px; padding-top: 10px;">
+		<div style="padding:0px; padding-top: 10px; min-height: 260px;">
 			<table class="tablelist">
 				<thead>
 					<tr>
@@ -73,7 +80,7 @@
 					</tr>
 				</thead>
 				<tbody>
-					<tr ng-repeat="bibitem in bibliographicResults" ng-class="$index % 2 == 0 && 'even' || 'odd'".>
+					<tr ng-repeat="bibitem in bibliographicResults" ng-class="$index % 2 == 0 && 'even' || 'odd'">
 						<td>
 							<div ng-show="!bibitem.staged">
 								<input type="checkbox" value="{{bibitem.id}}" ng-model="bibitem.selected" ng-click="toggleSelection(bibitem)">
@@ -124,5 +131,8 @@
 			</div>
 		</div>
 	</div>
+	
+	<br/><br/><br/><br/>
+	<g:render template="/secured/footer" />
 </body>
 </html>

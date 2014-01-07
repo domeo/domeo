@@ -20,7 +20,7 @@
 						<ul class="dropdown-menu" role="menu">
 							<li class="socials"><g:link controller="secured" action="browse"
 								class="twitter-share-button">Annotation Sets</g:link>
-							<li class="socials"><g:link controller="bibliography" action="bibliography"
+							<li class="socials"><g:link controller="bibliography" action="bibs"
 								class="twitter-share-button">Bibliography</g:link></li>
 	
 						</ul>
