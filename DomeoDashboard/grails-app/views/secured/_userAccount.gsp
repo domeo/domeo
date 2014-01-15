@@ -100,31 +100,35 @@ Stylesheet
 						</div>
 					</td>
 				</tr>
-				<%-- 
-				<tr class="sprop">
-					<td colspan="2">
-						<div class="buttons">
-							<g:form>
-								<g:hiddenField name="id" value="${loggedUser?.id}" /> 
-								<g:hiddenField name="user" value="${loggedUser?.id}" /> 
-								<g:hiddenField name="redirect" value="showProfile" />
-								<span class="button">
-									<g:if test="${user?.id==loggedUser?.id}">
-										<g:actionSubmit class="btn btn-success" action="editProfile" value="${message(code: 'default.button.edit.account.label', default: 'Edit profile')}" />
-									</g:if>
-									<g:else>
-										<g:actionSubmit class="btn btn-success" action="editProfile" value="${message(code: 'default.button.edit.account.label', default: 'Edit user profile')}" />
-									</g:else>
+				
+					<tr class="sprop">
+						<td colspan="2">
+							<div class="buttons">
+								<g:form>
+									<g:hiddenField name="id" value="${loggedUser?.id}" /> 
+									<g:hiddenField name="user" value="${loggedUser?.id}" /> 
+									<g:hiddenField name="redirect" value="showProfile" />
 									<span class="button">
-										<g:actionSubmit class="password btn btn-success" action="resetUserPassword" value="${message(code: 'default.button.resetpwd.label', default: 'Reset password')}" 
-										onclick="return confirm('${message(code: 'default.button.resetpwd.account.confirm.message', default: 'Are you sure you want to reset the password?')}');"/>
+										<g:if test="${grailsApplication.config.domeo.dashboard.management.users.disable!='true'}"> 
+											<g:if test="${user?.id==loggedUser?.id}">
+												<g:actionSubmit class="btn btn-success" action="editProfile" value="${message(code: 'default.button.edit.account.label', default: 'Edit profile')}" />
+											</g:if>
+											<g:else>
+												<g:actionSubmit class="btn btn-success" action="editProfile" value="${message(code: 'default.button.edit.account.label', default: 'Edit user profile')}" />
+											</g:else>
+										</g:if>
+										<g:if test="${grailsApplication.config.domeo.dashboard.management.password.disable!='true'}">
+											<span class="button">
+												<g:actionSubmit class="password btn btn-success" action="resetUserPassword" value="${message(code: 'default.button.resetpwd.label', default: 'Change password')}" 
+												onclick="return confirm('${message(code: 'default.button.resetpwd.account.confirm.message', default: 'Are you sure you want to reset the password?')}');"/>
+											</span>
+										</g:if>
 									</span>
-								</span>
-							</g:form>
-						</div>
-					</td>
-				</tr>
-				--%>
+								</g:form>
+							</div>
+						</td>
+					</tr>
+
 			</tbody>
 		</table>
 </fieldset>

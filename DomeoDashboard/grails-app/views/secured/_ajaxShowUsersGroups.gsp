@@ -26,17 +26,17 @@ Stylesheet
 			   		<g:paginate total="1" />
 				</div>
 			</div>
-			<%-- 
-			<div>
-			<span class="button">
-				<g:link class="edit" action="showGroups"  id="${user.id}" style="text-decoration: none;"><img src="${resource(dir: 'images/dashboard', file: 'edit_group.png')}" alt="Manage Groups" />Manage My Groups</g:link>
-			</span>
-			&nbsp;
-			<span class="button">
-				<g:link action="availableGroups" id="${user.id}" style="text-decoration: none;"><img src="${resource(dir: 'images/dashboard', file: 'add_group.png')}" alt="Add Groups" />Enroll in Groups</g:link>
-			</span>
-			</div>
-			--%>
+			<g:if test="${grailsApplication.config.domeo.dashboard.management.groups.disable!='true'}"> 
+				<div>
+				<span class="button">
+					<g:link class="edit" action="showGroups"  id="${user.id}" style="text-decoration: none;"><img src="${resource(dir: 'images/dashboard', file: 'edit_group.png')}" alt="Manage Groups" />Manage My Groups</g:link>
+				</span>
+				&nbsp;
+				<span class="button">
+					<g:link action="availableGroups" id="${user.id}" style="text-decoration: none;"><img src="${resource(dir: 'images/dashboard', file: 'add_group.png')}" alt="Add Groups" />Enroll in Groups</g:link>
+				</span>
+				</div>
+			</g:if>
 		</fieldset> 
 	</div>
 </div>

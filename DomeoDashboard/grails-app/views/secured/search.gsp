@@ -63,7 +63,7 @@ function searchAnnotation(paginationOffset, paginationRange) {
 	var groups = '';
 	$(".groupCheckbox").each(function(i) {
 		if($(this).is(':checked')) 
-			groups += $(this).attr('value') + " ";
+			groups += 'urn:group:uuid:' + $(this).attr('value') + " ";
 	});
 
 	var dataToSend = { 
