@@ -1,0 +1,164 @@
+{
+    "ao:item": [
+        {
+            "pav:createdWith": "urn:domeo:software:id:Domeo-2.0alpha-040",
+            "rdfs:label": "Qualifier",
+            "@type": "ao:Qualifier",
+            "pav:importedBy": "urn:domeo:software:id:NifConnector-0.1-001",
+            "pav:createdBy": "http://nif-services.neuinfo.org/servicesv1/resource_AnnotateService.html",
+            "pav:lastSavedOn": "2014-01-14 15:08:07 -0500",
+            "pav:versionNumber": "",
+            "ao:context": [
+                {
+                    "ao:hasSource": "http://en.wikipedia.org/wiki/Amyloid_precursor_protein",
+                    "@type": "ao:SpecificResource",
+                    "@id": "urn:domeoserver:uuid:36245572-78A7-409B-9442-2B29ECB2D195",
+                    "ao:hasSelector": {
+                        "ao:prefix": "",
+                        "@type": "ao:PrefixSuffixTextSelector",
+                        "@id": "urn:domeoserver:uuid:B8EB16FB-B395-46D4-912F-53917E96E6BD",
+                        "ao:offset": 0,
+                        "pav:createdOn": "2014-01-14 15:08:07 -0500",
+                        "ao:suffix": " (APP) is an integral memb",
+                        "ao:exact": "Amyloid precursor protein"
+                    }
+                }
+            ],
+            "pav:importedFrom": "http://nif-services.neuinfo.org/servicesv1/resource_AnnotateService.html",
+            "ao:hasTopic": [
+                {
+                    "rdfs:label": "Amyloid Precursor Protein",
+                    "dct:description": "",
+                    "@id": "http://uri.neuinfo.org/nif/nifstd/sao1143333050",
+                    "domeo:category": "molecule",
+                    "dct:source": {
+                        "rdfs:label": "NIF ontology",
+                        "@id": "http://uri.neuinfo.org/nif/nifstd/"
+                    }
+                }
+            ],
+            "pav:previousVersion": "",
+            "@id": "urn:domeoserver:uuid:461CBD52-F451-4AC5-A8E0-78DC7D761A39",
+            "pav:createdOn": "2014-01-14 15:08:07 -0500"
+        },
+        {
+            "pav:createdWith": "urn:domeo:software:id:Domeo-2.0alpha-040",
+            "rdfs:label": "Qualifier",
+            "@type": "ao:Qualifier",
+            "pav:importedBy": "urn:domeo:software:id:NifConnector-0.1-001",
+            "pav:createdBy": "http://nif-services.neuinfo.org/servicesv1/resource_AnnotateService.html",
+            "pav:lastSavedOn": "2014-01-14 15:08:07 -0500",
+            "pav:versionNumber": "",
+            "ao:context": [
+                {
+                    "ao:hasSource": "http://en.wikipedia.org/wiki/Amyloid_precursor_protein",
+                    "@type": "ao:SpecificResource",
+                    "@id": "urn:domeoserver:uuid:14605B02-F51C-4400-9F36-290506DCDA41",
+                    "ao:hasSelector": {
+                        "ao:prefix": "Amyloid precursor protein (",
+                        "@type": "ao:PrefixSuffixTextSelector",
+                        "@id": "urn:domeoserver:uuid:11175590-1CB0-4442-B483-94B802317B3D",
+                        "ao:offset": 27,
+                        "pav:createdOn": "2014-01-14 15:08:07 -0500",
+                        "ao:suffix": ") is an integral membrane protein expressed in m",
+                        "ao:exact": "APP"
+                    }
+                }
+            ],
+            "pav:importedFrom": "http://nif-services.neuinfo.org/servicesv1/resource_AnnotateService.html",
+            "ao:hasTopic": [
+                {
+                    "rdfs:label": "APPS",
+                    "dct:description": "",
+                    "@id": "http://uri.neuinfo.org/nif/nifstd/PR_000006023",
+                    "domeo:category": "molecule",
+                    "dct:source": {
+                        "rdfs:label": "NIF ontology",
+                        "@id": "http://uri.neuinfo.org/nif/nifstd/"
+                    }
+                }
+            ],
+            "pav:previousVersion": "",
+            "@id": "urn:domeoserver:uuid:76CF405B-310A-47A8-BC07-52753215D26F",
+            "pav:createdOn": "2014-01-14 15:08:07 -0500"
+        },
+        {
+            "pav:createdWith": "urn:domeo:software:id:Domeo-2.0alpha-040",
+            "rdfs:label": "Qualifier",
+            "@type": "ao:Qualifier",
+            "pav:importedBy": "urn:domeo:software:id:NifConnector-0.1-001",
+            "pav:createdBy": "http://nif-services.neuinfo.org/servicesv1/resource_AnnotateService.html",
+            "pav:lastSavedOn": "2014-01-14 15:08:07 -0500",
+            "pav:versionNumber": "",
+            "ao:context": [
+                {
+                    "ao:hasSource": "http://en.wikipedia.org/wiki/Amyloid_precursor_protein",
+                    "@type": "ao:SpecificResource",
+                    "@id": "urn:domeoserver:uuid:66D003A2-4956-42E3-B83A-E9CC589C8928",
+                    "ao:hasSelector": {
+                        "ao:prefix": "Amyloid precursor protein (APP) is an ",
+                        "@type": "ao:PrefixSuffixTextSelector",
+                        "@id": "urn:domeoserver:uuid:7C317270-5E3A-42DA-8CD1-1DF8C8C6931E",
+                        "ao:offset": 38,
+                        "pav:createdOn": "2014-01-14 15:08:07 -0500",
+                        "ao:suffix": " expressed in many tissues",
+                        "ao:exact": "integral membrane protein"
+                    }
+                }
+            ],
+            "pav:importedFrom": "http://nif-services.neuinfo.org/servicesv1/resource_AnnotateService.html",
+            "ao:hasTopic": [
+                {
+                    "rdfs:label": "Integral membrane protein",
+                    "dct:description": "",
+                    "@id": "http://uri.neuinfo.org/nif/nifstd/nifext_2567",
+                    "domeo:category": "Molecule role",
+                    "dct:source": {
+                        "rdfs:label": "NIF ontology",
+                        "@id": "http://uri.neuinfo.org/nif/nifstd/"
+                    }
+                }
+            ],
+            "pav:previousVersion": "",
+            "@id": "urn:domeoserver:uuid:8D6CA2A3-A54B-4F77-B4E3-36B09248A5D8",
+            "pav:createdOn": "2014-01-14 15:08:07 -0500"
+        }
+    ],
+    "rdfs:label": "Nif Annotator Results",
+    "domeo:agents": [
+        {
+            "foafx:build": "001",
+            "rdfs:label": "Nif Annotator Web Service",
+            "@type": "foafx:Software",
+            "foafx:name": "Nif Annotator Web Service",
+            "@id": "http://nif-services.neuinfo.org/servicesv1/resource_AnnotateService.html",
+            "foafx:version": "1.0"
+        },
+        {
+            "foafx:build": "001",
+            "rdfs:label": "NifConnector",
+            "@type": "foafx:Software",
+            "foafx:name": "NifConnector",
+            "@id": "urn:domeo:software:id:NifConnector-0.1-001",
+            "foafx:version": "0.1"
+        },
+        {
+            "foafx:build": "040",
+            "rdfs:label": "Domeo Annotation Toolkit",
+            "@type": "foafx:Software",
+            "foafx:name": "Domeo",
+            "@id": "urn:domeo:software:id:Domeo-2.0alpha-040",
+            "foafx:version": "2.0alpha"
+        }
+    ],
+    "pav:importedOn": "2014-01-14 15:08:07 -0500",
+    "dct:description": "Generated by NIF annotator service",
+    "@type": "ao:AnnotationSet",
+    "pav:importedBy": "urn:domeo:software:id:NifConnector-0.1-001",
+    "permissions:permissions": {
+        "permissions:isLocked": "false",
+        "permissions:accessType": "urn:domeo:access:public"
+    },
+    "@id": "707038F3-DA07-4B48-9277-A5CC11DC264A",
+    "pav:importedFrom": "http://nif-services.neuinfo.org/servicesv1/resource_AnnotateService.html"
+}

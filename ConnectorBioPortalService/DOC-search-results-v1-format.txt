@@ -1,0 +1,29 @@
+{
+    "pagesize": "3",
+    "pagenumber": "1",
+    "terms": [
+        {
+            "termUri": "http://purl.obolibrary.org/obo/PR_000004615",
+            "description": "BACE1",
+            "termLabel": "beta-secretase 1",
+            "sourceUri": "http://bioportal.bioontology.org/ontologies/1062",
+            "sourceLabel": "Protein Ontology"
+        },
+        {
+            "termUri": "http://ontology.neuinfo.org/NIF/BiomaterialEntities/NIF-Molecule.owl#nlx_mol_20090203",
+            "description": "BACE1",
+            "termLabel": "Beta secretase",
+            "sourceUri": "http://bioportal.bioontology.org/ontologies/1084",
+            "sourceLabel": "Neuroscience Information Framework (NIF) Standard Ontology"
+        },
+        {
+            "termUri": "http://purl.obolibrary.org/obo/PR_000019112",
+            "description": "BACE1/ClvPrd",
+            "termLabel": "beta-secretase 1 proteolytic cleavage product",
+            "sourceUri": "http://bioportal.bioontology.org/ontologies/1062",
+            "sourceLabel": "Protein Ontology"
+        }
+    ],
+    "totalpages": "1",
+    "requesturi": "http://rest.bioontology.org/bioportal/search/?query=bace1&apikey=fef6b9da-4b3b-46d2-9d83-9a1a718f6a22&ontologyids=1062,1070,1009,1084"
+}
