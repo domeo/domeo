@@ -61,7 +61,7 @@ class BioPortalConnectorController {
 	 */
 	def search = {
 		String apikey = grailsApplication.config.domeo.plugins.connector.bioportal.apikey;
-		String textQuery = params.query;
+		String textQuery = params.textQuery;
 		String ontologies = params.ontologies;
 		String pageNumber = (params.pagenumber?params.pagenumber:1);
 		String pageSize = (params.pagesize?params.pagesize:50);
@@ -77,12 +77,12 @@ class BioPortalConnectorController {
 	 * http://data.bioontology.org/annotator?max_level=0&text=Melanoma+is+a+malignant+tumor+of+melanocytes+which+are+found+predominantly+in+skin+but+also+in+the+bowel+and+the+eye.&apikey=fef6b9da-4b3b-46d2-9d83-9a1a718f6a22&minimum_match_length=0&ontologies=1070,1084,1009,1062&mappingTypes=Manual
 	 * 
 	 * http://localhost:8080/ConnectorBioPortalService/bioPortalConnector/annotate?text=Melanoma+is+a+malignant+tumor+of+melanocytes+which+are+found+predominantly+in+melanoma+skin+but+also+in+the+bowel+and+the+eye.
-	 * http://localhost:8080/ConnectorBioPortalService/bioPortalConnector/annotate?t=Melanoma+is+a+malignant+tumor+of+melanocytes+which+are+found+predominantly+in+skin+but+also+in+the+bowel+and+the+eye.
+	 * http://localhost:8080/ConnectorBioPortalService/bioPortalConnector/annotate?text=Melanoma+is+a+malignant+tumor+of+melanocytes+which+are+found+predominantly+in+skin+but+also+in+the+bowel+and+the+eye.
 	 */
 	def annotate = {
 		String url = params.url;
 		String apikey = grailsApplication.config.domeo.plugins.connector.bioportal.apikey;
-		String textContent = params.text;
+		String textContent = params.textContent;
 		String ontologies = params.ontologies;
 		
 		def parametrization = [:];
@@ -95,9 +95,11 @@ class BioPortalConnectorController {
 		if(params.minimum_match_length) parametrization.put("minimum_match_length", params.minimum_match_length);
 	
 		try {
-			JSONObject jsonResult = jsonBioPortalVocabulariesService.annotate(url, apikey, DEFAULT_ANNOTATOR_ONTOLOGIES, textContent, parametrization);
+			JSONObject jsonResult = jsonBioPortalVocabulariesService.annotate(apikey, url, DEFAULT_ANNOTATOR_ONTOLOGIES, textContent, parametrization);
 			render(contentType:'text/json', encoding:MiscUtils.DEFAULT_ENCODING,  text: jsonResult.toString());
 		} catch(Exception e) {
+		
+			println 'yolo ' + e
 //			mailingService.notifyProblemByEmail("BioPortal Annotator", "[apikey:"+ apikey + ", url:"+ url +
 //				", ontologies:" + ontologies + ", textContent:"+ textContent + "] " + e.getMessage());
 			render(status: "500", text: "BioPortal annotator endpoint: " + e.getMessage());

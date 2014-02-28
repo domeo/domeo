@@ -20,6 +20,8 @@
  */
 package org.mindinformatics.services.connector.bioportal.services
 
+import java.text.SimpleDateFormat;
+
 import groovyx.net.http.ContentType
 import groovyx.net.http.EncoderRegistry
 import groovyx.net.http.HTTPBuilder
@@ -31,6 +33,12 @@ import org.codehaus.groovy.grails.web.json.JSONObject
 import org.mindinformatics.domeo.grails.plugins.utils.ConnectorHttpResponseException
 import org.mindinformatics.domeo.grails.plugins.utils.MiscUtils
 import org.mindinformatics.services.connector.bioportal.BioPortalAnnotatorRequestParameters
+import org.mindinformatics.services.connector.utils.IOAccessRestrictions
+import org.mindinformatics.services.connector.utils.IODublinCoreTerms
+import org.mindinformatics.services.connector.utils.IOJsonLd
+import org.mindinformatics.services.connector.utils.IOPav
+import org.mindinformatics.services.connector.utils.IORdfs
+
 
 /**
  * @author Paolo Ciccarese <paolo.ciccarese@gmail.com>
@@ -40,6 +48,7 @@ class JsonBioPortalVocabulariesService {
 	
 		def grailsApplication;
 		def domeoConfigAccessService;
+		def jsonBioPortalAnnotatorResultsConverterV1Service;
 	
 		final static APIKEY = "?apikey=";
 		final static QUERY = "&q=";
@@ -90,7 +99,7 @@ class JsonBioPortalVocabulariesService {
 					json.each {  // iterate over JSON 'status' object in the response:
 						//println it
 						println '*****************************************'
-						println it;
+						//println it;
 						/*
 						println it.getValue().getClass().getName();
 						println it.getValue().names();
@@ -172,6 +181,9 @@ class JsonBioPortalVocabulariesService {
         
         String ontos = parseOntologiesIds(ontologies);
           
+		println apikey
+		println query
+		
 		String uri = 'http://data.bioontology.org/search' + 
 			APIKEY + apikey + 
 			QUERY + URLEncoder.encode(query, MiscUtils.DEFAULT_ENCODING)  +
@@ -224,7 +236,9 @@ class JsonBioPortalVocabulariesService {
 							element.put("termUri", it['@id']);
 							element.put("termLabel", it.prefLabel);
 							if(it.definition!=null) element.put("description", it.definition[0]);
+							println '------ ' + it.links.ontology;
 							element.put("sourceUri", it.links.ontology);
+							element.put("sourceLabel", it.links.ontology);
 							//element.put("description", it.links.ontology);
 							//element.put("IAO:IAO_0000115", it.definition);
 							
@@ -297,25 +311,36 @@ class JsonBioPortalVocabulariesService {
 		return jsonResponse;
 	}
 	
-	public JSONObject annotate(String url, String apikey, String[] ontologies, String text, def parametrization) { // throws AnnotatorException {
+	public JSONObject annotate(String apikey, String url, String[] ontologies, final String text, def parametrization) { // throws AnnotatorException {
+		println '=0'
+		
 		BioPortalAnnotatorRequestParameters params = defaultParams();
 		params.apikey = apikey
 		params.text = URLEncoder.encode(text, MiscUtils.DEFAULT_ENCODING);
 		params.ontologies = ontologies
+		
+		println '0'
+		
 		if(parametrization.getAt("minimum_match_length")!=null) 
 			params.minimum_match_length = new Integer(parametrization.getAt("minimum_match_length"));
 		if(parametrization.getAt("max_level")!=null)
 			params.max_level = new Integer(parametrization.getAt("max_level"));
 
+			println '1'
+			
 		String ontos = parseOntologiesIds(ontologies);
 		String uri = 'http://data.bioontology.org/annotator' + params.toParameterString();
 		  
+		println '2'
+		
 		log.info("Annotate with URI: " + uri);
 		if(domeoConfigAccessService.isProxyDefined()) {
 			log.info("proxy: " + domeoConfigAccessService.getProxyIp() + "-" + domeoConfigAccessService.getProxyPort());
 		} else {
 		   	log.info("NO PROXY selected while accessing " + uri);
 		}
+		
+		println '3'
 			  
 	  	JSONObject jsonResponse = new JSONObject();
 	  	try {
@@ -331,8 +356,6 @@ class JsonBioPortalVocabulariesService {
 			  if(domeoConfigAccessService.isProxyDefined()) {
 				  http.client.getParams().setParameter(ConnRoutePNames.DEFAULT_PROXY, domeoConfigAccessService.getProxyHttpHost());
 			  }
-		  
-			 
 			  
 			  // perform a POST request, expecting TEXT response
 			  http.request(Method.GET, ContentType.JSON) {
@@ -343,18 +366,19 @@ class JsonBioPortalVocabulariesService {
 						  println json.size();
 						  
 						  json.eachWithIndex { annotation, i ->
-							  println i + "- " + annotation.annotations
+							  //println i + "- " + annotation.annotations
 							  def annotations = annotation.annotations;
 							  
-							  println i + "- " + annotation.annotatedClass["@id"]
+							  //println i + "- " + annotation.annotatedClass["@id"]
 							  def conceptId = annotation.annotatedClass["@id"]
-							  println i + "- " + annotation.annotatedClass.links.ontology
+							  //println i + "- " + annotation.annotatedClass.links.ontology
 							  def ontologyId = annotation.annotatedClass.links.ontology
 							  
 							  annotations.each{ ann ->
-								  println conceptId + " - " + ontologyId + " - " + ann;
+								  //println conceptId + " - " + ontologyId + " - " + ann;
 							  }
-							  
+							  jsonResponse = jsonBioPortalAnnotatorResultsConverterV1Service.convert(url, text, json);
+							  if (i>3) return;
 						  }
 					  } else {
 					  
@@ -394,14 +418,17 @@ class JsonBioPortalVocabulariesService {
 	  	} catch (java.net.ConnectException ex) {
 		  	log.error("ConnectException: " + ex.getMessage())
 		  	throw new RuntimeException(ex);
+	  	} catch (Exception ex) {
+		  	log.error("Exception: " + ex.getMessage())
+		  	throw new RuntimeException(ex);
 	  	}
-		return new JSONObject();
+		return jsonResponse;
 	}
 	
 	BioPortalAnnotatorRequestParameters defaultParams(){
-		BioPortalAnnotatorRequestParameters params = new BioPortalAnnotatorRequestParameters()
-		params.mappingTypes = ['Manual'] as Set
-		params
+		BioPortalAnnotatorRequestParameters pars = new BioPortalAnnotatorRequestParameters()
+		pars.mappingTypes = ['Manual'] as Set
+		pars
 	}
 	
 	private String parseOntologiesIds(def ontologies) {
@@ -413,4 +440,17 @@ class JsonBioPortalVocabulariesService {
 		}
 		return ontos.toString();
 	}
+	
+	/*
+	"pav:importedOn": "2014-01-14 15:08:07 -0500",
+	"dct:description": "Generated by NIF annotator service",
+	"@type": "ao:AnnotationSet",
+	"pav:importedBy": "urn:domeo:software:id:NifConnector-0.1-001",
+	"permissions:permissions": {
+		"permissions:isLocked": "false",
+		"permissions:accessType": "urn:domeo:access:public"
+	},
+	"@id": "707038F3-DA07-4B48-9277-A5CC11DC264A",
+	"pav:importedFrom": "http://nif-services.neuinfo.org/servicesv1/resource_AnnotateService.html"
+	*/
 }

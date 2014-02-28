@@ -169,6 +169,7 @@ grails.plugin.springsecurity.rememberMe.persistent = true
 grails.plugin.springsecurity.rememberMe.persistentToken.domainClassName = 'org.mindinformatics.grails.domeo.dashboard.security.PersistentLogin'
 grails.plugin.springsecurity.securityConfigType = "Annotation"
 grails.plugin.springsecurity.password.algorithm = 'bcrypt' // Default since spring-security-core:2.0-RC2
+
 // http://grails-plugins.github.io/grails-spring-security-core/docs/manual/guide/newInV2.html
 grails.plugin.springsecurity.logout.postOnly = false
 
@@ -202,7 +203,9 @@ grails.plugin.springsecurity.controllerAnnotations.staticRules = [
 	'/ajaxDashboard/**': ['ROLE_ADMIN', 'ROLE_MANAGER', 'ROLE_USER'],
 	'/retrievePmcImagesData/**': ['ROLE_ADMIN', 'ROLE_MANAGER', 'ROLE_USER'],
 	'/pubmed/**': ['permitAll'],
+	'/ncbo/**': ['permitAll'],
 	'/public/**': ['permitAll'],
+	'/api/**': ['permitAll'],
 	'/index': ['ROLE_ADMIN'],
 	'/errors/**': ['ROLE_ADMIN', 'ROLE_MANAGER', 'ROLE_USER'],
 	'/yaleImageFinder/**': ['ROLE_ADMIN', 'ROLE_MANAGER', 'ROLE_USER'],
