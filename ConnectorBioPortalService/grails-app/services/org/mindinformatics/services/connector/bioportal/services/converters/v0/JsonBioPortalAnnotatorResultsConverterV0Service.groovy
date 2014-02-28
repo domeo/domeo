@@ -100,9 +100,9 @@ class JsonBioPortalAnnotatorResultsConverterV0Service {
 				
 				JSONObject specificTarget = new JSONObject();
 				specificTarget.put(IOJsonLd.jsonLdId, URN_SPECIFIC_RESOURCE_PREFIX + org.mindinformatics.services.connector.utils.UUID.uuid());
-				specificTarget.put(IOJsonLd.jsonLdType, IOOpenAnnotation.SpecificResource);
-				specificTarget.put(IOOpenAnnotation.hasSource, snippetUrn);
-				specificTarget.put(IOOpenAnnotation.hasSelector, findOrCreateAndSaveSelectorUsingStringSearch(text, annotation.text, annotation.from, annotation.to));
+				specificTarget.put(IOJsonLd.jsonLdType, "ao:SpecificResource");
+				specificTarget.put("ao:hasSource", snippetUrn);
+				specificTarget.put("ao:hasSelector", findOrCreateAndSaveSelectorUsingStringSearch(text, annotation.text, annotation.from, annotation.to));
 				
 				ann.put("oa:context", specificTarget);
 				annotations.add(annotations.size(), ann);
@@ -122,11 +122,11 @@ class JsonBioPortalAnnotatorResultsConverterV0Service {
 
 		JSONObject selector = new JSONObject();
 		selector.put(IOJsonLd.jsonLdId, URN_SELECTOR_PREFIX + org.mindinformatics.services.connector.utils.UUID.uuid());
-		selector.put(IOJsonLd.jsonLdType, IOOpenAnnotation.TextQuoteSelector);
+		selector.put(IOJsonLd.jsonLdType, "ao:PrefixSuffixTextSelector");
 		selector.put(IOPav.createdOn, dateFormat.format(new Date()));
-		selector.put(IOOpenAnnotation.prefix, matchInfo.prefix);
-		selector.put(IOOpenAnnotation.exact, matchInfo.exact);
-		selector.put(IOOpenAnnotation.suffix, matchInfo.suffix);
+		selector.put("ao:prefix", matchInfo.prefix);
+		selector.put("ao:exact", matchInfo.exact);
+		selector.put("ao:suffix", matchInfo.suffix);
 		return selector;
 	}
 	
