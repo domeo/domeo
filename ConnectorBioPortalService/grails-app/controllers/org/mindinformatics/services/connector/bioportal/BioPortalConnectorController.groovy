@@ -76,8 +76,8 @@ class BioPortalConnectorController {
 	 * Generates 404
 	 * http://data.bioontology.org/annotator?max_level=0&text=Melanoma+is+a+malignant+tumor+of+melanocytes+which+are+found+predominantly+in+skin+but+also+in+the+bowel+and+the+eye.&apikey=fef6b9da-4b3b-46d2-9d83-9a1a718f6a22&minimum_match_length=0&ontologies=1070,1084,1009,1062&mappingTypes=Manual
 	 * 
-	 * http://localhost:8080/ConnectorBioPortalService/bioPortalConnector/annotate?text=Melanoma+is+a+malignant+tumor+of+melanocytes+which+are+found+predominantly+in+melanoma+skin+but+also+in+the+bowel+and+the+eye.
-	 * http://localhost:8080/ConnectorBioPortalService/bioPortalConnector/annotate?text=Melanoma+is+a+malignant+tumor+of+melanocytes+which+are+found+predominantly+in+skin+but+also+in+the+bowel+and+the+eye.
+	 * http://localhost:8080/ConnectorBioPortalService/bioPortalConnector/annotate?textContent=Melanoma+is+a+malignant+tumor+of+melanocytes+which+are+found+predominantly+in+melanoma+skin+but+also+in+the+bowel+and+the+eye.
+	 * http://localhost:8080/ConnectorBioPortalService/bioPortalConnector/annotate?textContent=Melanoma+is+a+malignant+tumor+of+melanocytes+which+are+found+predominantly+in+skin+but+also+in+the+bowel+and+the+eye.
 	 */
 	def annotate = {
 		String url = params.url;
