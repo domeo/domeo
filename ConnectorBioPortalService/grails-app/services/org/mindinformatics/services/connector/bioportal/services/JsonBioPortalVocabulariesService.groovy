@@ -48,6 +48,7 @@ class JsonBioPortalVocabulariesService {
 	
 		def grailsApplication;
 		def domeoConfigAccessService;
+		def jsonBioPortalAnnotatorResultsConverterV0Service;
 		def jsonBioPortalAnnotatorResultsConverterV1Service;
 	
 		final static APIKEY = "?apikey=";
@@ -99,7 +100,7 @@ class JsonBioPortalVocabulariesService {
 					json.each {  // iterate over JSON 'status' object in the response:
 						//println it
 						println '*****************************************'
-						//println it;
+						println it;
 						/*
 						println it.getValue().getClass().getName();
 						println it.getValue().names();
@@ -377,8 +378,7 @@ class JsonBioPortalVocabulariesService {
 							  annotations.each{ ann ->
 								  //println conceptId + " - " + ontologyId + " - " + ann;
 							  }
-							  jsonResponse = jsonBioPortalAnnotatorResultsConverterV1Service.convert(url, text, json);
-							  if (i>3) return;
+							  jsonResponse = jsonBioPortalAnnotatorResultsConverterV0Service.convert(url, text, json);
 						  }
 					  } else {
 					  
