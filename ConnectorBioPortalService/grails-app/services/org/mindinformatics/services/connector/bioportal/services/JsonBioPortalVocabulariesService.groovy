@@ -46,6 +46,9 @@ import org.mindinformatics.services.connector.utils.IORdfs
 class JsonBioPortalVocabulariesService {
 	static transactional = false
 	
+		final static ONTS1 = ["PR":"http://data.bioontology.org/ontologies/PR", "NIFSTD":"http://data.bioontology.org/ontologies/NIFSTD"] 
+		final static ONTS2 = ["http://data.bioontology.org/ontologies/PR":"PR - Protein Ontology", "http://data.bioontology.org/ontologies/NIFSTD":"Neuroscience Information Framework (NIF) Standard Ontology"]
+	
 		def grailsApplication;
 		def domeoConfigAccessService;
 		def jsonBioPortalAnnotatorResultsConverterV0Service;
@@ -179,8 +182,8 @@ class JsonBioPortalVocabulariesService {
 		}
 		
 	public JSONObject search(String apikey, String query, def ontologies, def pageNumber, def pageSize) {  
-        
-        String ontos = parseOntologiesIds(ontologies);
+        println ONTS1
+        String ontos = parseOntologiesIds(ONTS1.keySet());
           
 		println apikey
 		println query
@@ -239,7 +242,7 @@ class JsonBioPortalVocabulariesService {
 							if(it.definition!=null) element.put("description", it.definition[0]);
 							println '------ ' + it.links.ontology;
 							element.put("sourceUri", it.links.ontology);
-							element.put("sourceLabel", it.links.ontology);
+							element.put("sourceLabel", ONTS2.get(it.links.ontology));
 							//element.put("description", it.links.ontology);
 							//element.put("IAO:IAO_0000115", it.definition);
 							
@@ -312,6 +315,24 @@ class JsonBioPortalVocabulariesService {
 		return jsonResponse;
 	}
 	
+	public JSONObject retrieveTerms(Map terms) {
+	
+		JSONArray collection = new JSONArray();
+		terms.keySet().each {
+			JSONObject term = new JSONObject();
+			term.put("class", it);
+			term.put("ontology", terms.get(it));
+			collection.add(term);
+		}
+		
+		JSONObject messageRequest = new JSONObject();
+		messageRequest.put( "collection", collection)
+		messageRequest.put( "include", "prefLabel,synonym,semanticTypes")
+		
+		JSONObject wrapper = new JSONObject();
+		wrapper.put("http://www.w3.org/2002/07/owl#Class", messageRequest);
+	}
+	
 	public JSONObject annotate(String apikey, String url, String[] ontologies, final String text, def parametrization) { // throws AnnotatorException {
 		println '=0'
 		
@@ -329,8 +350,10 @@ class JsonBioPortalVocabulariesService {
 
 			println '1'
 			
-		String ontos = parseOntologiesIds(ontologies);
-		String uri = 'http://data.bioontology.org/annotator' + params.toParameterString();
+		String ontos = parseOntologiesIds(ONTS1.keySet());
+		//String ontos = parseOntologiesIds(ontologies);
+		String uri = 'http://data.bioontology.org/annotator' + params.toParameterString() +
+		ONTOLOGIES + ((!ontos.isEmpty())?(ONTOLOGIES + ontos):'');
 		  
 		println '2'
 		
@@ -378,7 +401,7 @@ class JsonBioPortalVocabulariesService {
 							  annotations.each{ ann ->
 								  //println conceptId + " - " + ontologyId + " - " + ann;
 							  }
-							  jsonResponse = jsonBioPortalAnnotatorResultsConverterV0Service.convert(url, text, json);
+							  jsonResponse = jsonBioPortalAnnotatorResultsConverterV0Service.convert(apikey, url, text, json);
 						  }
 					  } else {
 					  

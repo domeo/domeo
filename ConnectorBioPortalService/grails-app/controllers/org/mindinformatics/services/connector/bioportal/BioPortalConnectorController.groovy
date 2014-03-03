@@ -57,7 +57,8 @@ class BioPortalConnectorController {
 	/*
 	 * http://data.bioontology.org/documentation#nav_search
 	 * 
-	 * http://localhost:8080/ConnectorBioPortalService/bioPortalConnector/search?query=APP
+	 * http://localhost:8080/ConnectorBioPortalService/bioPortalConnector/search?textQuery=process&pagenumber=1
+	 * http://localhost:8080/ConnectorBioPortalService/bioPortalConnector/search?textQuery=app&pagenumber=1
 	 */
 	def search = {
 		String apikey = grailsApplication.config.domeo.plugins.connector.bioportal.apikey;
