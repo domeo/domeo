@@ -19,7 +19,7 @@ class UrlMappings {
 		
 		"/pubmed/$action?/$id" (controller:"/pubmed")
 		
-		//"/bioPortal/$action" (controller:"/bioPortal")
+		//"/ncbo/$action" (controller:"/bioPortal")
 		"/ncbo/textmine" (controller:"/bioPortalConnector", action: "/annotate")
 		"/ncbo/$action" (controller:"/bioPortalConnector")
 		
@@ -58,7 +58,7 @@ class UrlMappings {
 		"/specs" (view:"/index")
  
 		"/" {
-			controller = 'secure'
+			controller = 'secured'
 			action = 'index'
 		}
 		"500"(view:'/error')
