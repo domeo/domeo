@@ -182,6 +182,7 @@ grails.plugin.springsecurity.openid.domainClass = 'org.mindinformatics.grails.do
 // grails.plugins.springsecurity.providerNames = ['daoAuthenticationProvider', 'ldapAuthProvider', 'rememberMeAuthenticationProvider']
 grails.plugin.springsecurity.controllerAnnotations.staticRules = [
 	'/secure/**': ['ROLE_ADMIN', 'ROLE_MANAGER', 'ROLE_USER'],
+	'/share/**': ['ROLE_ADMIN', 'ROLE_MANAGER', 'ROLE_USER'],
 	'/secured/**': ['ROLE_ADMIN', 'ROLE_MANAGER', 'ROLE_USER'],
 	'/web/domeo': ['ROLE_ADMIN', 'ROLE_MANAGER', 'ROLE_USER'],
 	'/web/pdf': ['ROLE_ADMIN', 'ROLE_MANAGER', 'ROLE_USER'],
