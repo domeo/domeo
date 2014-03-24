@@ -54,6 +54,12 @@ function getURLParameter(name) {
     return decodeURIComponent((new RegExp('[?|&]' + name + '=' + '([^&;]+?)(&|#|;|$)').exec(location.search)||[,""])[1].replace(/\+/g, '%20'))||null;
 }
 
+function loadData(url) {
+	//loadAnnotationSets(url, paginationOffset, paginationRange);
+	document.location = '${appBaseUrl}/secured/annotationSetsByUrl?url=' + encodeURIComponent(url);
+}
+
+
 function searchAnnotation(event, paginationOffset, paginationRange) {
 	console.log('1');
 	if(event) {
