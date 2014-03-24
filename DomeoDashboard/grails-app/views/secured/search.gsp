@@ -22,10 +22,8 @@ $(document).ready(function() {
 	    }
 	});
 
-	//$("#publicFilter").attr('checked', true);
-	//$("#privateFilter").attr('checked', true);
-
-	
+	$('#publicFilter').prop('checked', true);
+	$('#privateFilter').prop('checked', true);
 	
 	try {
 		$("#domeoSearch form").submit(function(e) {
@@ -35,7 +33,6 @@ $(document).ready(function() {
 	} catch(e) {
 		alert(e);
 	}
-	//alert('ready');
 
 	if('${query}') {
 		$('#queryField').val(decodeURI('${query}'));
