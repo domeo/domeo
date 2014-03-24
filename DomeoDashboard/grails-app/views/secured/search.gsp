@@ -61,11 +61,9 @@ function loadData(url) {
 
 
 function searchAnnotation(event, paginationOffset, paginationRange) {
-	console.log('1');
 	if(event) {
 		event.preventDefault();
 	}
-	console.log('2');
 	
 	var query = $('#queryField').val();
 	if(!query) {
@@ -224,7 +222,7 @@ function getProvenanceCreator(item) {
 }
 
 function getProvenanceDate(item) {
-	return 'Last saved on ' + item.createdOn + ' with v. ' + item.versionNumber;
+	return 'Last saved on ' + item.annotationSetIndex.createdOn + ' with v. ' + item.annotationSetIndex.versionNumber;
 }
 
 function getStats(item) {
