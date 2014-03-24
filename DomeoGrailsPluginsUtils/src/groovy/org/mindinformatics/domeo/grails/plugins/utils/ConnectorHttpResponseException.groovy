@@ -37,6 +37,13 @@ class ConnectorHttpResponseException extends RuntimeException implements Seriali
 		this.response = response
 		this.code = code
 	}
+	
+	ConnectorHttpResponseException(HttpResponse response, String message){
+		super(message)
+		
+		this.response = response
+		this.code = code
+	}
 //	
 //	String getMessage(){
 //		String theMessage =""
