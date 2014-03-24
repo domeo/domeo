@@ -207,6 +207,41 @@ function getStats(item) {
 	return "<span style='font-size:18px; padding-right: 5px;'>" + item.annotationSetIndex.size + "</span>" + (item.annotationSetIndex.size!=1?'items':'item') + displayLock(item.isLocked);
 }
 
+function edit(annotationId, url) {
+	document.location = '${appBaseUrl}/web/domeo?url=' + encodeURIComponent(url) + '&setId=' + encodeURIComponent(annotationId);
+}
+
+function display(userId) {
+	document.location = '${appBaseUrl}/secure/user/' + userId;
+}
+
+function displayUser(userId) {
+	document.location = '${appBaseUrl}/secure/user/' + userId;
+}
+
+function displaySet(annotationUri) {
+	document.location = '${appBaseUrl}/secured/annotationSet/' + encodeURIComponent(annotationUri);
+}
+
+function displayHistory(annotationSetUri) {
+	document.location = '${appBaseUrl}/secured/annotationSetHistory/' + encodeURIComponent(annotationSetUri);
+}
+
+function displayShare(annotationId) {
+	open_in_new_tab('${appBaseUrl}/share/set/' + encodeURIComponent(annotationId));
+}
+
+function displayByUrlShare(url) {
+	open_in_new_tab('${appBaseUrl}/share/sets/?url=' + encodeURIComponent(url));
+}
+
+function open_in_new_tab(url)
+{
+  var win=window.open(url, '_blank');
+  win.focus();
+}
+
+
 function displayLock(lock) {
 	if(lock=='true') {
 		return ", <img id=\"groupsSpinner\" src=\"${resource(dir:'images/secure',file:'lock16x16.png',plugin:'users-module')}\" /> Locked"
