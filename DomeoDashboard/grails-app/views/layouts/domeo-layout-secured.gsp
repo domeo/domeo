@@ -6,6 +6,7 @@
 <!--[if (gt IE 9)|!(IE)]><!--> <html lang="en" class="no-js"><!--<![endif]-->
 <head>
 	<g:render template="/public/shared/meta" />
+	<link rel="shortcut icon" href="${resource(dir: 'images/public', file: 'domeo.ico')}" type="image/x-icon">
 	
 	<link rel="stylesheet" href="${resource(dir: 'css/shared', file: 'reset.css', plugin: 'af-shared')}" type="text/css">
 	<link rel="stylesheet" href="${resource(dir: 'css/navigation', file: 'bootstrap.css')}" type="text/css">
