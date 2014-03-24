@@ -12,12 +12,20 @@
 $(document).ready(function() {
 	//hideBasicInfoComponents();
 	
+	console.log(getURLParameter('query'));
+	console.log(getURLParameter('offset'));
+
+	console.log('${query}');
+	console.log('${offset}');
+	
 	$('#queryField').bind("enterKey",function(e){
-	   searchAnnotation();
+		e.preventDefault();
+	    searchAnnotation();
 	});
 	$('#queryField').keyup(function(e){
 	    if(e.keyCode == 13)
 	    {
+	    	e.preventDefault();
 	        searchAnnotation();
 	    }
 	});
@@ -37,25 +45,34 @@ $(document).ready(function() {
 	if('${query}') {
 		$('#queryField').val(decodeURI('${query}'));
 		var offset = ('${offset}'.length>0?'${offset}':0);
-		if($('#queryField').val() && ${offset}>0) searchAnnotation(${offset});
+		if($('#queryField').val() && ${offset}>0) searchAnnotation(null,${offset});
 		else searchAnnotation();
 	}
 });
 
-function searchAnnotation(paginationOffset, paginationRange) {
+function getURLParameter(name) {
+    return decodeURIComponent((new RegExp('[?|&]' + name + '=' + '([^&;]+?)(&|#|;|$)').exec(location.search)||[,""])[1].replace(/\+/g, '%20'))||null;
+}
+
+function searchAnnotation(event, paginationOffset, paginationRange) {
+	console.log('1');
+	if(event) {
+		event.preventDefault();
+	}
+	console.log('2');
+	
 	var query = $('#queryField').val();
 	if(!query) {
 		alert('No search criteria defined!');
 		return
 	}
 
-	//alert($("#publicFilter").val());
-	
 	// Modify the url
-	var url = "home?query="+encodeURI(query);
+	var url = "search?query="+encodeURI(query);
 	if(paginationOffset) url = url + "&offset=" + paginationOffset;
 	if(paginationRange) url = url + "&range=" + paginationRange;
-	window.history.pushState("", "", encodeURI(url));
+	window.history.pushState({query: query}, "Domeo search: " + query, encodeURI(url));
+	
 
 	var groups = '';
 	$(".groupCheckbox").each(function(i) {
@@ -66,7 +83,7 @@ function searchAnnotation(paginationOffset, paginationRange) {
 	var dataToSend = { 
 		userId: '${loggedUser.id}', 
 		query: query,
-		paginationOffset: paginationOffset, 
+		paginationOffset: paginationOffset?paginationOffset:'', 
 		paginationRange: paginationRange, 
 		permissionsPublic: $("#publicFilter").is(':checked'), 
 		permissionsGroups: (groups.length>0?true:false), 
@@ -75,11 +92,14 @@ function searchAnnotation(paginationOffset, paginationRange) {
 		agentHuman: $("#agentHuman").attr('checked')!==undefined, 
 		agentSoftware: $("#agentSoftware").attr('checked')!==undefined, 
 	};
-	
+
+	console.log(dataToSend);
 	$("#progressIcon").show();
 	$("#resultsList").html("");
 	$('.resultsPaginationTop').empty();
 	$('.resultsPaginationBottom').empty(); 
+
+	JSON.stringify(dataToSend)
 	
 	var savingRequest = $.ajax({
 		type: "POST",
@@ -88,13 +108,14 @@ function searchAnnotation(paginationOffset, paginationRange) {
 		url: "${request.getContextPath()}/ajaxPersistence/searchAnnotationSets",
 		data: JSON.stringify(dataToSend)
 	}).done(function( data ) {
+
 		$("#progressIcon").hide();
-		
 		$("#resultsList").html("");
 		$('.resultsPaginationTop').empty();
 		$('.resultsPaginationBottom').empty(); 
 		
-
+		
+		
 		if(data.annotationListItemWrappers.length==0) {
 			$('#resultsList').append("No results<br/>");
 		} 
@@ -123,8 +144,8 @@ function searchAnnotation(paginationOffset, paginationRange) {
 		var paginationHtml = '';
   		//var paginationHtml = '<a href="#" class="page">first</a>';
   		for(var x=0; x<numberButtons; x++) {
-	  		if(x==currentPage) paginationHtml += '<a href="#" class="page active">' + (x+1) + '</a>';
-	  		else paginationHtml += '<a href="#" class="page" onclick="searchAnnotation(' + (x*data.paginationRange)+ ')"">' + (x+1) + '</a>';
+	  		if(x==currentPage) paginationHtml += '<a href="" class="page active" onclick="return false;">' + (x+1) + '</a>';
+	  		else paginationHtml += '<a href="" class="page" onclick="searchAnnotation(event,' + (x*data.paginationRange)+ ')";return false;>' + (x+1) + '</a>';
 	  	}
 
   		$('.resultsPaginationTop').append(paginationHtml);	  		

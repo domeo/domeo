@@ -90,7 +90,10 @@ class SecuredController {
 			offset = params.offset;
 		}
 		
-		render(view:'search', model:[menuitem: 'home', loggedUser: loggedUser, appBaseUrl: request.getContextPath(),
+		println '>>>>>>>>>>>>>>>> ' + params.query
+		println '>>>>>>>>>>>>>>>> ' + params.offset
+		
+		render(view:'search', model:[menuitem: 'search', loggedUser: loggedUser, appBaseUrl: request.getContextPath(),
 			loggedUserRoles: usersManagementService.getUserRoles(loggedUser),
 			userGroups: usersManagementService.getUserGroups(loggedUser),
 			query: params.query, offset: offset, params: params]);
