@@ -228,15 +228,15 @@
 
 	</style>
 
-<g:render template="/secure/components/domeo-overlay-scripts" />
-<g:render template="/secure/components/domeo-agents-scripts" />
-<g:render template="/secure/components/domeo-tags-scripts" />
-<g:render template="/secure/components/domeo-references-scripts" />
-<g:render template="/secure/components/domeo-annotations-scripts" />
-<g:render template="/secure/components/domeo-annotations-on-annotation-scripts" />
-<g:render template="/secure/components/domeo-annotations-qualifiers-scripts" />
-<g:render template="/secure/components/domeo-annotations-antibodies-scripts" />
-<g:render template="/secure/components/domeo-annotations-micropublications-scripts" />
+<g:render template="/secured/components/domeo-overlay-scripts" />
+<g:render template="/secured/components/domeo-agents-scripts" />
+<g:render template="/secured/components/domeo-tags-scripts" />
+<g:render template="/secured/components/domeo-references-scripts" />
+<g:render template="/secured/components/domeo-annotations-scripts" />
+<g:render template="/secured/components/domeo-annotations-on-annotation-scripts" />
+<g:render template="/secured/components/domeo-annotations-qualifiers-scripts" />
+<g:render template="/secured/components/domeo-annotations-antibodies-scripts" />
+<g:render template="/secured/components/domeo-annotations-micropublications-scripts" />
 
 <script type="text/javascript">
 
