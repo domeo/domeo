@@ -27,8 +27,10 @@
 <script type="text/javascript">
 
 function processMicroPublication(annotation) {
-	for(var j=0; j<annotation.body[0]['mp:argues']['mp:qualifiedBy'].length;j++) {
-		addTag(annotation.body[0]['mp:argues']['mp:qualifiedBy'][j]['reif:resource']);
+	if(annotation.body[0]['mp:argues']['mp:qualifiedBy']) {
+		for(var j=0; j<annotation.body[0]['mp:argues']['mp:qualifiedBy'].length;j++) {
+			addTag(annotation.body[0]['mp:argues']['mp:qualifiedBy'][j]['reif:resource']);
+		}
 	}
 	if(annotation.body[0]['mp:argues']['mp:supportedBy']) {
 		for(var j=0; j<annotation.body[0]['mp:argues']['mp:supportedBy'].length;j++) {
