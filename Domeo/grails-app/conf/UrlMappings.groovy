@@ -52,7 +52,7 @@ class UrlMappings {
 		
 		
 		"/secure/" {
-			controller = 'secure'
+			controller = 'secured'
 			action = 'index'
 		}
 		"/specs" (view:"/index")
