@@ -558,9 +558,10 @@ class PersistenceController {
 					if(grailsApplication.config.domeo.bibliography.management.enabled) {
 						println '##################################bibliography enabled'
 						def resources = JSON_SET['domeo:resources'];
+						def reference = JSON_SET['domeo:reference'];
 						resources.each { resource ->
 							if(resource.url==SET_TARGET_URL) {
-								println resource;
+								if(reference!=null) resource.put("reference", reference);
 								bibliographyService.createEntry(user, resource, false);
 							}
 							
@@ -1004,6 +1005,27 @@ class PersistenceController {
                 if(ELASTICO) set.mongoUuid = mongoJsonResponse._id;
 				else set.mongoUuid = mongoJsonResponse.oids.$oid;
 				logInfo(userId, 'SUCCESS: Bibliographic set saving process completed!');
+				
+				// Bibliography
+				/*
+				if(grailsApplication.config.domeo.bibliography.management.enabled) {
+					println '##################################bibliography enabled'
+					def items = JSON_SET['ao:item'];
+					items.each { item ->
+						if(item['oa:context']!=null) {
+							if(item['oa:context']['@type']!=null && item['oa:context']['@type']=='domeo:TargetSelector') {
+								bibliographyService.createEntry(user, resource, false);
+							}
+						}
+						
+						if(resource.url==SET_TARGET_URL) {
+							println resource;
+							bibliographyService.createEntry(user, resource, false);
+						}
+						
+					}
+				}
+				*/
 				
 				JSONArray array = new JSONArray();
 				array.add(responseToSet)

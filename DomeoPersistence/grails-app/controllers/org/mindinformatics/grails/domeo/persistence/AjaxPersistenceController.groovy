@@ -265,7 +265,9 @@ class AjaxPersistenceController {
 		println 'queryterms ' + queryterms
 		
 		int paginationOffset = (request.JSON.paginationOffset?request.JSON.paginationOffset:0);
-		int paginationRange = (request.JSON.paginationRange?request.JSON.paginationRange:2);
+		println 'paginationOffset ' + paginationOffset
+		int paginationRange = (request.JSON.paginationRange?request.JSON.paginationRange:10);
+		println 'paginationRange ' + paginationRange
 		
 		List<AnnotationSetIndex> annotationListItemWrappers = new ArrayList<AnnotationSetIndex>();
 		if(request.JSON) {
