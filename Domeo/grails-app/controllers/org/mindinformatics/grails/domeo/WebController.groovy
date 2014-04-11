@@ -2,6 +2,7 @@ package org.mindinformatics.grails.domeo
 
 import org.mindinformatics.grails.domeo.dashboard.security.User
 import org.mindinformatics.grails.domeo.persistence.AnnotationSetIndex
+import org.mindinformatics.grails.domeo.utils.UserGrantedAuthority
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken
 import org.springframework.security.core.Authentication
 import org.springframework.security.core.GrantedAuthority
@@ -57,13 +58,13 @@ class WebController {
 	public Collection<GrantedAuthority> getAuthorities() {
 		//make everyone ROLE_USER
 		Collection<GrantedAuthority> grantedAuthorities = new ArrayList<GrantedAuthority>();
-		GrantedAuthority grantedAuthority = new GrantedAuthority() {
-			//anonymous inner type
-			public String getAuthority() {
-				return "ROLE_USER";
-			}
-		};
-		grantedAuthorities.add(grantedAuthority);
+//		GrantedAuthority grantedAuthority = new GrantedAuthority() {
+//			//anonymous inner type
+//			public String getAuthority() {
+//				return "ROLE_USER";
+//			}
+//		};
+		grantedAuthorities.add(new UserGrantedAuthority());
 		return grantedAuthorities;
 	}
 	
