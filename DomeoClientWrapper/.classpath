@@ -95,5 +95,6 @@
 	<classpathentry kind="con" path="org.grails.ide.eclipse.core.CLASSPATH_CONTAINER"/>
 	<classpathentry kind="lib" path="lib/gwt/gson-2.2.1.jar"/>
 	<classpathentry kind="lib" path="lib/gwt/gwt-visualization.jar"/>
+	<classpathentry kind="lib" path="lib/gwt/gwtquery-1.3.3.jar"/>
 	<classpathentry kind="output" path="target-eclipse/classes"/>
 </classpath>

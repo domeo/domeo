@@ -41,6 +41,10 @@
 	   var testFiles = "true";
 	   var provideExamplesUrls = "${grailsApplication.config.domeo.test.example.urls}";
 	   var defaultSetPrivacy = "${grailsApplication.config.domeo.default.annotationset.privacy}";
+	   var workWithNewProtocol = "${grailsApplication.config.domeo.protocol.new}";
+		   
+	   var enableAnnotopia = "${grailsApplication.config.domeo.storage.annotopia.enabled}";
+	   var annotopiaLocation = "${grailsApplication.config.domeo.storage.annotopia.storage}";
 
 	   var proxyProtocol = "${grailsApplication.config.domeo.proxy.protocol}";
 	</script> 
