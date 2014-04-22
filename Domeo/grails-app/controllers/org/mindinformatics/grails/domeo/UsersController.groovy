@@ -30,13 +30,8 @@ class UsersController {
 	def info = {
 		def user = getUser();
 		if(params.format.equals("json")) {
-			render('[{"uri": "urn:user:uuid:'+ user.username + '","username": "');
-			render(user.username);
-			render('","screenname": "');
-			render(user.displayName);
-			render("\"");
-			render("  }");
-			render(']');
+			def uri = 'urn:user:uuid:'+ user.username;
+			render([[uri: uri, username: user.username, screenname:user.displayName]] as JSON)
 		} else {
 			render(" info >>>>>> " + params.id);
 		}
@@ -47,46 +42,49 @@ class UsersController {
 		def userGroups = usersManagementService.listUserGroups(user);
 		
 		if(params.format.equals("json")) {
-			render('[');
+			
+			StringBuffer sb = new StringBuffer();
+			
+			sb.append('[');
 			int counter = 0;
 			userGroups.each { userGroup->
 				
 				// TODO groups
-				render("{\"uuid\": \"");
-				render(userGroup.group.id);
-				render("\",\"uri\": \"");
-				render(userGroup.group.uri);
-				render("\",\"name\": \"");
-				render(userGroup.group.name);
-				render("\",\"description\": \"");
-				render(userGroup.group.description);
-				render("\",\"memberssince\": \"");
-				render(userGroup.dateCreated);
-				render("\",\"grouplink\": \"");
-				render("http://" + request.getServerName() + ":" + request.getServerPort() + request.getContextPath()+"/group/?uri="+
+				sb.append("{\"uuid\": \"");
+				sb.append(userGroup.group.id);
+				sb.append("\",\"uri\": \"");
+				sb.append(userGroup.group.uri);
+				sb.append("\",\"name\": \"");
+				sb.append(userGroup.group.name);
+				sb.append("\",\"description\": \"");
+				sb.append(userGroup.group.description);
+				sb.append("\",\"memberssince\": \"");
+				sb.append(userGroup.dateCreated);
+				sb.append("\",\"grouplink\": \"");
+				sb.append("http://" + request.getServerName() + ":" + request.getServerPort() + request.getContextPath()+"/group/?uri="+
 					"urn:group:uuid:"+ userGroup.group.id);
-				render("\",\"roles\": [");
+				sb.append("\",\"roles\": [");
 				userGroup.roles.each{role->
-					render("{\"uuid\": \"");
-					render(role.authority);
-					render("\",\"name\": \"");
-					render(role.label);
-					render("\"}");
+					sb.append("{\"uuid\": \"");
+					sb.append(role.authority);
+					sb.append("\",\"name\": \"");
+					sb.append(role.label);
+					sb.append("\"}");
 				}
-				render("    ]");
-				render(",");
-				render("    \"visibility\": [");
-				render("       {");
-				render(          "\"uuid\": \"");
-				render(          userGroup.group.privacy.uuid);
-				render(          "\",");
-				render(			 "\"name\": \"");
-				render(          userGroup.group.privacy.label);
-				render(          "\"");
-				render("       }");
-				render("    ]");
-				render(",");
-				render(          "\"permissionread\": \"");
+				sb.append("    ]");
+				sb.append(",");
+				sb.append("    \"visibility\": [");
+				sb.append("       {");
+				sb.append(          "\"uuid\": \"");
+				sb.append(          userGroup.group.privacy.uuid);
+				sb.append(          "\",");
+				sb.append(			 "\"name\": \"");
+				sb.append(          userGroup.group.privacy.label);
+				sb.append(          "\"");
+				sb.append("       }");
+				sb.append("    ]");
+				sb.append(",");
+				sb.append(          "\"permissionread\": \"");
 				
 				// Guest role !!!!!!
 				
@@ -94,25 +92,95 @@ class UsersController {
 					GroupUtils.getStatusValue(userGroup.group)==DefaultGroupStatus.LOCKED.value()) &&
 					(userGroup.status.value==DefaultUserStatusInGroup.ACTIVE.value() ||
 					userGroup.status.value==DefaultUserStatusInGroup.LOCKED.value())) {
-					render(      true);
+					sb.append(      true);
 				} else {
-					render(      false);
+					sb.append(      false);
 				}
-				render(          "\",");
-				render(			 "\"permissionwrite\": \"");
+				sb.append(          "\",");
+				sb.append(			 "\"permissionwrite\": \"");
 				if(GroupUtils.getStatusValue(userGroup.group)==DefaultGroupStatus.ACTIVE.value() &&
 					userGroup.status.value==DefaultUserStatusInGroup.ACTIVE.value() && !userGroup.isGuest()) {
-					render(      true);
+					sb.append(      true);
 				} else {
-					render(      false);
+					sb.append(      false);
 				}
-				render(          "\"");
-				render("  }");
+				sb.append(          "\"");
+				sb.append("  }");
 				
-				if(counter++<userGroups.size()-1) render(",");
+				if(counter++<userGroups.size()-1) sb.append(",");
 			}
 			
-			render(']');
+			sb.append(']');
+			
+			render(text:sb.toString(),contentType:"text/json",encoding:"UTF-8")
+			
+			
+//			render('[');
+//			int counter = 0;
+//			userGroups.each { userGroup->
+//				
+//				// TODO groups
+//				render("{\"uuid\": \"");
+//				render(userGroup.group.id);
+//				render("\",\"uri\": \"");
+//				render(userGroup.group.uri);
+//				render("\",\"name\": \"");
+//				render(userGroup.group.name);
+//				render("\",\"description\": \"");
+//				render(userGroup.group.description);
+//				render("\",\"memberssince\": \"");
+//				render(userGroup.dateCreated);
+//				render("\",\"grouplink\": \"");
+//				render("http://" + request.getServerName() + ":" + request.getServerPort() + request.getContextPath()+"/group/?uri="+
+//					"urn:group:uuid:"+ userGroup.group.id);
+//				render("\",\"roles\": [");
+//				userGroup.roles.each{role->
+//					render("{\"uuid\": \"");
+//					render(role.authority);
+//					render("\",\"name\": \"");
+//					render(role.label);
+//					render("\"}");
+//				}
+//				render("    ]");
+//				render(",");
+//				render("    \"visibility\": [");
+//				render("       {");
+//				render(          "\"uuid\": \"");
+//				render(          userGroup.group.privacy.uuid);
+//				render(          "\",");
+//				render(			 "\"name\": \"");
+//				render(          userGroup.group.privacy.label);
+//				render(          "\"");
+//				render("       }");
+//				render("    ]");
+//				render(",");
+//				render(          "\"permissionread\": \"");
+//				
+//				// Guest role !!!!!!
+//				
+//				if((GroupUtils.getStatusValue(userGroup.group)==DefaultGroupStatus.ACTIVE.value() ||
+//					GroupUtils.getStatusValue(userGroup.group)==DefaultGroupStatus.LOCKED.value()) &&
+//					(userGroup.status.value==DefaultUserStatusInGroup.ACTIVE.value() ||
+//					userGroup.status.value==DefaultUserStatusInGroup.LOCKED.value())) {
+//					render(      true);
+//				} else {
+//					render(      false);
+//				}
+//				render(          "\",");
+//				render(			 "\"permissionwrite\": \"");
+//				if(GroupUtils.getStatusValue(userGroup.group)==DefaultGroupStatus.ACTIVE.value() &&
+//					userGroup.status.value==DefaultUserStatusInGroup.ACTIVE.value() && !userGroup.isGuest()) {
+//					render(      true);
+//				} else {
+//					render(      false);
+//				}
+//				render(          "\"");
+//				render("  }");
+//				
+//				if(counter++<userGroups.size()-1) render(",");
+//			}
+//			
+//			render(']');
 		} else {
 			render(" groups >>>>>> " + params.id);
 		}
