@@ -23,3 +23,6 @@ DomeoPersistence/.settings
 DomeoGrailsPluginsUtils/target
 DomeoGrailsPluginsUtils/target-eclipse
 DomeoGrailsPluginsUtils/.settings
+DomeoShared/target
+DomeoShared/.settings
+DomeoShared/target-eclipse
