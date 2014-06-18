@@ -26,6 +26,7 @@ cd gwt
 ln -s ../../../DomeoClient/war/WEB-INF/lib/gson-2.2.1.jar ./gson-2.2.1.jar
 ln -s ../../../DomeoClient/war/WEB-INF/lib/gwt-visualization.jar ./gwt-visualization.jar
 ln -s ../../../DomeoClient/war/WEB-INF/lib/gwtquery-1.3.3.jar ./gwtquery-1.3.3.jar
+ln -s ../../../DomeoClient/war/WEB-INF/lib/gwt-servlet.jar ./gwt-servlet.jar
 cd ..
 cd ..
 mkdir war
