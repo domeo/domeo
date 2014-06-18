@@ -14,6 +14,8 @@ grails.project.dependency.resolution = {
     legacyResolve false // whether to do a secondary resolve on plugin installation, not advised and here for backwards compatibility
     repositories {
         grailsCentral()
+		//mavenRepo "http://repository.codehaus.org"
+		mavenRepo "http://repo1.maven.org/maven2/"
     }
     dependencies {
         // specify dependencies here under either 'build', 'compile', 'runtime', 'test' or 'provided' scopes eg.
@@ -29,6 +31,6 @@ grails.project.dependency.resolution = {
         }
 			 
 		compile (":hibernate:2.0.4");
-		compile (":rest:0.8");
+		compile (":rest:0.8")
     }
 }
