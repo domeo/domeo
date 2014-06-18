@@ -31,3 +31,10 @@ grails.project.dependency.resolution = {
 		compile ":gwt:0.6.1"
 	}
 }
+gwt {
+	version = "2.4.0"
+	run.args = {
+		jvmarg(value: "-Xms256m")
+		jvmarg(value: "-Xmx512m")
+	}
+}
