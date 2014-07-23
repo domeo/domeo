@@ -84,6 +84,7 @@ class SecuredController {
 
 	def search = {
 		def loggedUser = injectUserProfile();
+		checkForOAuthToken( );
 		
 		def offset = 0
 		if(params.offset) {
@@ -125,5 +126,26 @@ class SecuredController {
 	
 	def userSettings = {
 		
-	}	
+	}
+	
+	/** Check if a user has an Annotopia OAuth token after login. */
+	private void checkForOAuthToken( ) {
+		if(grailsApplication.config.domeo.storage.annotopia.enabled.equalsIgnoreCase("true") 
+			&& grailsApplication.config.domeo.storage.annotopia.oauth.enabled.equalsIgnoreCase("true"))
+		{
+			User user = User.findByUsername(springSecurityService.principal.username);
+			if(user.getAnnotopiaAccessToken( ) == null) {
+				// retrieve a new access token
+				redirect(uri: "/annotopia/authenticate")
+			} else if(user.getAnnotopiaRefreshToken( ) != null && session['annotopia:oasAccessToken'] == null) {
+				// retrieve a new access token using the refresh token
+				redirect(uri: "/annotopia/refresh")
+				// if refresh token fails, re-authenticate
+				if(user.getAnnotopiaAccessToken( ) == null) {
+					redirect(uri: "/annotopia/authenticate");
+				}
+			}
+		}
+	}
+	
 }
