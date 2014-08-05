@@ -49,6 +49,7 @@
 	   var annotopiaOauthEnabled = "${grailsApplication.config.domeo.storage.annotopia.oauth.enabled}"
 	   var annotopiaOauthToken = "${session['annotopia:oasAccessToken']}";
 	   var annotopiaApiKey = "${grailsApplication.config.domeo.storage.annotopia.api.key}";
+	   var annotopiaContextPath = "${grailsApplication.config.domeo.storage.annotopia.jsonld.annotopia.context}";
 
 	   var proxyProtocol = "${grailsApplication.config.domeo.proxy.protocol}";
 	</script> 
