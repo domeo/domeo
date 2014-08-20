@@ -30,6 +30,10 @@ class User {
 	boolean accountLocked
 	boolean passwordExpired
 	
+	// Annotopia credentials
+	String annotopiaAccessToken;
+	String annotopiaRefreshToken;
+	
 	static hasMany = [openIds: OpenID]
 
 	static transients = ['name','status','isAdmin','isUser','isManager','isCurator','isAnalyst']
@@ -57,6 +61,9 @@ class User {
 		username blank: false, unique: true
 		password blank: false
 		email blank: false, unique: true, email: true
+		
+		annotopiaAccessToken nullable: true, blank: true, maxSize: 36
+		annotopiaRefreshToken nullable: true, blank: true, maxSize: 36
 	}
 
 	static mapping = {
