@@ -16,7 +16,6 @@ class AnnotopiaTokenExtractor implements AccessTokenExtractor {
 		
 		// extract the token from the returned JSON
 		def json = new JsonSlurper( ).parseText(response);
-		log.info(json.access_token);
 		return new Token(json.access_token, "", response);
 	}
 	
@@ -36,7 +35,6 @@ class AnnotopiaTokenExtractor implements AccessTokenExtractor {
 		
 		// extract the token from the returned JSON
 		def json = new JsonSlurper( ).parseText(response);
-		System.out.println(json.refresh_token);
 		return new Token(json.refresh_token, "", response);
 	}
 
