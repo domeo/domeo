@@ -12,6 +12,7 @@ hibernate {
 	cache.provider_class = 'net.sf.ehcache.hibernate.EhCacheProvider'
 }
 // environment specific settings
+// CREATE DATABASE DomeoAlphaDev DEFAULT CHARACTER SET utf8;
 environments {
 	development {
 		dataSource {
