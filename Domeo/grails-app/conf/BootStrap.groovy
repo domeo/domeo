@@ -196,114 +196,117 @@ class BootStrap {
 			email: 'admin@commonsemantics.org',
 			enabled: true).save(failOnError: true) 
 			
-			log.info  'User role 0'
-			if (!adminUser.authorities.contains(Role.findByAuthority(DefaultRoles.ADMIN.value()))) {
-				log.info  'User role 1'
-				UserRole.create(adminUser, Role.findByAuthority(DefaultRoles.ADMIN.value()))
-			}
-			
-		def manager = 'manager'
-		def managerUser = User.findByUsername(manager) ?: new User(
-			firstName: 'Lou',
-			lastName: 'Red',
-			displayName: 'Dr. Lou Red',
-			affiliation: 'ACME',
-			country: 'Neverland',
-			username: manager,
-			password: springSecurityService.encodePassword(manager),
-			email: 'manager@commonsemantics.org',
-			enabled: true).save(failOnError: true)
-
+		log.info  'User role 0'
+		if (!adminUser.authorities.contains(Role.findByAuthority(DefaultRoles.ADMIN.value()))) {
+			log.info  'User role 1'
+			UserRole.create(adminUser, Role.findByAuthority(DefaultRoles.ADMIN.value()))
+		}
+		
+		def managerUser, managerUser2, accountUser1;
+		if(grailsApplication.config.domeo.test == true) {
+			def manager = 'manager'
+			managerUser = User.findByUsername(manager) ?: new User(
+				firstName: 'Lou',
+				lastName: 'Red',
+				displayName: 'Dr. Lou Red',
+				affiliation: 'ACME',
+				country: 'Neverland',
+				username: manager,
+				password: springSecurityService.encodePassword(manager),
+				email: 'manager@commonsemantics.org',
+				enabled: true).save(failOnError: true)
+	
 			log.info  'User role 0'
 			if (!managerUser.authorities.contains(Role.findByAuthority(DefaultRoles.MANAGER.value()))) {
 				log.info  'User role 1'
 				UserRole.create(managerUser, Role.findByAuthority(DefaultRoles.MANAGER.value()))
 			}
-			
-		def manager2 = 'manager2'
-		def managerUser2 = User.findByUsername(manager2) ?: new User(
-			firstName: 'Big',
-			lastName: 'White',
-			displayName: 'Dr. Big White',
-			affiliation: 'ACME',
-			country: 'Neverland',
-			username: manager2,
-			password: springSecurityService.encodePassword(manager2),
-			email: 'manager2@commonsemantics.org',
-			enabled: true).save(failOnError: true)
-
+				
+			def manager2 = 'manager2'
+			managerUser2 = User.findByUsername(manager2) ?: new User(
+				firstName: 'Big',
+				lastName: 'White',
+				displayName: 'Dr. Big White',
+				affiliation: 'ACME',
+				country: 'Neverland',
+				username: manager2,
+				password: springSecurityService.encodePassword(manager2),
+				email: 'manager2@commonsemantics.org',
+				enabled: true).save(failOnError: true)
+	
 			log.info  'User role 0'
 			if (!managerUser2.authorities.contains(Role.findByAuthority(DefaultRoles.MANAGER.value()))) {
 				log.info  'User role 1'
 				UserRole.create(managerUser2, Role.findByAuthority(DefaultRoles.MANAGER.value()))
 			}
-			
-		def user1 = 'user'
-		def accountUser1 = User.findByUsername(user1) ?: new User(
-			firstName: 'Mark',
-			lastName: 'Green',
-			displayName: 'Dr. Mark Green',
-			affiliation: 'ACME',
-			country: 'Puerto Rico',
-			username: user1,
-			password: springSecurityService.encodePassword(user1),
-			email: 'user1@commonsemantics.org',
-			enabled: true).save(failOnError: true)
-
+				
+			def user1 = 'user'
+			accountUser1 = User.findByUsername(user1) ?: new User(
+				firstName: 'Mark',
+				lastName: 'Green',
+				displayName: 'Dr. Mark Green',
+				affiliation: 'ACME',
+				country: 'Puerto Rico',
+				username: user1,
+				password: springSecurityService.encodePassword(user1),
+				email: 'user1@commonsemantics.org',
+				enabled: true).save(failOnError: true)
+	
 			log.info  'User role'
 			if (!accountUser1.authorities.contains(Role.findByAuthority(DefaultRoles.USER.value()))) {
 				log.info  'User role 1'
 				UserRole.create(accountUser1, Role.findByAuthority(DefaultRoles.USER.value()))
 			}
-		
-		def group0 = "Test Group 0"
-		def testGroup0 = Group.findByName(group0) ?: new Group(
-			name: group0,
-			shortName: 'TG0',
-			description: group0,
-			enabled: true,
-			locked: false,
-			status: GroupStatus.findByValue(DefaultGroupStatus.ACTIVE.value()),
-			privacy: GroupPrivacy.findByValue(DefaultGroupPrivacy.PUBLIC.value())
-			).save(failOnError: true)
-		def group1 = "Test Group 1"
-		def testGroup1 = Group.findByName(group1) ?: new Group(
-			name: group1,
-			shortName: 'TG1',
-			description: group1,
-			enabled: true,
-			locked: false,
-			status: GroupStatus.findByValue(DefaultGroupStatus.ACTIVE.value()),
-			privacy: GroupPrivacy.findByValue(DefaultGroupPrivacy.PUBLIC.value())
-			).save(failOnError: true)
-		def testUserGroup1 = UserGroup.findByUserAndGroup(adminUser, testGroup1)?: new UserGroup(
-			user: adminUser,
-			group: testGroup1,
-			status: UserStatusInGroup.findByValue(DefaultUserStatusInGroup.ACTIVE.value())
-		).save(failOnError: true, flash: true)
-		testUserGroup1.addToRoles GroupRole.findByAuthority(DefaultGroupRoles.ADMIN.value())
-		
-		def group3 = "Test Group 3"
-		def testGroup3 = Group.findByName(group3) ?: new Group(
-			name: group3,
-			shortName: 'TG3',
-			description: group3,
-			status: GroupStatus.findByValue(DefaultGroupStatus.ACTIVE.value()),
-			privacy: GroupPrivacy.findByValue(DefaultGroupPrivacy.PUBLIC.value())
-			).save(failOnError: true)
 			
-		def circle1 = "Circle 1"
-		def testCircle1 = Circle.findByName(circle1) ?: new Circle(
-			name: circle1,
-			shortName: circle1,
-			).save(failOnError: true, flash:true)
-		//testCircle1.users = []
-		
-		def testUserCircle1 = UserCircle.findByUser(adminUser)?: new UserCircle(
-			user: adminUser,
-			circle: testCircle1
-		).save(failOnError: true, flash: true)
-		testUserCircle1.addToUsers managerUser;
+			def group0 = "Test Group 0"
+			def testGroup0 = Group.findByName(group0) ?: new Group(
+				name: group0,
+				shortName: 'TG0',
+				description: group0,
+				enabled: true,
+				locked: false,
+				status: GroupStatus.findByValue(DefaultGroupStatus.ACTIVE.value()),
+				privacy: GroupPrivacy.findByValue(DefaultGroupPrivacy.PUBLIC.value())
+				).save(failOnError: true)
+			def group1 = "Test Group 1"
+			def testGroup1 = Group.findByName(group1) ?: new Group(
+				name: group1,
+				shortName: 'TG1',
+				description: group1,
+				enabled: true,
+				locked: false,
+				status: GroupStatus.findByValue(DefaultGroupStatus.ACTIVE.value()),
+				privacy: GroupPrivacy.findByValue(DefaultGroupPrivacy.PUBLIC.value())
+				).save(failOnError: true)
+			def testUserGroup1 = UserGroup.findByUserAndGroup(adminUser, testGroup1)?: new UserGroup(
+				user: adminUser,
+				group: testGroup1,
+				status: UserStatusInGroup.findByValue(DefaultUserStatusInGroup.ACTIVE.value())
+			).save(failOnError: true, flash: true)
+			testUserGroup1.addToRoles GroupRole.findByAuthority(DefaultGroupRoles.ADMIN.value())
+			
+			def group3 = "Test Group 3"
+			def testGroup3 = Group.findByName(group3) ?: new Group(
+				name: group3,
+				shortName: 'TG3',
+				description: group3,
+				status: GroupStatus.findByValue(DefaultGroupStatus.ACTIVE.value()),
+				privacy: GroupPrivacy.findByValue(DefaultGroupPrivacy.PUBLIC.value())
+				).save(failOnError: true)
+				
+			def circle1 = "Circle 1"
+			def testCircle1 = Circle.findByName(circle1) ?: new Circle(
+				name: circle1,
+				shortName: circle1,
+				).save(failOnError: true, flash:true)
+			//testCircle1.users = []
+			
+			def testUserCircle1 = UserCircle.findByUser(adminUser)?: new UserCircle(
+				user: adminUser,
+				circle: testCircle1
+			).save(failOnError: true, flash: true)
+			testUserCircle1.addToUsers managerUser;
+		}
 			
 		separator();
 		log.info   '** Initializing profiles'
@@ -374,41 +377,43 @@ class BootStrap {
 			profile: simpleProfile
 		).save(failOnError: true, flash: true)
 		
-		log.info   'Manager 1 profiles'
-		if(completeProfile) {
-			UserAvailableDomeoClientProfile.findByUserAndProfile(managerUser, completeProfile)?: new UserAvailableDomeoClientProfile(
+		if(grailsApplication.config.domeo.test == true) {
+			log.info   'Manager 1 profiles'
+			if(completeProfile) {
+				UserAvailableDomeoClientProfile.findByUserAndProfile(managerUser, completeProfile)?: new UserAvailableDomeoClientProfile(
+					user: managerUser,
+					profile: completeProfile
+				).save(failOnError: true, flash: true)
+			}
+			UserAvailableDomeoClientProfile.findByUserAndProfile(managerUser, simpleProfile)?: new UserAvailableDomeoClientProfile(
 				user: managerUser,
-				profile: completeProfile
+				profile: simpleProfile
 			).save(failOnError: true, flash: true)
-		}
-		UserAvailableDomeoClientProfile.findByUserAndProfile(managerUser, simpleProfile)?: new UserAvailableDomeoClientProfile(
-			user: managerUser,
-			profile: simpleProfile
-		).save(failOnError: true, flash: true)
-		
-		log.info   'Manager 2 profiles'
-		if(completeProfile) {
-			UserAvailableDomeoClientProfile.findByUserAndProfile(managerUser2, completeProfile)?: new UserAvailableDomeoClientProfile(
+			
+			log.info   'Manager 2 profiles'
+			if(completeProfile) {
+				UserAvailableDomeoClientProfile.findByUserAndProfile(managerUser2, completeProfile)?: new UserAvailableDomeoClientProfile(
+					user: managerUser2,
+					profile: completeProfile
+				).save(failOnError: true, flash: true)
+			}
+			UserAvailableDomeoClientProfile.findByUserAndProfile(managerUser2, simpleProfile)?: new UserAvailableDomeoClientProfile(
 				user: managerUser2,
-				profile: completeProfile
+				profile: simpleProfile
 			).save(failOnError: true, flash: true)
-		}
-		UserAvailableDomeoClientProfile.findByUserAndProfile(managerUser2, simpleProfile)?: new UserAvailableDomeoClientProfile(
-			user: managerUser2,
-			profile: simpleProfile
-		).save(failOnError: true, flash: true)
-		
-		log.info   'User profiles'
-		if(completeProfile) {
-			UserAvailableDomeoClientProfile.findByUserAndProfile(accountUser1, completeProfile)?: new UserAvailableDomeoClientProfile(
+			
+			log.info   'User profiles'
+			if(completeProfile) {
+				UserAvailableDomeoClientProfile.findByUserAndProfile(accountUser1, completeProfile)?: new UserAvailableDomeoClientProfile(
+					user: accountUser1,
+					profile: completeProfile
+				).save(failOnError: true, flash: true)
+			}
+			UserAvailableDomeoClientProfile.findByUserAndProfile(accountUser1, simpleProfile)?: new UserAvailableDomeoClientProfile(
 				user: accountUser1,
-				profile: completeProfile
+				profile: simpleProfile
 			).save(failOnError: true, flash: true)
 		}
-		UserAvailableDomeoClientProfile.findByUserAndProfile(accountUser1, simpleProfile)?: new UserAvailableDomeoClientProfile(
-			user: accountUser1,
-			profile: simpleProfile
-		).save(failOnError: true, flash: true)
 		
 		separator();
 		log.info   '** Initializing current profiles'
@@ -423,23 +428,25 @@ class BootStrap {
 			currentProfile: currentProfile
 		).save(failOnError: true, flash: true)
 		
-		log.info   'Manager 1 current profile'
-		UserCurrentDomeoClientProfile.findByUser(managerUser)?: new UserCurrentDomeoClientProfile(
-			user: managerUser,
-			currentProfile: currentProfile
-		).save(failOnError: true, flash: true)
-		
-		log.info   'Manager 2 current profile'
-		UserCurrentDomeoClientProfile.findByUser(managerUser2)?: new UserCurrentDomeoClientProfile(
-			user: managerUser2,
-			currentProfile: simpleProfile
-		).save(failOnError: true, flash: true)
-		
-		log.info   'User current profile'
-		UserCurrentDomeoClientProfile.findByUser(accountUser1)?: new UserCurrentDomeoClientProfile(
-			user: accountUser1,
-			currentProfile: simpleProfile
-		).save(failOnError: true, flash: true)
+		if(grailsApplication.config.domeo.test == true) {
+			log.info   'Manager 1 current profile'
+			UserCurrentDomeoClientProfile.findByUser(managerUser)?: new UserCurrentDomeoClientProfile(
+				user: managerUser,
+				currentProfile: currentProfile
+			).save(failOnError: true, flash: true)
+			
+			log.info   'Manager 2 current profile'
+			UserCurrentDomeoClientProfile.findByUser(managerUser2)?: new UserCurrentDomeoClientProfile(
+				user: managerUser2,
+				currentProfile: simpleProfile
+			).save(failOnError: true, flash: true)
+			
+			log.info   'User current profile'
+			UserCurrentDomeoClientProfile.findByUser(accountUser1)?: new UserCurrentDomeoClientProfile(
+				user: accountUser1,
+				currentProfile: simpleProfile
+			).save(failOnError: true, flash: true)
+		}
 		
 		separator();
 		log.info  'Bootstrapping complete!'
