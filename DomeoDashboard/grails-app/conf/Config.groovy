@@ -108,15 +108,3 @@ grails.plugins.springsecurity.controllerAnnotations.staticRules = [
 	'/managerDashboard/**': ['ROLE_MANAGER'],
 	'/adminDashboard/**': ['ROLE_ADMIN']
 ]
-
-// LDAP
-grails.plugin.springsecurity.providerNames = ['daoAuthenticationProvider', 'ldapAuthProvider', 'rememberMeAuthenticationProvider']
-
-// LDAP AD entry defaults
-domeo.ldap.ad.first_name = "givenName"
-domeo.ldap.ad.last_name = "sn"
-domeo.ldap.ad.display_name = "display-Name"
-domeo.ldap.ad.username = "sAMAccountName"
-domeo.ldap.ad.email = "mail"
-domeo.ldap.ad.country = null
-domeo.ldap.ad.affiliation = null

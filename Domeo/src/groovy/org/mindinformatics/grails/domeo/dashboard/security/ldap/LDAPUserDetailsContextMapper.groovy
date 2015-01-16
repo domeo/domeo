@@ -1,21 +1,23 @@
 package org.mindinformatics.grails.domeo.dashboard.security.ldap;
 
-import java.util.Collection;
-import org.mindinformatics.grails.domeo.dashboard.security.Role;
-import org.mindinformatics.grails.domeo.dashboard.security.User;
-import org.mindinformatics.grails.domeo.dashboard.security.UserRole;
-import org.springframework.ldap.core.DirContextAdapter;
-import org.springframework.ldap.core.DirContextOperations;
-import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.ldap.userdetails.UserDetailsContextMapper;
-import org.springframework.transaction.annotation.*;
+import org.mindinformatics.grails.domeo.client.profiles.model.DomeoClientProfile
+import org.mindinformatics.grails.domeo.client.profiles.model.UserCurrentDomeoClientProfile
+import org.mindinformatics.grails.domeo.dashboard.security.Role
+import org.mindinformatics.grails.domeo.dashboard.security.User
+import org.mindinformatics.grails.domeo.dashboard.security.UserRole
+import org.springframework.ldap.core.DirContextAdapter
+import org.springframework.ldap.core.DirContextOperations
+import org.springframework.security.core.GrantedAuthority
+import org.springframework.security.core.userdetails.UserDetails
+import org.springframework.security.ldap.userdetails.UserDetailsContextMapper
+import org.springframework.transaction.annotation.*
 
 /** Map the details from LDAP to a Domeo user and add that user to the database.
  * Also map the roles from any appropriate AD groups to roles in the database
  * on each login.
- * @author Tom Wilkin - Eli Lilly & Co <wilkin_thomas@lilly.com> */
+ * @author Tom Wilkin */
 class LDAPUserDetailsContextMapper implements UserDetailsContextMapper {
+	
 	def grailsApplication;
 	
 	@Override
@@ -87,6 +89,22 @@ class LDAPUserDetailsContextMapper implements UserDetailsContextMapper {
 			if(!user.save(flush: true)) {
 				user.errors.allErrors.each { render it }
 			}
+			
+			// load the default profile from configuration
+			def defaultProfile = grailsApplication.config.domeo.ldap.ad.defaultProfile;
+			if(defaultProfile == null || defaultProfile.equals("")) {
+				defaultProfile = DomeoClientProfile.SIMPLE_PROFILE_NAME;
+			}
+			def profile = DomeoClientProfile.findByName(defaultProfile);
+			if(profile == null) {
+				throw new Exception("Profile '" + defaultProfile + "' cannot be found.");
+			}
+			
+			// set the user profile
+			UserCurrentDomeoClientProfile.findByUser(user)?: new UserCurrentDomeoClientProfile(
+				user: user,
+				currentProfile: profile
+			).save(failOnError: true, flash: true);
 		} else {
 			// update the user details from AD
 			user.setFirstName(firstName);

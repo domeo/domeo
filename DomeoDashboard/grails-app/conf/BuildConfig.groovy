@@ -50,6 +50,5 @@ grails.project.dependency.resolution = {
         build ":tomcat:$grailsVersion"
 		compile ':spring-security-core:2.0-RC2'
 		compile ":spring-security-openid:2.0-RC1"
-		compile ":spring-security-ldap:2.0-RC2"
     }
 }
