@@ -307,253 +307,104 @@ class BootStrap {
 			
 		separator();
 		log.info   '** Initializing profiles'
-		separator();
-		
-		// -------------------
-		//  COMPLETE PROFILES
-		// -------------------
-		log.info   'Initializing complete biomedical profile'
-		
-		// Plugins
-		def completeProfile = DomeoClientProfile.findByName("Complete Biomedical Profile")?: new DomeoClientProfile(
-			name: 'Complete Biomedical Profile',
-			description: 'All the tools that Domeo has to offer for biomedicine',
-			createdBy: adminUser
-		).save(failOnError: true, flash: true)
-		
-		DomeoClientProfileEntry.findByProfileAndPlugin(completeProfile, "org.mindinformatics.gwt.domeo.plugins.annotation.qualifier")?: new DomeoClientProfileEntry(
-			profile: completeProfile,
-			plugin: "org.mindinformatics.gwt.domeo.plugins.annotation.qualifier",
-			status: "enabled"
-		).save(failOnError: true, flash: true)
-		
-		DomeoClientProfileEntry.findByProfileAndPlugin(completeProfile, "org.mindinformatics.gwt.domeo.plugins.annotation.nif.antibodies")?: new DomeoClientProfileEntry(
-			profile: completeProfile,
-			plugin: "org.mindinformatics.gwt.domeo.plugins.annotation.nif.antibodies",
-			status: "enabled"
-		).save(failOnError: true, flash: true)
-		
-		DomeoClientProfileEntry.findByProfileAndPlugin(completeProfile, "org.mindinformatics.gwt.domeo.plugins.annotation.micropubs")?: new DomeoClientProfileEntry(
-			profile: completeProfile,
-			plugin: "org.mindinformatics.gwt.domeo.plugins.annotation.micropubs",
-			status: "enabled"
-		).save(failOnError: true, flash: true)
-		
-		DomeoClientProfileEntry.findByProfileAndPlugin(completeProfile, "org.mindinformatics.gwt.domeo.plugins.resource.pubmed")?: new DomeoClientProfileEntry(
-			profile: completeProfile,
-			plugin: "org.mindinformatics.gwt.domeo.plugins.resource.pubmed",
-			status: "enabled"
-		).save(failOnError: true, flash: true)
-		
-		DomeoClientProfileEntry.findByProfileAndPlugin(completeProfile, "org.mindinformatics.gwt.domeo.plugins.resource.pubmedcentral")?: new DomeoClientProfileEntry(
-			profile: completeProfile,
-			plugin: "org.mindinformatics.gwt.domeo.plugins.resource.pubmedcentral",
-			status: "enabled"
-		).save(failOnError: true, flash: true)
-		
-		DomeoClientProfileEntry.findByProfileAndPlugin(completeProfile, "org.mindinformatics.gwt.domeo.plugins.resource.omim")?: new DomeoClientProfileEntry(
-			profile: completeProfile,
-			plugin: "org.mindinformatics.gwt.domeo.plugins.resource.omim",
-			status: "enabled"
-		).save(failOnError: true, flash: true)
-		
-		DomeoClientProfileEntry.findByProfileAndPlugin(completeProfile, "org.mindinformatics.gwt.domeo.plugins.resource.bioportal")?: new DomeoClientProfileEntry(
-			profile: completeProfile,
-			plugin: "org.mindinformatics.gwt.domeo.plugins.resource.bioportal",
-			status: "enabled"
-		).save(failOnError: true, flash: true)
-		
-		DomeoClientProfileEntry.findByProfileAndPlugin(completeProfile, "org.mindinformatics.gwt.domeo.client.component.clipboard")?: new DomeoClientProfileEntry(
-			profile: completeProfile,
-			plugin: "org.mindinformatics.gwt.domeo.client.component.clipboard",
-			status: "enabled"
-		).save(failOnError: true, flash: true)
-		
-		// Features
-		DomeoClientProfileEntry.findByProfileAndPlugin(completeProfile, "org.mindinformatics.gwt.domeo.feature.branding")?: new DomeoClientProfileEntry(
-			profile: completeProfile,
-			plugin: "org.mindinformatics.gwt.domeo.feature.branding",
-			status: "disabled",
-			type: "feature"
-		).save(failOnError: true, flash: true)
-		
-		if(DomeoClientProfileEntry.findByProfileAndPlugin(completeProfile, "org.mindinformatics.gwt.domeo.feature.addressbar")) {
-			DomeoClientProfileEntry.findByProfileAndPlugin(completeProfile, "org.mindinformatics.gwt.domeo.feature.addressbar").status = "enabled"
-		} else {
-			new DomeoClientProfileEntry(
-				profile: completeProfile,
-				plugin: "org.mindinformatics.gwt.domeo.feature.addressbar",
-				status: "enabled",
-				type: "feature"
-			).save(failOnError: true, flash: true)
-		}
-		
-		DomeoClientProfileEntry.findByProfileAndPlugin(completeProfile, "org.mindinformatics.gwt.domeo.feature.analyze")?: new DomeoClientProfileEntry(
-			profile: completeProfile,
-			plugin: "org.mindinformatics.gwt.domeo.feature.analyze",
-			status: "enabled",
-			type: "feature"
-		).save(failOnError: true, flash: true)
-		
-		DomeoClientProfileEntry.findByProfileAndPlugin(completeProfile, "org.mindinformatics.gwt.domeo.feature.preferences")?: new DomeoClientProfileEntry(
-			profile: completeProfile,
-			plugin: "org.mindinformatics.gwt.domeo.feature.preferences",
-			status: "enabled",
-			type: "feature"
-		).save(failOnError: true, flash: true)
-		
-		if(DomeoClientProfileEntry.findByProfileAndPlugin(completeProfile, "org.mindinformatics.gwt.domeo.feature.sharing")) {
-			DomeoClientProfileEntry.findByProfileAndPlugin(completeProfile, "org.mindinformatics.gwt.domeo.feature.sharing").status = "enabled"
-		} else {
-			new DomeoClientProfileEntry(
-				profile: completeProfile,
-				plugin: "org.mindinformatics.gwt.domeo.feature.sharing",
-				status: "enabled",
-				type: "feature"
-			).save(failOnError: true, flash: true)
-		}
-		
-		DomeoClientProfileEntry.findByProfileAndPlugin(completeProfile, "org.mindinformatics.gwt.domeo.feature.help")?: new DomeoClientProfileEntry(
-			profile: completeProfile,
-			plugin: "org.mindinformatics.gwt.domeo.feature.help",
-			status: "enabled",
-			type: "feature"
-		).save(failOnError: true, flash: true)
-		
-		if(DomeoClientProfileEntry.findByProfileAndPlugin(completeProfile, "org.mindinformatics.gwt.domeo.feature.document.general.reference.self")) {
-			DomeoClientProfileEntry.findByProfileAndPlugin(completeProfile, "org.mindinformatics.gwt.domeo.feature.document.general.reference.self").status = "enabled"
-		} else {
-			new DomeoClientProfileEntry(
-				profile: completeProfile,
-				plugin: "org.mindinformatics.gwt.domeo.feature.document.general.reference.self",
-				status: "enabled",
-				type: "feature"
-			).save(failOnError: true, flash: true)
-		}
-		
-		if(DomeoClientProfileEntry.findByProfileAndPlugin(completeProfile, "org.mindinformatics.gwt.domeo.feature.document.general.qualifiers.self")) {
-			DomeoClientProfileEntry.findByProfileAndPlugin(completeProfile, "org.mindinformatics.gwt.domeo.feature.document.general.qualifiers.self").status = "enabled"
-		} else {
-			new DomeoClientProfileEntry(
-				profile: completeProfile,
-				plugin: "org.mindinformatics.gwt.domeo.feature.document.general.qualifiers.self",
-				status: "enabled",
-				type: "feature"
-			).save(failOnError: true, flash: true)
-		}
-		
-		if(DomeoClientProfileEntry.findByProfileAndPlugin(completeProfile, "org.mindinformatics.gwt.domeo.feature.document.general.bibliography")) {
-			DomeoClientProfileEntry.findByProfileAndPlugin(completeProfile, "org.mindinformatics.gwt.domeo.feature.document.general.bibliography").status = "enabled"
-		} else {
-			new DomeoClientProfileEntry(
-				profile: completeProfile,
-				plugin: "org.mindinformatics.gwt.domeo.feature.document.general.bibliography",
-				status: "enabled",
-				type: "feature"
-			).save(failOnError: true, flash: true)
-		}
-		
-		if(DomeoClientProfileEntry.findByProfileAndPlugin(completeProfile, "org.mindinformatics.gwt.domeo.feature.document.general.recommendations")) {
-			DomeoClientProfileEntry.findByProfileAndPlugin(completeProfile, "org.mindinformatics.gwt.domeo.feature.document.general.recommendations").status = "disabled"
-		} else {
-			new DomeoClientProfileEntry(
-				profile: completeProfile,
-				plugin: "org.mindinformatics.gwt.domeo.feature.document.general.recommendations",
-				status: "disabled",
-				type: "feature"
-			).save(failOnError: true, flash: true)
-		}
-		
-		// If not present the text mining summary panel will display
-		if(DomeoClientProfileEntry.findByProfileAndPlugin(completeProfile, "org.mindinformatics.gwt.domeo.feature.textmining.summary")) {
-			DomeoClientProfileEntry.findByProfileAndPlugin(completeProfile, "org.mindinformatics.gwt.domeo.feature.textmining.summary").status = "enabled"
-		} else {
-			new DomeoClientProfileEntry(
-				profile: completeProfile,
-				plugin: "org.mindinformatics.gwt.domeo.feature.textmining.summary",
-				status: "enabled",
-				type: "feature"
-			).save(failOnError: true, flash: true)
-		}
 		
 		// ----------------
 		//  BASIC PROFILES
 		// ----------------
 		separator();
 		log.info   'Initializing basic profiles'
-		def simpleProfile = DomeoClientProfile.findByName("Simple profile")?: new DomeoClientProfile(
-			name: 'Simple profile',
+		def simpleProfile = DomeoClientProfile.findByName(DomeoClientProfile.SIMPLE_PROFILE_NAME)?: new DomeoClientProfile(
+			name: DomeoClientProfile.SIMPLE_PROFILE_NAME,
 			description: 'Simple profile: notes and commenting',
 			createdBy: adminUser
 		).save(failOnError: true, flash: true)
 		
-		DomeoClientProfileEntry.findByProfileAndPlugin(completeProfile, "org.mindinformatics.gwt.domeo.plugins.resource.pubmed")?: new DomeoClientProfileEntry(
-			profile: simpleProfile,
-			plugin: "org.mindinformatics.gwt.domeo.plugins.resource.pubmed",
-			status: "enabled"
-		).save(failOnError: true, flash: true)
+		addEntryToProfile(simpleProfile, "org.mindinformatics.gwt.domeo.plugins.resource.pubmed", "plugin");
+		addEntryToProfile(simpleProfile, "org.mindinformatics.gwt.domeo.plugins.resource.pubmedcentral", "plugin");
+		addEntryToProfile(simpleProfile, "org.mindinformatics.gwt.domeo.plugins.resource.omim", "plugin");
+		addEntryToProfile(simpleProfile, "org.mindinformatics.gwt.domeo.plugins.resource.bioportal", "plugin");
+		addEntryToProfile(simpleProfile, "org.mindinformatics.gwt.domeo.client.component.clipboard", "plugin");
 		
-		DomeoClientProfileEntry.findByProfileAndPlugin(completeProfile, "org.mindinformatics.gwt.domeo.plugins.resource.pubmedcentral")?: new DomeoClientProfileEntry(
-			profile: simpleProfile,
-			plugin: "org.mindinformatics.gwt.domeo.plugins.resource.pubmedcentral",
-			status: "enabled"
-		).save(failOnError: true, flash: true)
-		
-		DomeoClientProfileEntry.findByProfileAndPlugin(completeProfile, "org.mindinformatics.gwt.domeo.plugins.resource.omim")?: new DomeoClientProfileEntry(
-			profile: simpleProfile,
-			plugin: "org.mindinformatics.gwt.domeo.plugins.resource.omim",
-			status: "enabled"
-		).save(failOnError: true, flash: true)
-		
-		DomeoClientProfileEntry.findByProfileAndPlugin(completeProfile, "org.mindinformatics.gwt.domeo.plugins.resource.bioportal")?: new DomeoClientProfileEntry(
-			profile: simpleProfile,
-			plugin: "org.mindinformatics.gwt.domeo.plugins.resource.bioportal",
-			status: "enabled"
-		).save(failOnError: true, flash: true)
-		
-		DomeoClientProfileEntry.findByProfileAndPlugin(completeProfile, "org.mindinformatics.gwt.domeo.client.component.clipboard")?: new DomeoClientProfileEntry(
-			profile: simpleProfile,
-			plugin: "org.mindinformatics.gwt.domeo.client.component.clipboard",
-			status: "enabled"
-		).save(failOnError: true, flash: true)
+		// ----------------
+		//  CONFIGURATION PROFILES
+		// ----------------
+		separator( );
+		log.info("Initialising configuration profiles")
+		grailsApplication.config.domeo.profiles.each( ) { key, value ->
+			// find the user
+			def user = User.findByUsername(value["user"]);
+			
+			// create the profile
+			def profile = DomeoClientProfile.findByName(key)?: new DomeoClientProfile(
+				name: key,
+				description: value["description"],
+				createdBy: user
+			).save(failOnError: true, flash: true)
+			log.info("Created profile '" + key + "'")
+			
+			// add the plugins
+			value["plugins"].each( ) { plugin ->
+				addEntryToProfile(profile, plugin, "plugin");
+			}
+			
+			// add the features
+			value["features"].each( ) { plugin ->
+				addEntryToProfile(profile, plugin, "feature");
+			}
+			
+			// disable plugins that have since been removed
+			disableEntriesInProfile(profile, value["plugins"], "plugin");
+			
+			// disable features that have since been removed
+			disableEntriesInProfile(profile, value["features"], "feature");
+		}
 		
 		separator();
 		log.info   'Initializing available profiles'
+		def completeProfile = DomeoClientProfile.findByName("Complete Biomedical Profile")
 		log.info   'Administrator profiles'
-		UserAvailableDomeoClientProfile.findByUserAndProfile(adminUser, completeProfile)?: new UserAvailableDomeoClientProfile(
-			user: adminUser,
-			profile: completeProfile
-		).save(failOnError: true, flash: true)
+		if(completeProfile) {
+			UserAvailableDomeoClientProfile.findByUserAndProfile(adminUser, completeProfile)?: new UserAvailableDomeoClientProfile(
+				user: adminUser,
+				profile: completeProfile
+			).save(failOnError: true, flash: true)
+		}
 		UserAvailableDomeoClientProfile.findByUserAndProfile(adminUser, simpleProfile)?: new UserAvailableDomeoClientProfile(
 			user: adminUser,
 			profile: simpleProfile
 		).save(failOnError: true, flash: true)
 		
 		log.info   'Manager 1 profiles'
-		UserAvailableDomeoClientProfile.findByUserAndProfile(managerUser, completeProfile)?: new UserAvailableDomeoClientProfile(
-			user: managerUser,
-			profile: completeProfile
-		).save(failOnError: true, flash: true)
+		if(completeProfile) {
+			UserAvailableDomeoClientProfile.findByUserAndProfile(managerUser, completeProfile)?: new UserAvailableDomeoClientProfile(
+				user: managerUser,
+				profile: completeProfile
+			).save(failOnError: true, flash: true)
+		}
 		UserAvailableDomeoClientProfile.findByUserAndProfile(managerUser, simpleProfile)?: new UserAvailableDomeoClientProfile(
 			user: managerUser,
 			profile: simpleProfile
 		).save(failOnError: true, flash: true)
 		
 		log.info   'Manager 2 profiles'
-		UserAvailableDomeoClientProfile.findByUserAndProfile(managerUser2, completeProfile)?: new UserAvailableDomeoClientProfile(
-			user: managerUser2,
-			profile: completeProfile
-		).save(failOnError: true, flash: true)
+		if(completeProfile) {
+			UserAvailableDomeoClientProfile.findByUserAndProfile(managerUser2, completeProfile)?: new UserAvailableDomeoClientProfile(
+				user: managerUser2,
+				profile: completeProfile
+			).save(failOnError: true, flash: true)
+		}
 		UserAvailableDomeoClientProfile.findByUserAndProfile(managerUser2, simpleProfile)?: new UserAvailableDomeoClientProfile(
 			user: managerUser2,
 			profile: simpleProfile
 		).save(failOnError: true, flash: true)
 		
 		log.info   'User profiles'
-		UserAvailableDomeoClientProfile.findByUserAndProfile(accountUser1, completeProfile)?: new UserAvailableDomeoClientProfile(
-			user: accountUser1,
-			profile: completeProfile
-		).save(failOnError: true, flash: true)
+		if(completeProfile) {
+			UserAvailableDomeoClientProfile.findByUserAndProfile(accountUser1, completeProfile)?: new UserAvailableDomeoClientProfile(
+				user: accountUser1,
+				profile: completeProfile
+			).save(failOnError: true, flash: true)
+		}
 		UserAvailableDomeoClientProfile.findByUserAndProfile(accountUser1, simpleProfile)?: new UserAvailableDomeoClientProfile(
 			user: accountUser1,
 			profile: simpleProfile
@@ -561,17 +412,21 @@ class BootStrap {
 		
 		separator();
 		log.info   '** Initializing current profiles'
+		def currentProfile = completeProfile
+		if(completeProfile == null) {
+			currentProfile = simpleProfile
+		}
 		log.info   'Administrator profiles'
 		log.info   'Administrator current profile'
 		UserCurrentDomeoClientProfile.findByUser(adminUser)?: new UserCurrentDomeoClientProfile(
 			user: adminUser,
-			currentProfile: completeProfile
+			currentProfile: currentProfile
 		).save(failOnError: true, flash: true)
 		
 		log.info   'Manager 1 current profile'
 		UserCurrentDomeoClientProfile.findByUser(managerUser)?: new UserCurrentDomeoClientProfile(
 			user: managerUser,
-			currentProfile: completeProfile
+			currentProfile: currentProfile
 		).save(failOnError: true, flash: true)
 		
 		log.info   'Manager 2 current profile'
@@ -598,4 +453,45 @@ class BootStrap {
 	}
     def destroy = {
     }
+	
+	/** Add the new entry to the given profile.
+	 * @param profile The profile to add the entry to.
+	 * @param entry The name of the entry.
+	 * @param type The type of the entry, either plugin or feature. */
+	def addEntryToProfile(profile, plugin, type) {
+		def profileEntry = DomeoClientProfileEntry.findByProfileAndPlugin(profile, plugin);
+		if(profileEntry) {
+			profileEntry.status = "enabled"
+		} else {
+			new DomeoClientProfileEntry(
+				profile: profile,
+				plugin: plugin,
+				status: "enabled",
+				type: type
+			).save(failOnError: true, flash: true)
+		}
+	}
+	
+	/** Disable entries in the given profile.
+	 * @param profile The profile to disable the entries from.
+	 * @param currentEntries The list of entries that should be enabled, everything else will be 
+	 * 		  disabled.
+	 * @param type The type of the entry, either plugin or feature. */
+	def disableEntriesInProfile(profile, currentEntries, type) {
+		DomeoClientProfileEntry.findAllByProfileAndType(profile, type).each( ) { entry ->
+			boolean match = false;
+			currentEntries.each( ) { newEntry ->
+				if(entry.getPlugin( ).equalsIgnoreCase(newEntry)) {
+					match = true;
+					return;
+				}
+			}
+			
+			// remove this entry if it's no longer specified in the configuration
+			if(!match) {
+				entry.status = "disabled"
+			}
+		}
+	}
+	
 }

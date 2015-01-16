@@ -211,3 +211,34 @@ grails.plugin.springsecurity.controllerAnnotations.staticRules = [
 	'/errors/**': ['ROLE_ADMIN', 'ROLE_MANAGER', 'ROLE_USER'],
 	'/yaleImageFinder/**': ['ROLE_ADMIN', 'ROLE_MANAGER', 'ROLE_USER'],
 ]
+
+// Default Domeo Profiles
+domeo.profiles = [
+	"Complete Biomedical Profile" : [
+		"description" : "All the tools that Domeo has to offer for biomedicine",
+		"user" : "admin",
+		"plugins" : [
+			"org.mindinformatics.gwt.domeo.plugins.annotation.qualifier",
+			"org.mindinformatics.gwt.domeo.plugins.annotation.nif.antibodies",
+			"org.mindinformatics.gwt.domeo.plugins.annotation.micropubs",
+			"org.mindinformatics.gwt.domeo.plugins.resource.pubmed",
+			"org.mindinformatics.gwt.domeo.plugins.resource.pubmedcentral",
+			"org.mindinformatics.gwt.domeo.plugins.resource.omim",
+			"org.mindinformatics.gwt.domeo.plugins.resource.bioportal",
+			"org.mindinformatics.gwt.domeo.client.component.clipboard"
+		],
+		"features" : [
+			"org.mindinformatics.gwt.domeo.feature.branding",
+			"org.mindinformatics.gwt.domeo.feature.addressbar",
+			"org.mindinformatics.gwt.domeo.feature.analyze",
+			"org.mindinformatics.gwt.domeo.feature.preferences",
+			"org.mindinformatics.gwt.domeo.feature.sharing",
+			"org.mindinformatics.gwt.domeo.feature.help",
+			"org.mindinformatics.gwt.domeo.feature.document.general.reference.self",
+			"org.mindinformatics.gwt.domeo.feature.document.general.qualifiers.self",
+			"org.mindinformatics.gwt.domeo.feature.document.general.bibliography",
+			"org.mindinformatics.gwt.domeo.feature.document.general.recommendations",
+			"org.mindinformatics.gwt.domeo.feature.textmining.summary"
+		]
+	]
+]
