@@ -66,7 +66,7 @@ class LDAPUserDetailsContextMapper implements UserDetailsContextMapper {
 		email = context.getStringAttribute(
 			grailsApplication.config.domeo.ldap.ad.email);
 		if(email == null || email.equals("")) {
-			email = "unknown@mindinformatics.org";
+			email = username + "@mindinformatics.org";
 		}
 		
 		// check if the user already exists
