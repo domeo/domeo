@@ -57,12 +57,16 @@ grails.project.dependency.resolution = {
 			excludes 'slf4j-api', 'xercesImpl'
 		}
 		
+		compile 'org.scribe:scribe:1.3.5'
+		
     }
 
     plugins {
         runtime ":hibernate:$grailsVersion"
         runtime ":jquery:1.7.1"
         runtime ":resources:1.1.6"
+		
+		compile ":gwt:0.6.1"
 
         // Uncomment these (or add new ones) to enable additional resources capabilities
         //runtime ":zipped-resources:1.0"
@@ -73,6 +77,7 @@ grails.project.dependency.resolution = {
 		
 		compile ":spring-security-core:2.0-RC2"
 		compile ":spring-security-openid:2.0-RC1"
+		compile ":spring-security-ldap:2.0-RC2"
     }
 }
 gwt {
