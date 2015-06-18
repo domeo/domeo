@@ -96,7 +96,7 @@ class JsonBioPortalVocabulariesService {
 					
 //					json.data.each {
 //						println "one";
-//					  }
+//					  }	
 //					
 //					println resp.status
 //									
