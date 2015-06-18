@@ -29,6 +29,8 @@ import org.mindinformatics.grails.domeo.dashboard.security.User
  */
 class DomeoClientProfile {
 	
+	public static final String SIMPLE_PROFILE_NAME = "Simple profile";
+	
 	private static final int NAME_MAX_SIZE = 255;
 	
 	String id;

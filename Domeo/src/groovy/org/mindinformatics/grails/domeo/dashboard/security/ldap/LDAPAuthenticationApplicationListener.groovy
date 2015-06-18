@@ -9,7 +9,7 @@ import org.springframework.transaction.annotation.Transactional;
 /** Listens to login events so if an LDAP login occurs, but with the remember
  * me option set the roles are correctly updated from AD allowing the roles for
  * a user to change even though they have saved their login session.
- * @author Tom Wilkin - Eli Lilly & Co <wilkin_thomas@lilly.com> */
+ * @author Tom Wilkin */
 //@Component
 public class LDAPAuthenticationApplicationListener 
 		implements ApplicationListener<InteractiveAuthenticationSuccessEvent>

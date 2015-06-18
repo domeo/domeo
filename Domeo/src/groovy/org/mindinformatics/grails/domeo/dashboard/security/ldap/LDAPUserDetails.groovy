@@ -8,7 +8,7 @@ import org.springframework.security.core.GrantedAuthority;
 /** Wrapper for the Spring Security UserDetails object. This allows storage of
  * the Domeo user object when it has been created by the 
  * LDAPUserDetailsContextWrapper class.
- * @author Tom Wilkin - Eli Lilly & Co <wilkin_thomas@lilly.com> */
+ * @author Tom Wilkin */
 public class LDAPUserDetails extends GrailsUser {
 	
 	/** Construct a new LDAPUserDetails object with the given role authorities 

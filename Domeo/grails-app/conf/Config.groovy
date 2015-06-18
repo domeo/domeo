@@ -1,6 +1,6 @@
 import grails.util.Metadata;
 
-// Necessary for Grails 2.0 as the variable ${appName} is not available 
+// Necessary for Grails 2.0 as the variable ${appName} is not available
 // anymore in the log4j closure. It needs the import above.
 def appName = Metadata.current.getApplicationName();
 
@@ -14,18 +14,18 @@ grails.project.groupId = appName // change this to alter the default package nam
 grails.mime.file.extensions = true // enables the parsing of file extensions from URLs into the request format
 grails.mime.use.accept.header = false
 grails.mime.types = [ html: ['text/html','application/xhtml+xml'],
-                      xml: ['text/xml', 'application/xml'],
-                      text: 'text/plain',
-                      js: 'text/javascript',
-                      rss: 'application/rss+xml',
-                      atom: 'application/atom+xml',
-                      css: 'text/css',
-                      csv: 'text/csv',
-                      all: '*/*',
-                      json: ['application/json','text/json'],
-                      form: 'application/x-www-form-urlencoded',
-                      multipartForm: 'multipart/form-data'
-                    ]
+					  xml: ['text/xml', 'application/xml'],
+					  text: 'text/plain',
+					  js: 'text/javascript',
+					  rss: 'application/rss+xml',
+					  atom: 'application/atom+xml',
+					  css: 'text/css',
+					  csv: 'text/csv',
+					  all: '*/*',
+					  json: ['application/json','text/json'],
+					  form: 'application/x-www-form-urlencoded',
+					  multipartForm: 'multipart/form-data'
+					]
 
 // URL Mapping Cache Max Size, defaults to 5000
 //grails.urlmapping.cache.maxsize = 1000
@@ -69,7 +69,7 @@ grails {
 			   "mail.smtp.socketFactory.class":"javax.net.ssl.SSLSocketFactory",
 			   "mail.smtp.socketFactory.fallback":"false"]
  
-	} 
+	}
 }
 //grails.mail.default.from="domeoannotationtool@gmail.com"
 //grails.mail.overrideAddress="domeoannotationtool@gmail.com"
@@ -77,8 +77,8 @@ grails {
 
 // set per-environment serverURL stem for creating absolute links
 environments {
-    development {
-        //grails.logging.jul.usebridge = false
+	development {
+		//grails.logging.jul.usebridge = false
 		//grails.serverURL = "http://localhost:8080/${appName}"
 		
 		log4j = {
@@ -86,7 +86,7 @@ environments {
 			// http://logging.apache.org/log4j/1.2/apidocs/org/apache/log4j/PatternLayout.html
 			appenders {
 				// Uncomment the following line for a more detailed logging in development mode
-			    console name:'stdout', threshold: org.apache.log4j.Level.DEBUG, layout:pattern(conversionPattern: '%d{dd MMM yyyy HH:mm:ss,SSS} %c{2} %m%n')
+				console name:'stdout', threshold: org.apache.log4j.Level.DEBUG, layout:pattern(conversionPattern: '%d{dd MMM yyyy HH:mm:ss,SSS} %c{2} %m%n')
 				//console name:'stdout', threshold: org.apache.log4j.Level.INFO, layout:pattern(conversionPattern: '%m%n')
 			}
 			
@@ -94,11 +94,11 @@ environments {
 					"consumer.ConsumerManager",
 					'grails.app.controllers.org.mindinformatics.grails.domeo.persistence.ExportController',
 					'grails.app.controllers.org.mindinformatics.services.connector.yaleimagefinder.YaleImageFinderController'
-            
-            info    'grails.app', // Necessary for Bootstrap logging
-                    'org.mindinformatics.grails.domeo.dashboard.security',
-                    'org.mindinformatics.services.connector.pubmed.dataaccess',
-                    'org.mindinformatics.services.connector.pubmed',
+			
+			info    'grails.app', // Necessary for Bootstrap logging
+					'org.mindinformatics.grails.domeo.dashboard.security',
+					'org.mindinformatics.services.connector.pubmed.dataaccess',
+					'org.mindinformatics.services.connector.pubmed',
 					'grails.app.controllers.org.mindinformatics.grails.domeo.plugin.bibliography.BibliographyController'
 		
 			error  'org.codehaus.groovy.grails.web.servlet',  //  controllers
@@ -114,24 +114,24 @@ environments {
 				   'net.sf.ehcache.hibernate',
 					'grails.app.controllers.org.mindinformatics.grails.domeo.ErrorsController'
 		}
-    }
-    production {
-        grails.logging.jul.usebridge = false
-        
+	}
+	production {
+		grails.logging.jul.usebridge = false
+		
 		def catalinaBase = System.properties.getProperty('catalina.base')
 		if (!catalinaBase) catalinaBase = '.'   // just in case
 		def logDirectory = "${catalinaBase}/logs"
 		
 		log4j = {
 			appenders {
-                // Set up a log file in the standard tomcat area; be sure to use .toString() with ${}
-                rollingFile name:'tomcatLog', file:"${logDirectory}/"+appName+".log".toString(), maxFileSize:'100KB'
+				// Set up a log file in the standard tomcat area; be sure to use .toString() with ${}
+				rollingFile name:'tomcatLog', file:"${logDirectory}/"+appName+".log".toString(), maxFileSize:'100KB'
 				
 				// Disabling the creation of stacktrace.log from a Grails application in production mode
-				// this can be commented out if it is proven that the deployment environment does not fail 
+				// this can be commented out if it is proven that the deployment environment does not fail
 				// in the creation of the stacktrace.log file
-                'null' name:'stacktrace'
-            }
+				'null' name:'stacktrace'
+			}
 			
 			root {
 				// Change the root logger to my tomcatLog file
@@ -156,7 +156,7 @@ environments {
 				   'org.hibernate',
 				   'net.sf.ehcache.hibernate'
 		}
-    }
+	}
 }
 
 
@@ -211,3 +211,37 @@ grails.plugin.springsecurity.controllerAnnotations.staticRules = [
 	'/errors/**': ['ROLE_ADMIN', 'ROLE_MANAGER', 'ROLE_USER'],
 	'/yaleImageFinder/**': ['ROLE_ADMIN', 'ROLE_MANAGER', 'ROLE_USER'],
 ]
+
+// Default Domeo Profiles
+domeo.profiles = [
+	"Complete Biomedical Profile" : [
+		"description" : "All the tools that Domeo has to offer for biomedicine",
+		"user" : "admin",
+		"plugins" : [
+			"org.mindinformatics.gwt.domeo.plugins.annotation.qualifier",
+			"org.mindinformatics.gwt.domeo.plugins.annotation.nif.antibodies",
+			"org.mindinformatics.gwt.domeo.plugins.annotation.micropubs",
+			"org.mindinformatics.gwt.domeo.plugins.resource.pubmed",
+			"org.mindinformatics.gwt.domeo.plugins.resource.pubmedcentral",
+			"org.mindinformatics.gwt.domeo.plugins.resource.omim",
+			"org.mindinformatics.gwt.domeo.plugins.resource.bioportal",
+			"org.mindinformatics.gwt.domeo.client.component.clipboard"
+		],
+		"features" : [
+			"org.mindinformatics.gwt.domeo.feature.branding",
+			"org.mindinformatics.gwt.domeo.feature.addressbar",
+			"org.mindinformatics.gwt.domeo.feature.analyze",
+			"org.mindinformatics.gwt.domeo.feature.preferences",
+			"org.mindinformatics.gwt.domeo.feature.sharing",
+			"org.mindinformatics.gwt.domeo.feature.help",
+			"org.mindinformatics.gwt.domeo.feature.document.general.reference.self",
+			"org.mindinformatics.gwt.domeo.feature.document.general.qualifiers.self",
+			"org.mindinformatics.gwt.domeo.feature.document.general.bibliography",
+			"org.mindinformatics.gwt.domeo.feature.document.general.recommendations",
+			"org.mindinformatics.gwt.domeo.feature.textmining.summary"
+		]
+	]
+]
+
+// Whether to run the bootstap in 'test' mode
+domeo.test = true
