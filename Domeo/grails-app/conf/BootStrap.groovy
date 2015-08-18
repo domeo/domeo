@@ -169,14 +169,14 @@ class BootStrap {
 		
 		def admin = 'admin'
 		def adminUser = User.findByUsername(admin) ?: new User(
-			firstName: 'John',
-			lastName: 'Doe',
-			displayName: 'Dr. John Doe',
-			affiliation: 'ACME',
-			country: 'Neverland',
+			firstName: 'Paolo',
+			lastName: 'Ciccarese',
+			displayName: 'Dr. Paolo Ciccarese',
+			affiliation: 'Mass General Hospital',
+			country: 'USA',
 			username: admin,
 			password: springSecurityService.encodePassword(admin),
-			email: 'admin@commonsemantics.org',
+			email: 'paolo.ciccarese@gmail.com',
 			enabled: true).save(failOnError: true) 
 			
 		log.info  'User role 0'
@@ -317,32 +317,34 @@ class BootStrap {
 		separator( );
 		log.info("Initialising configuration profiles")
 		grailsApplication.config.domeo.profiles.each( ) { key, value ->
-			// find the user
-			def user = User.findByUsername(value["user"]);
-			
-			// create the profile
-			def profile = DomeoClientProfile.findByName(key)?: new DomeoClientProfile(
-				name: key,
-				description: value["description"],
-				createdBy: user
-			).save(failOnError: true, flash: true)
-			log.info("Created profile '" + key + "'")
-			
-			// add the plugins
-			value["plugins"].each( ) { plugin ->
-				addEntryToProfile(profile, plugin, "plugin");
+			if(value["user"]!=null && !value["user"].isEmpty()) {
+				// find the user
+				def user = User.findByUsername(value["user"]);
+				
+				// create the profile
+				def profile = DomeoClientProfile.findByName(key)?: new DomeoClientProfile(
+					name: key,
+					description: value["description"],
+					createdBy: user
+				).save(failOnError: true, flash: true)
+				log.info("Created profile '" + key + "'")
+				
+				// add the plugins
+				value["plugins"].each( ) { plugin ->
+					addEntryToProfile(profile, plugin, "plugin");
+				}
+				
+				// add the features
+				value["features"].each( ) { plugin ->
+					addEntryToProfile(profile, plugin, "feature");
+				}
+				
+				// disable plugins that have since been removed
+				disableEntriesInProfile(profile, value["plugins"], "plugin");
+				
+				// disable features that have since been removed
+				disableEntriesInProfile(profile, value["features"], "feature");
 			}
-			
-			// add the features
-			value["features"].each( ) { plugin ->
-				addEntryToProfile(profile, plugin, "feature");
-			}
-			
-			// disable plugins that have since been removed
-			disableEntriesInProfile(profile, value["plugins"], "plugin");
-			
-			// disable features that have since been removed
-			disableEntriesInProfile(profile, value["features"], "feature");
 		}
 		
 		separator();
