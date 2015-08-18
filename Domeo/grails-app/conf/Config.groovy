@@ -1,4 +1,4 @@
-import grails.util.Metadata;
+import grails.util.Metadata
 
 // Necessary for Grails 2.0 as the variable ${appName} is not available
 // anymore in the log4j closure. It needs the import above.
@@ -203,6 +203,7 @@ grails.plugin.springsecurity.controllerAnnotations.staticRules = [
 	'/adminDashboard/**': ['ROLE_ADMIN'],
 	'/ajaxDashboard/**': ['ROLE_ADMIN', 'ROLE_MANAGER', 'ROLE_USER'],
 	'/retrievePmcImagesData/**': ['ROLE_ADMIN', 'ROLE_MANAGER', 'ROLE_USER'],
+	'/annotopia/**': ['permitAll'],
 	'/pubmed/**': ['permitAll'],
 	'/ncbo/**': ['permitAll'],
 	'/public/**': ['permitAll'],
@@ -245,3 +246,17 @@ domeo.profiles = [
 
 // Whether to run the bootstap in 'test' mode
 domeo.test = true
+
+/*
+// LDAP
+grails.plugin.springsecurity.providerNames = ['daoAuthenticationProvider', 'ldapAuthProvider', 'rememberMeAuthenticationProvider']
+
+// LDAP AD entry defaults
+domeo.ldap.ad.first_name = "givenName"
+domeo.ldap.ad.last_name = "sn"
+domeo.ldap.ad.display_name = "display-Name"
+domeo.ldap.ad.username = "sAMAccountName"
+domeo.ldap.ad.email = "mail"
+domeo.ldap.ad.country = null
+domeo.ldap.ad.affiliation = null
+*/
