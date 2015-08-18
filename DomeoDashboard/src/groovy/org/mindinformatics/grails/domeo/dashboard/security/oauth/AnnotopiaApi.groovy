@@ -1,11 +1,10 @@
 package org.mindinformatics.grails.domeo.dashboard.security.oauth;
 
-import org.apache.commons.logging.LogFactory;
-import org.codehaus.groovy.grails.commons.ApplicationHolder;
-import org.scribe.builder.api.DefaultApi20;
-import org.scribe.model.OAuthConfig;
-import org.scribe.oauth.OAuthService;
-import org.scribe.utils.OAuthEncoder;
+import org.codehaus.groovy.grails.commons.ApplicationHolder
+import org.scribe.builder.api.DefaultApi20
+import org.scribe.model.OAuthConfig
+import org.scribe.oauth.OAuthService
+import org.scribe.utils.OAuthEncoder
 
 /** OAuth API definition for Annotopia.
  * @author Tom Wilkin */
@@ -36,6 +35,7 @@ final class AnnotopiaApi extends DefaultApi20 {
 	public String getAuthorizationUrl(final OAuthConfig config) {
 		String path = String.format(grailsApplication.config.domeo.storage.annotopia.storage + AUTH_URL, config.apiKey, 
 			OAuthEncoder.encode(grailsApplication.config.grails.serverURL.toString( ) + config.callback));
+		println 'path ' + path
 		return path;
 	}
 	

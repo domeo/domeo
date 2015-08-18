@@ -45,7 +45,9 @@ class AnnotopiaController {
 	/** Method to redirect to the configured Annotopia authenticate page. */
 	def authenticate( ) {
 		// redirect the user to the Annotopia authorisation URL
+		println "sdfasdfasadfsadfasfasfasfsafsafassdfadfasdfasffssafDDDDDDDDDD"
 		if(isAnnotopiaOAuthEnabled( )) {
+			println "sdfasdfasdfadfasdfasffssafDDDDDDDDDD"
 			redirect(url: getService( ).getAuthorizationUrl( ));
 		}
 	}

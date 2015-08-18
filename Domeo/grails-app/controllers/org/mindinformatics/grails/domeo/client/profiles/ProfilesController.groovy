@@ -125,6 +125,19 @@ class ProfilesController extends DomeoControllerUtils {
 		render (ps as JSON)
 	}
 	
+	def getAllAvailableProfiles = {
+		def profiles = profilesService.getDefaultProfiles();
+		print 'yolo'
+		print profiles
+		JSONArray ps = new JSONArray();
+		profiles.each { profile ->
+			def plugins = profilesService.getProfileEntries(profile, 'plugin');
+			def features = profilesService.getProfileEntries(profile, 'feature');
+			
+			ps.add(serializeDomeoClientProfile(profile, plugins, features));
+		}
+		render (ps as JSON)
+	}
 	
 	def save = {
 		def user = loggedUser();
@@ -139,7 +152,11 @@ class ProfilesController extends DomeoControllerUtils {
 		getCurrentUserProfile();
 	}
 	
-	def all = {
+	def allAvailable = {
+		getAllAvailableProfiles();
+	}
+	
+	def allForUser = {
 		getUserProfiles();
 	}
 }

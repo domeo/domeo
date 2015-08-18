@@ -10,9 +10,10 @@ class UrlMappings {
 		"/agents/$id/info" (controller:"/agents", action: "info")
 		"/agents/$id/$version" (controller:"/agents", action: "software")
 		
+		"/profile/all/info" (controller:"/profiles", action: "allAvailable")
 		"/profile/$id/info" (controller:"/profiles", action: "info")
 		"/profile/$id/save" (controller:"/profiles", action: "save")
-		"/profile/$id/all" (controller:"/profiles", action: "all")
+		"/profile/$id/all" (controller:"/profiles", action: "allForUser")
 		
 		"/group/$id" (controller:"/dashboard", action: "showGroup")
 		"/user/$id" (controller:"/dashboard", action: "showProfile")
