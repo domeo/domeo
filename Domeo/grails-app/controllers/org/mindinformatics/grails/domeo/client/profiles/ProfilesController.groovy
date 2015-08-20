@@ -127,8 +127,6 @@ class ProfilesController extends DomeoControllerUtils {
 	
 	def getAllAvailableProfiles = {
 		def profiles = profilesService.getDefaultProfiles();
-		print 'yolo'
-		print profiles
 		JSONArray ps = new JSONArray();
 		profiles.each { profile ->
 			def plugins = profilesService.getProfileEntries(profile, 'plugin');
@@ -139,13 +137,24 @@ class ProfilesController extends DomeoControllerUtils {
 		render (ps as JSON)
 	}
 	
+	private void returnException(def userId, String textContent, String msg) {
+		logException(log, userId, msg);
+		response.status = 500
+		render (packageJsonErrorMessage(userId, msg) as JSON);
+		return;
+	}
+	
 	def save = {
 		def user = loggedUser();
-		String textContent = request.getReader().text;
-		def jsonResponse = parseJson(user.id, textContent, "Parsing of the set json content failed");
-		def ret = profilesService.saveCurrentProfile(user, jsonResponse.get(0).get('uuid'));
-		if(ret) render (jsonResponse as JSON);
-		else render "";
+		try {
+			String textContent = request.getReader().text;
+			def jsonResponse = parseJson(user.id, textContent, "Parsing of the set json content failed");
+			def ret = profilesService.saveCurrentProfile(user, jsonResponse.get(0).get('uuid') + "0");
+			if(ret) render (jsonResponse as JSON);
+			else returnException(user.id, "Could not save user profile", "Not possible to assign the chosen profile to the user");
+		} catch (Exception e) {
+			return returnException(user.id, "Could not save user profile", e.getMessage());
+		}
 	}
 	
 	def info = {
