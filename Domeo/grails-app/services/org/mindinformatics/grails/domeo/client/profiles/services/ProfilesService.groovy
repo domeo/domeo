@@ -61,6 +61,7 @@ class ProfilesService {
 	}
 	
 	public boolean saveCurrentProfile(def user, def uuid) {
+		def saved = false;
 		if(grailsApplication.config.domeo.profiles.available.all.equalsIgnoreCase("true")) {
 			def profiles = DomeoClientProfile.list();
 			profiles.each { profile ->
@@ -70,14 +71,14 @@ class ProfilesService {
 					if(cp!=null) {
 						log.info('Updating current profile ' + uuid + ' for user ' + user.id)
 						cp.currentProfile = pr;
-						return true;
+						saved=true;
 					} else {
 						log.info('Saving new current profile ' + uuid + ' for user ' + user.id)
 						new UserCurrentDomeoClientProfile(
 							user: user,
 							currentProfile: profile
 						).save(failOnError: true, flash: true)
-						return true;
+						saved=true;
 					}
 				}
 			}
@@ -90,12 +91,12 @@ class ProfilesService {
 					def cp = UserCurrentDomeoClientProfile.findByUser(user);
 					if(cp!=null) {
 						cp.currentProfile = pr;
-						return true;
+						saved=true;
 					}
 				}			
 			}
 		}
-		return false;
+		return saved;
 	}
 	
 	public def getProfileEntries(def profile) {

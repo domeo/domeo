@@ -149,9 +149,11 @@ class ProfilesController extends DomeoControllerUtils {
 		try {
 			String textContent = request.getReader().text;
 			def jsonResponse = parseJson(user.id, textContent, "Parsing of the set json content failed");
-			def ret = profilesService.saveCurrentProfile(user, jsonResponse.get(0).get('uuid') + "0");
-			if(ret) render (jsonResponse as JSON);
-			else returnException(user.id, "Could not save user profile", "Not possible to assign the chosen profile to the user");
+			def ret = profilesService.saveCurrentProfile(user, jsonResponse.get(0).get('uuid'));
+			if(ret) {
+				render (jsonResponse as JSON);
+				return;
+			} else returnException(user.id, "Could not save user profile", "Not possible to assign the chosen profile to the user");
 		} catch (Exception e) {
 			return returnException(user.id, "Could not save user profile", e.getMessage());
 		}
